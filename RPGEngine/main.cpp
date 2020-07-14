@@ -6,6 +6,5 @@ int main(int argc, char* argv[])
 	SystemManager Instance;
 	Instance.Activate();
 
-
 	return 0;
 }

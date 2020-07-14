@@ -23,10 +23,10 @@ void RenderSystem::Draw(entt::registry& Registry, const SDL_Renderer* renderer)
         auto& MapTile = Registry.get<TextureComponent>(Entity);
 
         SDL_Rect destRect;
-        destRect.x = static_cast<int>(Transform.Position.x);
-        destRect.y = static_cast<int>(Transform.Position.y);
-        destRect.w = MapTile.srcRect.w * Transform.Size.x;
-        destRect.h = MapTile.srcRect.h * Transform.Size.y;
+        destRect.x = Transform.Position.x;
+        destRect.y = Transform.Position.y;
+        destRect.w = static_cast<int>(MapTile.srcRect.w * Transform.Size.x);
+        destRect.h = static_cast<int>(MapTile.srcRect.h * Transform.Size.y);
 
         TextureManager::Draw(MapTile.texture, MapTile.srcRect, destRect, SDL_FLIP_NONE);
     }

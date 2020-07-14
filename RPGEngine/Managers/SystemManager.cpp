@@ -10,6 +10,8 @@ PF_MapTile Tile2;
 
 void SystemManager::Activate()
 {
+    isRunning = false;
+
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
         if (TTF_Init() == 0)
@@ -71,10 +73,6 @@ void SystemManager::Update(SDL_Window* window)
         // The window is cleared.
         SDL_RenderClear(renderer);
 
-        SDL_Rect destRect = { 0, 0, 0, 0 };
-        SDL_QueryTexture(uiTexture, nullptr, nullptr, &destRect.w, &destRect.h);
-        SDL_RenderCopy(renderer, uiTexture, NULL, &destRect);
-
         // The systems will then be updated.
         inputSystem.Update(Registry, deltaTime);
         //PhysicsSystem.Update(Registry, deltaTime);
@@ -85,6 +83,11 @@ void SystemManager::Update(SDL_Window* window)
         //Grid.Draw(Window);
         //TopBox.Draw(Window);
         //BottomBox.Draw(Window);
+
+        SDL_Rect destRect = { 0, 0, 0, 0 };
+        SDL_QueryTexture(uiTexture, nullptr, nullptr, &destRect.w, &destRect.h);
+        SDL_RenderCopy(renderer, uiTexture, NULL, &destRect);
+
 
         // Then they will display. 
         SDL_RenderPresent(renderer);

@@ -155,6 +155,7 @@
     <ClCompile Include="Systems\InputSystem.cpp" />
     <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="Utility\Vector2D.cpp" />
+    <ClCompile Include="XML\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\InputComponent.h" />
@@ -165,7 +166,10 @@
     <ClInclude Include="Systems\RenderSystem.h" />
     <ClInclude Include="Systems\InputSystem.h" />
     <ClInclude Include="Managers\TextureManager.h" />
+    <ClInclude Include="Utility\Position2D.h" />
     <ClInclude Include="Utility\Vector2D.h" />
+    <ClInclude Include="XML\pugiconfig.hpp" />
+    <ClInclude Include="XML\pugixml.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />
