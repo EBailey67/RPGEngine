@@ -8,28 +8,30 @@ void SystemManager::Activate()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
-        TTF_Init();
-        std::cout << "Subsystems Initialized..." << std::endl;
-        window = SDL_CreateWindow("RPG Playground", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false /* fullScreen */);
-        if (window)
+        if (TTF_Init() == 0)
         {
-            std::cout << "Window created..." << std::endl;
-            renderer = SDL_CreateRenderer(window, -1, 0);
-            if (renderer)
+            std::cout << "Subsystems Initialized..." << std::endl;
+            window = SDL_CreateWindow("RPG Playground", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false /* fullScreen */);
+            if (window)
             {
-                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-                std::cout << "Renderer created..." << std::endl;
-
-                uiFont = TTF_OpenFont("Fonts/arial.ttf", 25);
-                if (!uiFont)
+                std::cout << "Window created..." << std::endl;
+                renderer = SDL_CreateRenderer(window, -1, 0);
+                if (renderer)
                 {
-                    std::cout << "TTF_OpenFont: " << TTF_GetError() << std::endl;
+                    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                    std::cout << "Renderer created..." << std::endl;
+
+                    uiFont = TTF_OpenFont("Fonts/arial.ttf", 25);
+                    if (!uiFont)
+                    {
+                        std::cout << "TTF_OpenFont: " << TTF_GetError() << std::endl;
+                    }
+                    SDL_Color color = { 255, 0, 0 };
+                    SDL_Surface* uiSurface = TTF_RenderText_Blended(uiFont, "Welcome to the RPG Engine!", color);
+                    uiTexture = SDL_CreateTextureFromSurface(renderer, uiSurface);
+                    SDL_FreeSurface(uiSurface);
+                    isRunning = true;
                 }
-                SDL_Color color = { 255, 0, 0 };
-                SDL_Surface* uiSurface = TTF_RenderText_Blended(uiFont, "Welcome to the RPG Engine!", color);
-                uiTexture = SDL_CreateTextureFromSurface(renderer, uiSurface);
-                SDL_FreeSurface(uiSurface);
-                isRunning = true;
             }
         }
     }
@@ -65,8 +67,8 @@ void SystemManager::Update(SDL_Window* window)
         SDL_Rect destRect = { 0, 0, 0, 0 };
         SDL_QueryTexture(uiTexture, nullptr, nullptr, &destRect.w, &destRect.h);
         SDL_RenderCopy(renderer, uiTexture, NULL, &destRect);
+
         // The systems will then be updated.
-        // DeltaTime.asSeconds() multiplies whatever transformations made by an entity have a constant time-step.
         //InputSystem.Update(Registry, deltaTime);
         //PhysicsSystem.Update(Registry, deltaTime);
         //RenderSystem.Update(Registry);
