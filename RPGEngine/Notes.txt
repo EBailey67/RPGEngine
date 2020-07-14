@@ -8,5 +8,15 @@ EnTT 3.4.0 - https://skypjack.github.io/entt/index.html
 
 
 External Tools Used:
-Sprite Editor - Aseprite (https://www.aseprite.org/ or downloaded from Steam)
-Tile Editor   - Tiled (https://www.mapeditor.org/)
+Sprite Editor  - Aseprite (https://www.aseprite.org/ or downloaded from Steam)
+TileMap Editor - Pyxel Edit (https://pyxeledit.com/)
+Tile Editor    - Tiled (https://www.mapeditor.org/)
+
+
+Color Palettes:
+LoSpec Color Palettes: https://lospec.com/palette-list
+
+Pixel Art Tutorials:
+MiniBoss Pixel Art Tutorials: https://blog.studiominiboss.com/pixelart
+Pixel Pete: https://www.youtube.com/channel/UC7OO...
+10 Tips getting started: https://www.youtube.com/watch?v=o_EKrg2fIuc

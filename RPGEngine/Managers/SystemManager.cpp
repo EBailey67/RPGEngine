@@ -1,8 +1,12 @@
 #include "SystemManager.h"
 #include <iostream>
+#include "../Prefab/PF_MapTile.h"
 
 SDL_Renderer* SystemManager::renderer = nullptr;
 SDL_Event SystemManager::event;
+
+PF_MapTile Tile1;
+PF_MapTile Tile2;
 
 void SystemManager::Activate()
 {
@@ -35,6 +39,9 @@ void SystemManager::Activate()
             }
         }
     }
+
+    Tile1.Create(Registry, 0, 0, 0, 0, "Assets/Textures/grass.png");
+    Tile2.Create(Registry, 0, 0, 64, 0, "Assets/Textures/dirt.png");
 
     Update(window);
 }
@@ -69,12 +76,12 @@ void SystemManager::Update(SDL_Window* window)
         SDL_RenderCopy(renderer, uiTexture, NULL, &destRect);
 
         // The systems will then be updated.
-        //InputSystem.Update(Registry, deltaTime);
+        inputSystem.Update(Registry, deltaTime);
         //PhysicsSystem.Update(Registry, deltaTime);
-        //RenderSystem.Update(Registry);
+        renderSystem.Update(Registry);
 
         // Then they will be drawn.
-//        RenderSystem.Draw(Registry, Window);
+        renderSystem.Draw(Registry, renderer);
         //Grid.Draw(Window);
         //TopBox.Draw(Window);
         //BottomBox.Draw(Window);

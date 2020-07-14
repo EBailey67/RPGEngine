@@ -151,10 +151,21 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Managers\SystemManager.cpp" />
+    <ClCompile Include="Systems\RenderSystem.cpp" />
+    <ClCompile Include="Systems\InputSystem.cpp" />
+    <ClCompile Include="Managers\TextureManager.cpp" />
+    <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Components\InputComponent.h" />
+    <ClInclude Include="Components\TextureComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Managers\SystemManager.h" />
+    <ClInclude Include="Prefab\PF_MapTile.h" />
+    <ClInclude Include="Systems\RenderSystem.h" />
+    <ClInclude Include="Systems\InputSystem.h" />
+    <ClInclude Include="Managers\TextureManager.h" />
+    <ClInclude Include="Utility\Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />

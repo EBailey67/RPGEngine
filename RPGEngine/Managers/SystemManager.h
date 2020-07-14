@@ -3,7 +3,8 @@
 #include <entt\entt.hpp>
 #include <SDL.h>
 #include <SDL_ttf.h>
-
+#include "../Systems/InputSystem.h"
+#include "../Systems/RenderSystem.h"
 
 class SystemManager
 {
@@ -18,6 +19,9 @@ private:
 	bool isRunning;
 
 	entt::registry Registry;
+
+	InputSystem inputSystem;
+	RenderSystem renderSystem;
 
 	SDL_Window* window;
 	TTF_Font* uiFont;
