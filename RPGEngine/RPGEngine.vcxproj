@@ -154,12 +154,15 @@
     <ClCompile Include="Systems\RenderSystem.cpp" />
     <ClCompile Include="Systems\InputSystem.cpp" />
     <ClCompile Include="Managers\TextureManager.cpp" />
-    <ClCompile Include="Utility\Vector2D.cpp" />
     <ClCompile Include="XML\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Components\CollidersComponent.h" />
     <ClInclude Include="Components\InputComponent.h" />
+    <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\TextureComponent.h" />
+    <ClInclude Include="Components\TileGridComponent.h" />
+    <ClInclude Include="Components\TileSetComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Managers\SystemManager.h" />
     <ClInclude Include="Prefab\PF_MapTile.h" />
@@ -173,6 +176,25 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\MapData\full spritesheet.png" />
+    <Image Include="Assets\MapData\full tilemap.png" />
+    <Image Include="Assets\Sprites\spritesheet.png" />
+    <Image Include="Assets\Sprites\tilemap.png" />
+    <Image Include="Assets\Textures\dirt.png" />
+    <Image Include="Assets\Textures\enemy.png" />
+    <Image Include="Assets\Textures\grass.png" />
+    <Image Include="Assets\Textures\player.png" />
+    <Image Include="Assets\Textures\player_anims.png" />
+    <Image Include="Assets\Textures\player_idle.png" />
+    <Image Include="Assets\Textures\terrain_ss.png" />
+    <Image Include="Assets\Textures\water.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\MapData\map.tmx" />
+    <None Include="Assets\MapData\sprite.tsx" />
+    <None Include="Assets\MapData\tile.tsx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

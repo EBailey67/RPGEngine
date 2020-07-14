@@ -25,8 +25,8 @@ void RenderSystem::Draw(entt::registry& Registry, const SDL_Renderer* renderer)
         SDL_Rect destRect;
         destRect.x = Transform.Position.x;
         destRect.y = Transform.Position.y;
-        destRect.w = static_cast<int>(MapTile.srcRect.w * Transform.Size.x);
-        destRect.h = static_cast<int>(MapTile.srcRect.h * Transform.Size.y);
+        destRect.w = static_cast<int>(MapTile.srcRect.w * Transform.Size.x());
+        destRect.h = static_cast<int>(MapTile.srcRect.h * Transform.Size.y());
 
         TextureManager::Draw(MapTile.texture, MapTile.srcRect, destRect, SDL_FLIP_NONE);
     }
