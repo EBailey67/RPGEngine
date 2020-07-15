@@ -118,14 +118,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Development\SDL2_ttf\include;D:\Development\vcpkg\vcpkg\installed\x86-windows\include;D:\Development\SDL2_image\include;D:\Development\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Development\SDL2_mixer\include;D:\Development\SDL2_ttf\include;D:\Development\vcpkg\vcpkg\installed\x86-windows\include;D:\Development\SDL2_image\include;D:\Development\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Development\SDL2_ttf\lib\x64;D:\Development\SDL2\lib\x64;D:\Development\SDL2_image\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Development\SDL2_ttf\lib\x64;D:\Development\SDL2_mixer\lib\x64;D:\Development\SDL2\lib\x64;D:\Development\SDL2_image\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,7 +136,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Development\SDL2_ttf\include;D:\Development\vcpkg\vcpkg\installed\x86-windows\include;D:\Development\SDL2_image\include;D:\Development\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Development\SDL2_mixer\include;D:\Development\SDL2_ttf\include;D:\Development\vcpkg\vcpkg\installed\x86-windows\include;D:\Development\SDL2_image\include;D:\Development\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -144,38 +144,73 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Development\SDL2_ttf\lib\x64;D:\Development\SDL2\lib\x64;D:\Development\SDL2_image\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Development\SDL2_ttf\lib\x64;D:\Development\SDL2_mixer\lib\x64;D:\Development\SDL2\lib\x64;D:\Development\SDL2_image\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Managers\SystemManager.cpp" />
-    <ClCompile Include="Systems\RenderSystem.cpp" />
-    <ClCompile Include="Systems\InputSystem.cpp" />
-    <ClCompile Include="Managers\TextureManager.cpp" />
+    <ClCompile Include="SDL\instances.cpp" />
+    <ClCompile Include="Systems\camerasystem.cpp" />
+    <ClCompile Include="Systems\collisionsystem.cpp" />
+    <ClCompile Include="Systems\debugsystem.cpp" />
+    <ClCompile Include="Systems\enemysystem.cpp" />
+    <ClCompile Include="Systems\playerinputsystem.cpp" />
+    <ClCompile Include="Systems\positionsystem.cpp" />
+    <ClCompile Include="Systems\spritesystem.cpp" />
+    <ClCompile Include="Systems\tilegridsystem.cpp" />
     <ClCompile Include="XML\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Components\CollidersComponent.h" />
-    <ClInclude Include="Components\InputComponent.h" />
-    <ClInclude Include="Components\SpriteComponent.h" />
-    <ClInclude Include="Components\TextureComponent.h" />
-    <ClInclude Include="Components\TileGridComponent.h" />
-    <ClInclude Include="Components\TileSetComponent.h" />
-    <ClInclude Include="Components\TransformComponent.h" />
-    <ClInclude Include="Managers\SystemManager.h" />
+    <ClInclude Include="Component\ai.hpp" />
+    <ClInclude Include="Component\camera.hpp" />
+    <ClInclude Include="Component\colliders.hpp" />
+    <ClInclude Include="Component\components.hpp" />
+    <ClInclude Include="Component\hierachy.hpp" />
+    <ClInclude Include="Component\sprite.hpp" />
+    <ClInclude Include="Component\tilegrid.hpp" />
+    <ClInclude Include="Component\tileset.hpp" />
+    <ClInclude Include="Component\transform.hpp" />
+    <ClInclude Include="Component\vector2d.hpp" />
+    <ClInclude Include="config.hpp" />
+    <ClInclude Include="core.hpp" />
+    <ClInclude Include="fwd.hpp" />
+    <ClInclude Include="game_scene.hpp" />
     <ClInclude Include="Prefab\PF_MapTile.h" />
-    <ClInclude Include="Systems\RenderSystem.h" />
-    <ClInclude Include="Systems\InputSystem.h" />
-    <ClInclude Include="Managers\TextureManager.h" />
-    <ClInclude Include="Utility\Position2D.h" />
-    <ClInclude Include="Utility\Vector2D.h" />
+    <ClInclude Include="Resource\cache.hpp" />
+    <ClInclude Include="Resource\fwd.hpp" />
+    <ClInclude Include="SDL\config.hpp" />
+    <ClInclude Include="SDL\events.hpp" />
+    <ClInclude Include="SDL\framerate.hpp" />
+    <ClInclude Include="SDL\fwd.hpp" />
+    <ClInclude Include="SDL\game.hpp" />
+    <ClInclude Include="SDL\graphics.hpp" />
+    <ClInclude Include="SDL\instances.hpp" />
+    <ClInclude Include="SDL\resource_loader.hpp" />
+    <ClInclude Include="SDL\scene.hpp" />
+    <ClInclude Include="SDL\sdl.hpp" />
+    <ClInclude Include="SDL\timer.hpp" />
+    <ClInclude Include="Systems\camerasystem.hpp" />
+    <ClInclude Include="Systems\collisionsystem.hpp" />
+    <ClInclude Include="Systems\debugsystem.hpp" />
+    <ClInclude Include="Systems\enemysystem.hpp" />
+    <ClInclude Include="Systems\playerinputsystem.hpp" />
+    <ClInclude Include="Systems\positionsystem.hpp" />
+    <ClInclude Include="Systems\spritesystem.hpp" />
+    <ClInclude Include="Systems\systems.hpp" />
+    <ClInclude Include="Systems\tilegridsystem.hpp" />
     <ClInclude Include="XML\pugiconfig.hpp" />
     <ClInclude Include="XML\pugixml.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="LICENSE.FLAC.txt" />
+    <Text Include="LICENSE.modplug.txt" />
+    <Text Include="LICENSE.mpg123.txt" />
+    <Text Include="LICENSE.ogg-vorbis.txt" />
+    <Text Include="LICENSE.opus.txt" />
+    <Text Include="LICENSE.opusfile.txt" />
     <Text Include="Notes.txt" />
+    <Text Include="resources\fonts\license.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\MapData\full spritesheet.png" />
@@ -190,11 +225,39 @@
     <Image Include="Assets\Textures\player_idle.png" />
     <Image Include="Assets\Textures\terrain_ss.png" />
     <Image Include="Assets\Textures\water.png" />
+    <Image Include="resources\sprites\spritesheet.png" />
+    <Image Include="resources\sprites\tilemap.png" />
+    <Image Include="resources\tiled_files\full spritesheet.png" />
+    <Image Include="resources\tiled_files\full tilemap.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\MapData\map.tmx" />
     <None Include="Assets\MapData\sprite.tsx" />
     <None Include="Assets\MapData\tile.tsx" />
+    <None Include="libFLAC-8.dll" />
+    <None Include="libfreetype-6.dll" />
+    <None Include="libmodplug-1.dll" />
+    <None Include="libmpg123-0.dll" />
+    <None Include="libogg-0.dll" />
+    <None Include="libopus-0.dll" />
+    <None Include="libopusfile-0.dll" />
+    <None Include="libpng16-16.dll" />
+    <None Include="libvorbis-0.dll" />
+    <None Include="libvorbisfile-3.dll" />
+    <None Include="resources\tiled_files\map_test.tmx" />
+    <None Include="resources\tiled_files\sprite.tsx" />
+    <None Include="resources\tiled_files\tile.tsx" />
+    <None Include="SDL2.dll" />
+    <None Include="SDL2_image.dll" />
+    <None Include="SDL2_mixer.dll" />
+    <None Include="SDL2_ttf.dll" />
+    <None Include="zlib1.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\fonts\dpcomic.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="resources\mix\main.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
