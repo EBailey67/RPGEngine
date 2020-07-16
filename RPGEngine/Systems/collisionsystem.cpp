@@ -61,7 +61,6 @@ void NullVelocity(const CollisionData &lhs, const CollisionData &rhs)
                 }
                 else if (xDir == Vector2D::right() && vel.x > 0)
                 {
-
                     vel.x = 0;
                 }
                 if (yDir == Vector2D::up() && vel.y > 0)

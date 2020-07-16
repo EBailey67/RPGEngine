@@ -1,7 +1,10 @@
 #pragma once
 
-#include "vector2d.hpp"
 #include <array>
+
+#include "vector2d.hpp"
+
+
 struct Pathfinding
 {
     inline static constexpr const auto DIAGONAL_COST = 14;
@@ -23,14 +26,16 @@ struct Enemy
         {1135.333862f, 786.667297f},
         {1135.333862f, 200.0f},
     };
-    bool isCharched = false;
+    bool isCharging = false;
     float time = 0.5;
     float dt = 0;
 };
+
 struct Health
 {
     int health = 2;
 };
+
 struct Active
 {
 };

@@ -10,7 +10,6 @@
 
 #include "graphics.hpp"
 
-/*! @brief Texture Loader struct. */
 struct ResourceLoader
 {
     static SDL_Texture *Sprite(std::string_view path)
@@ -51,6 +50,7 @@ struct ResourceLoader
         SDL_FreeSurface(surface);
         return texture;
     }
+
     static Mix_Music *Music(std::string_view path)
     {
         auto music = Mix_LoadMUS(path.data());

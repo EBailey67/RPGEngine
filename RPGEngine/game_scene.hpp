@@ -1,23 +1,21 @@
-#ifndef GAME_PROCESS_HPP
-#define GAME_PROCESS_HPP
-
-#include "core.hpp"
-#include "systems/systems.hpp"
+#pragma once
 
 #include <filesystem>
 #include <iostream>
-
-#include "xml/pugixml.hpp"
 #include <random>
+
+#include "core.hpp"
+#include "systems/systems.hpp"
+#include "xml/pugixml.hpp"
 
 constexpr const auto tileid = "tileset";
 constexpr const auto spriteid = "spritesheet";
+
 class GameScene : public BasicScene
 {
 public:
-    ~GameScene()
-    {
-    }
+    ~GameScene() {}
+    
     GameScene()
     {
         auto &signal = registry.set<collision_signal>();
@@ -30,25 +28,26 @@ public:
         {
             SDL_THROW();
         }
+
         auto music = musicCache.load("main", ResourceLoader::Music("resources/mix/main.mp3"));
         Mix_PlayMusic(music, -1);
+
+
         textureCache.load(tileid, ResourceLoader::Sprite("resources/sprites/tilemap.png"));
         textureCache.load(spriteid, ResourceLoader::Sprite("resources/sprites/spritesheet.png"));
 
-        fontCache.load("font23", ResourceLoader::Font("resources/fonts/dpcomic"
-                                                           ".ttf",
-                                                           23));
-        fontCache.load("font35", ResourceLoader::Font("resources/fonts/dpcomic"
-                                                           ".ttf",
-                                                           35));
+        fontCache.load("font23", ResourceLoader::Font("resources/fonts/dpcomic.ttf", 23));
+        fontCache.load("font35", ResourceLoader::Font("resources/fonts/dpcomic.ttf", 35));
 
         scoreTable.Open("resources/score.txt");
 
         spriteSheet.Load("resources/tiled_files/sprite.tsx", textureCache.resource(spriteid));
         tileset.Load("resources/tiled_files/tile.tsx", textureCache.resource(tileid));
+        
         CameraCreate();
         GridCreate();
         PlayerCreate();
+        
         EnemyCreate(Enemy::spawns[0]);
         EnemyCreate(Enemy::spawns[1]);
         EnemyCreate(Enemy::spawns[2]);
@@ -94,4 +93,4 @@ public:
     }
 };
 
-#endif // GAME_PROCESS_HPP
+

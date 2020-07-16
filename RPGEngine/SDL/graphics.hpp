@@ -18,9 +18,11 @@ private:
     Graphics()
     {
     }
+
     ~Graphics()
     {
     }
+
     static void AssignWindow(SDL_Window *window, const Uint32 rendererFlags = 0)
     {
         DestroyData();
@@ -31,13 +33,16 @@ private:
         {
             SDL_THROW();
         }
+
         if (SDL_RenderTargetSupported(m_renderer) == SDL_FALSE)
         {
             SDL_THROW();
         }
+
         SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, SDL_ALPHA_TRANSPARENT);
         CreateLayers();
     }
+
     static void CreateLayers()
     {
         auto [w, h] = WindowSize();
@@ -62,6 +67,7 @@ private:
             }
         }
     }
+
     static void OnRenderStart()
     {
         // clear all layers textures.
@@ -78,6 +84,7 @@ private:
 
         m_currentLayer = reset_layer;
     }
+
     static void RenderTarget(std::size_t layer)
     {
         if (SDL_SetRenderTarget(m_renderer, m_layers.at(layer)))
@@ -94,6 +101,7 @@ private:
             SDL_THROW();
         }
     }
+
     static void TargetClear()
     {
         SDL_RenderClear(m_renderer);
@@ -103,6 +111,7 @@ private:
     {
         SDL_RenderPresent(m_renderer);
     }
+
     static void DrawLayers()
     {
         ResetRenderer();
@@ -127,10 +136,6 @@ private:
     }
 
 public:
-    /**
-     * @brief WindowSize
-     * @return
-     */
     static std::pair<int, int> WindowSize() noexcept
     {
         SSECS_ASSERT(m_window);
@@ -139,31 +144,16 @@ public:
         return std::make_pair(w, h);
     }
 
-    /**
-     * @brief Window
-     * @return
-     */
     static SDL_Window *Window() noexcept
     {
         return m_window;
     }
 
-    /**
-     * @brief Renderer
-     * @return
-     */
     static SDL_Renderer *Renderer() noexcept
     {
         return m_renderer;
     }
 
-    /**
-     * @brief RenderToLayer
-     * @param layer
-     * @param texture
-     * @param src_rect
-     * @param dst_rect
-     */
     static void RenderToLayer(std::size_t layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
                               const SDL_Rect *dst_rect = nullptr, const SDL_RendererFlip flip = SDL_FLIP_NONE)
     {
@@ -176,6 +166,7 @@ public:
             SDL_THROW();
         }
     }
+
     static void RenderToLayerF(std::size_t layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
                                const SDL_FRect *dst_rect = nullptr, const SDL_RendererFlip flip = SDL_FLIP_NONE)
     {

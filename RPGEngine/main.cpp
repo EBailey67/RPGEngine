@@ -11,7 +11,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
         game->InitializeSubsystems();
         game->AssignWindow(
-            SDL_CreateWindow("SSECS Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_SHOWN),
+            SDL_CreateWindow("RPG Playground", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_SHOWN),
             SDL_RENDERER_SOFTWARE | SDL_RENDERER_TARGETTEXTURE);
         game->CreateScene<GameScene>();
         game->Run();

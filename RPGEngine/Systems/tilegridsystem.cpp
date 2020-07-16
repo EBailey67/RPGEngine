@@ -9,13 +9,16 @@ void GridRender()
     auto &activeCamera = cameraView.get(*cameraView.begin());
 
     activeCamera.UpdateWindowSize(Graphics::Window());
-    gridView.each([activeCamera](const auto &grid, const auto &position) {
+    for (const auto& tile : gridView)
+    {
+        const auto& grid = gridView.get<TileGrid>(tile);
+        const auto& position = gridView.get<Position>(tile);
         SDL_FRect world_tile{position.position.x(), position.position.y(), grid.tileSet->TileWidth() * grid.scale.x(),
                              grid.tileSet->TileHeight() * grid.scale.y()};
         auto screenRect = activeCamera.FromWorldToScreenRect(world_tile);
         SDL_Rect screenPosition = {screenRect.x, screenRect.y};
 
-        int j = grid.cell.size() - 1;
+        size_t j = grid.cell.size() - 1;
         for (const auto &row : grid.cell)
         {
             int i = 0;
@@ -42,7 +45,7 @@ void GridRender()
             }
             j--;
         }
-    });
+    }
 }
 
 void GridCreate()
@@ -53,6 +56,7 @@ void GridCreate()
     {
         FAST_THROW(result.description());
     }
+    
     {
         auto id = registry.create();
         auto &tilegrid = registry.emplace<TileGrid>(id, map, &tileset, 1);
@@ -63,6 +67,7 @@ void GridCreate()
         tilegrid.scale = {2, 2};
         tilegrid.layer = 0;
     }
+
     {
         auto id = registry.create();
         auto &tilegrid = registry.emplace<TileGrid>(id, map, &tileset, 2);

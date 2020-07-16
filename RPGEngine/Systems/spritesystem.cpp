@@ -187,13 +187,12 @@ void CreateLabels()
     {
         auto id = registry.create();
         registry.emplace<entt::tag<"dash"_hs>>(id);
+
         auto &label = registry.emplace<Label>(id);
         registry.emplace<Active>(id);
 
-        textureCache.load("dash_ok",
-                          ResourceLoader::Text(fontCache.resource("font23"), "D", {255, 255, 255, 255}));
-        textureCache.load("dash_no",
-                          ResourceLoader::Text(fontCache.resource("font23"), "X", {255, 255, 255, 255}));
+        textureCache.load("dash_ok", ResourceLoader::Text(fontCache.resource("font23"), "D", {255, 255, 255, 255}));
+        textureCache.load("dash_no", ResourceLoader::Text(fontCache.resource("font23"), "X", {255, 255, 255, 255}));
         label.texture = textureCache.resource("dash_ok");
         label.dst_rect.x = 580;
         label.dst_rect.y = 580;
@@ -206,12 +205,9 @@ void CreateLabels()
         auto &label = registry.emplace<Label>(id);
         registry.emplace<Active>(id);
 
-        textureCache.load("hp_3",
-                          ResourceLoader::Text(fontCache.resource("font35"), "HP 3", {255, 255, 255, 255}));
-        textureCache.load("hp_2",
-                          ResourceLoader::Text(fontCache.resource("font35"), "HP 2", {255, 255, 255, 255}));
-        textureCache.load("hp_1",
-                          ResourceLoader::Text(fontCache.resource("font35"), "HP 1", {255, 255, 255, 255}));
+        textureCache.load("hp_3", ResourceLoader::Text(fontCache.resource("font35"), "HP 3", {255, 255, 255, 255}));
+        textureCache.load("hp_2", ResourceLoader::Text(fontCache.resource("font35"), "HP 2", {255, 255, 255, 255}));
+        textureCache.load("hp_1", ResourceLoader::Text(fontCache.resource("font35"), "HP 1", {255, 255, 255, 255}));
         label.texture = textureCache.resource("hp_3");
         label.dst_rect.x = 540;
         label.dst_rect.y = 0;
@@ -221,6 +217,7 @@ void CreateLabels()
     {
         auto id = registry.create();
         registry.emplace<entt::tag<"score"_hs>>(id);
+
         auto &label = registry.emplace<Label>(id);
         registry.emplace<Active>(id);
 

@@ -1,22 +1,26 @@
-#include "enemysystem.hpp"
+#include <queue>
 
+#include "enemysystem.hpp"
 #include "../core.hpp"
 
-#include <queue>
 void EnemyCreate(Vector2D spawn)
 {
     auto enemy = registry.create();
     registry.emplace<Enemy>(enemy);
+
     auto &pos = registry.emplace<Position>(enemy);
     pos.position = spawn;
+    
     auto &rect = registry.emplace<RectCollider>(enemy);
     auto &sprite = registry.emplace<Sprite>(enemy);
     auto &speed = registry.emplace<MovementSpeed>(enemy);
+    
     [[maybe_unused]] auto &vel = registry.emplace<Velocity>(enemy);
     registry.emplace<Health>(enemy, 2);
     registry.emplace<ParticleData>(enemy);
     registry.emplace<Active>(enemy);
     speed.speed = 150;
+    
     registry.emplace<CollisionLayer>(enemy, LayersID::ENEMY);
 
     sprite.texture = textureCache.resource("spritesheet");
@@ -61,7 +65,8 @@ void EnemyCreate(Vector2D spawn)
 void UpdateView()
 {
     auto view = registry.view<Hierarchy, Position, RectCollider, View>();
-    view.each([](auto &hierarchy, auto &position, auto &rect, auto &view) {
+    view.each([](auto &hierarchy, auto &position, auto &rect, auto &view) 
+    {
         auto parent_pos = registry.get<Position>(hierarchy.parent);
         position.position.Set(parent_pos.position.x(), parent_pos.position.y());
     });
@@ -96,7 +101,7 @@ void EnemyCharging(const CollisionData &lhs, const CollisionData &rhs)
         {
             enemy_vel.y *= 1;
         }
-        enemy.isCharched = true;
+        enemy.isCharging = true;
         enemy.dt = 0;
     }
 }
@@ -156,16 +161,17 @@ void HealthUpdate()
 {
     auto view = registry.view<Enemy, Health, Active, Position>();
 
-    for (auto &entt : view)
+    for (auto &entity : view)
     {
-        auto &health = view.get<Health>(entt);
+        auto &health = view.get<Health>(entity);
 
         if (health.health <= 0)
         {
-            auto &&[position, enemy] = view.get<Position, Enemy>(entt);
+            auto &&[position, enemy] = view.get<Position, Enemy>(entity);
             position.position = Enemy::spawns[Enemy::currentSpawn];
             Enemy::currentSpawn++;
             health.health = 2;
+
             if (Enemy::currentSpawn >= Enemy::MAX_SPAWNS)
             {
                 Enemy::currentSpawn = 0;

@@ -12,10 +12,6 @@
 
 #include "../config.hpp"
 
-/**
- * @brief The TileSet class.
- * Represent the minimal tile handling.
- */
 class TileSet
 {
 public:
@@ -25,7 +21,7 @@ public:
     using texture_type = SDL_Texture;
 
     /**
-     * @brief Load tile set properties from xml file.<br>
+     * Load tile set properties from xml file.<br>
      * Where to get the template of xml file for tile set?<br>
      * Well, I suggest to use Tiled Map Editor. *(The version i used is 1.3.1)*
      * You can get it here: https://www.mapeditor.org/ <br>
@@ -118,47 +114,30 @@ public:
         }
     }
 
-    /**
-     * @brief Return TileSet texture.
-     * @return Texture if it exists, otherwise nullptr.
-     */
     texture_type *Texture() const noexcept
     {
         return m_texture;
     }
-    /**
-     * @brief Return count of columns in current TileSet.
-     * @return Num of columns.
-     */
+
     size_type Columns() const noexcept
     {
-        // return (m_offset.w - m_offset.x) / m_tileWidth;
         return m_columns;
     }
 
-    /**
-     * @brief Return count of rows in current TileSet.
-     * @return Num of rows.
-     */
     size_type Rows() const noexcept
     {
-        // return (m_offset.h - m_offset.y) / m_tileHeight;
         return m_rows;
     }
 
-    /**
-     * @brief Return count of tiles in current TileSet.
-     * @return Num of tiles.
-     */
     size_type Count() const noexcept
     {
         return m_columns * m_rows;
     }
 
     /**
-     * @brief Position of tile in current TileSet.
-     * @param id Valid id.
-     * @return Row and column pair.
+     * Position of tile in current TileSet.
+     * -- id Valid id.
+     * returns Row and column pair.
      */
     std::pair<size_type, size_type> Position(const size_type id) const noexcept
     {

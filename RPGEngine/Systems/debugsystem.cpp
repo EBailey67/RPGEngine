@@ -1,5 +1,4 @@
 #include "debugsystem.hpp"
-
 #include "../core.hpp"
 
 void PositionDebug()
@@ -32,6 +31,7 @@ void CameraUpdateDebug()
         auto cameraView = registry.view<Camera>();
         auto &activeCamera = cameraView.get(*cameraView.begin());
         auto event = Events::Event();
+
         if (event.key.type == SDL_KEYDOWN)
         {
             switch (event.key.keysym.sym)
@@ -94,7 +94,7 @@ void RectDebug()
 void DebugMode()
 {
     auto state = Events::KeyboardState();
-    if (state[SDL_SCANCODE_F6])
+    if (state[SDL_SCANCODE_F5])
     {
         RectCollider::hasDebugDraw = !RectCollider::hasDebugDraw;
         Position::hasDebugDraw = !Position::hasDebugDraw;

@@ -1,5 +1,4 @@
 #include "instances.hpp"
-
 #include "game.hpp"
 
 Game *Instances::GetGameInstance()

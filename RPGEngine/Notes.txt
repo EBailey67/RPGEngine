@@ -21,3 +21,7 @@ Pixel Art Tutorials:
 MiniBoss Pixel Art Tutorials: https://blog.studiominiboss.com/pixelart
 Pixel Pete: https://www.youtube.com/channel/UC7OO...
 10 Tips getting started: https://www.youtube.com/watch?v=o_EKrg2fIuc
+
+
+Resources:
+16x16 pixel dungeon tiles - https://o-lobster.itch.io/simple-dungeon-crawler-16x16-pixel-pack
