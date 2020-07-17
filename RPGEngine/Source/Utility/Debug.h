@@ -7,7 +7,7 @@
    Debug helper functions.
 */
 
-// Helper macros
+// Helper macros until C++20 is available
 #if defined(DEBUG) | defined(_DEBUG)
 #define TRACE_ERROR(str)	DebugTrace( __FILE__, __LINE__, "ERROR", str)
 #define TRACE_FATAL(str)	DebugTrace( __FILE__, __LINE__, "FATAL", str);
@@ -34,9 +34,9 @@
 #endif
 
 
-void DebugLog(const std::string area, const std::string message);
-long DebugFail(const char* strFile, int dwLine, long hr, const char* strMsg, bool fPopMsgBox);
-void DebugWarning(const std::string area, const std::string message);
-void DebugError(const std::string area, const std::string message);
-void DebugTrace(const char* strFile, int dwLine, const std::string& category, const std::string& message);
+void DebugLog(std::string_view area, std::string_view message);
+long DebugFail(std::string_view strFile, int dwLine, long hr, std::string_view strMsg, bool fPopMsgBox);
+void DebugWarning(std::string_view area, std::string_view message);
+void DebugError(std::string_view area, std::string_view message);
+void DebugTrace(std::string_view strFile, int dwLine, std::string_view category, std::string_view message);
 
