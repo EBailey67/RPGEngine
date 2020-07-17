@@ -15,168 +15,170 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Source\SDL\instances.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="XML\pugixml.cpp">
+    <ClCompile Include="Source\Systems\camerasystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SDL\instances.cpp">
+    <ClCompile Include="Source\Systems\collisionsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\camerasystem.cpp">
+    <ClCompile Include="Source\Systems\debugsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\collisionsystem.cpp">
+    <ClCompile Include="Source\Systems\enemysystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\debugsystem.cpp">
+    <ClCompile Include="Source\Systems\playerinputsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\enemysystem.cpp">
+    <ClCompile Include="Source\Systems\positionsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\playerinputsystem.cpp">
+    <ClCompile Include="Source\Systems\spritesystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\positionsystem.cpp">
+    <ClCompile Include="Source\Systems\tilegridsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\spritesystem.cpp">
+    <ClCompile Include="Source\XML\pugixml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\tilegridsystem.cpp">
+    <ClCompile Include="Source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Prefab\PF_MapTile.h">
+    <ClInclude Include="Source\SDL\config.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="XML\pugiconfig.hpp">
+    <ClInclude Include="Source\SDL\events.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="XML\pugixml.hpp">
+    <ClInclude Include="Source\SDL\framerate.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\config.hpp">
+    <ClInclude Include="Source\SDL\fwd.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\events.hpp">
+    <ClInclude Include="Source\SDL\game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\framerate.hpp">
+    <ClInclude Include="Source\SDL\graphics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\fwd.hpp">
+    <ClInclude Include="Source\SDL\instances.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\game.hpp">
+    <ClInclude Include="Source\SDL\resource_loader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\graphics.hpp">
+    <ClInclude Include="Source\SDL\scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\instances.hpp">
+    <ClInclude Include="Source\SDL\sdl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\resource_loader.hpp">
+    <ClInclude Include="Source\SDL\timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\scene.hpp">
+    <ClInclude Include="Source\Systems\camerasystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\sdl.hpp">
+    <ClInclude Include="Source\Systems\collisionsystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDL\timer.hpp">
+    <ClInclude Include="Source\Systems\debugsystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="config.hpp">
+    <ClInclude Include="Source\Systems\enemysystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core.hpp">
+    <ClInclude Include="Source\Systems\playerinputsystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fwd.hpp">
+    <ClInclude Include="Source\Systems\positionsystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game_scene.hpp">
+    <ClInclude Include="Source\Systems\spritesystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\cache.hpp">
+    <ClInclude Include="Source\Systems\systems.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\fwd.hpp">
+    <ClInclude Include="Source\Systems\tilegridsystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\camerasystem.hpp">
+    <ClInclude Include="Source\XML\pugiconfig.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\collisionsystem.hpp">
+    <ClInclude Include="Source\XML\pugixml.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\debugsystem.hpp">
+    <ClInclude Include="Source\config.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\enemysystem.hpp">
+    <ClInclude Include="Source\core.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\playerinputsystem.hpp">
+    <ClInclude Include="Source\fwd.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\positionsystem.hpp">
+    <ClInclude Include="Source\game_scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\spritesystem.hpp">
+    <ClInclude Include="Source\Component\ai.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\systems.hpp">
+    <ClInclude Include="Source\Component\camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\tilegridsystem.hpp">
+    <ClInclude Include="Source\Component\colliders.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\ai.hpp">
+    <ClInclude Include="Source\Component\components.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\camera.hpp">
+    <ClInclude Include="Source\Component\hierachy.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\colliders.hpp">
+    <ClInclude Include="Source\Component\sprite.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\components.hpp">
+    <ClInclude Include="Source\Component\tilegrid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\hierachy.hpp">
+    <ClInclude Include="Source\Component\tileset.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\sprite.hpp">
+    <ClInclude Include="Source\Component\transform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\tilegrid.hpp">
+    <ClInclude Include="Source\Component\vector2d.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\tileset.hpp">
+    <ClInclude Include="Source\Prefab\PF_MapTile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\transform.hpp">
+    <ClInclude Include="Source\Resource\cache.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component\vector2d.hpp">
+    <ClInclude Include="Source\Resource\fwd.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Notes.txt" />
-    <Text Include="LICENSE.FLAC.txt" />
-    <Text Include="LICENSE.modplug.txt" />
-    <Text Include="LICENSE.mpg123.txt" />
-    <Text Include="LICENSE.ogg-vorbis.txt" />
-    <Text Include="LICENSE.opus.txt" />
-    <Text Include="LICENSE.opusfile.txt" />
     <Text Include="resources\fonts\license.txt" />
+    <Text Include="score.txt" />
+    <Text Include="resources\score.txt" />
+    <Text Include="Licenses\LICENSE.FLAC.txt" />
+    <Text Include="Licenses\LICENSE.modplug.txt" />
+    <Text Include="Licenses\LICENSE.mpg123.txt" />
+    <Text Include="Licenses\LICENSE.ogg-vorbis.txt" />
+    <Text Include="Licenses\LICENSE.opus.txt" />
+    <Text Include="Licenses\LICENSE.opusfile.txt" />
+    <Text Include="Source\Notes.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Sprites\spritesheet.png">

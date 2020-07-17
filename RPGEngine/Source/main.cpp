@@ -2,7 +2,6 @@
 
 #include "game_scene.hpp"
 
-
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     auto game = Instances::CreateGame();
