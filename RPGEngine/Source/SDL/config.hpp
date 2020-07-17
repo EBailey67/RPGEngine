@@ -1,9 +1,11 @@
 #pragma once
 
+#include "../Utility/Debug.h"
 #ifndef SDL_THROW_DISABLE
 #include <SDL_error.h>
 #include <cstring>
 #include <exception>
+
 
 #ifndef FAST_THROW
 #define FAST_THROW(message) throw std::exception(message);

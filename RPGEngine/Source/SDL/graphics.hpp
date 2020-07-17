@@ -31,6 +31,7 @@ private:
         m_renderer = SDL_CreateRenderer(m_window, -1, rendererFlags);
         if (!m_renderer)
         {
+            DebugError("Graphics", SDL_GetError());
             SDL_THROW();
         }
 
@@ -161,6 +162,7 @@ public:
         {
             RenderTarget(layer);
         }
+
         if (SDL_RenderCopyEx(m_renderer, texture, src_rect, dst_rect, 0, nullptr, flip))
         {
             SDL_THROW();

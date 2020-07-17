@@ -32,6 +32,10 @@ public:
         auto music = musicCache.load("main", ResourceLoader::Music("resources/mix/main.mp3"));
         Mix_PlayMusic(music, -1);
 
+        // (FIXME) - Quiet this down for now.  This should be a user preference in a config file
+        auto vol = Mix_VolumeMusic(3);
+        std::cout << "Old Volume :" << vol << std::endl;
+
 
         textureCache.load(tileid, ResourceLoader::Sprite("resources/sprites/tilemap.png"));
         textureCache.load(spriteid, ResourceLoader::Sprite("resources/sprites/spritesheet.png"));

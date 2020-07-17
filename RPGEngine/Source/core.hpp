@@ -15,6 +15,7 @@
 #include "entt/entt.hpp"
 #include "resource/cache.hpp"
 #include "sdl/sdl.hpp"
+#include "Utility/Debug.h"
 
 
 inline entt::registry registry{};
