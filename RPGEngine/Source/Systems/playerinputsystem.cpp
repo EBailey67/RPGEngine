@@ -219,6 +219,8 @@ void ActiveGame()
         registry.remove<Active>(entt);
     }
 }
+
+
 void CloseGame()
 {
     auto enemyView = registry.view<Enemy, Hierarchy, Health>();
@@ -260,7 +262,6 @@ void CloseGame()
     auto table_view = registry.view<entt::tag<"table"_hs>>();
     for (auto &entt : table_view)
     {
-
         registry.emplace<Active>(entt);
     }
     ResetTable();

@@ -7,7 +7,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     auto game = Instances::CreateGame();
     try
     {
-        TRACE_LOG("Startup", "Initializing");
         game->InitializeSubsystems();
         game->AssignWindow(
             SDL_CreateWindow("RPG Playground", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_SHOWN),
@@ -24,7 +23,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     }
     catch (std::exception& e)
     {
-        std::cerr << e.what() << std::endl;
+        DebugError("Exception", e.what());
 
         fontCache.reset();
         Instances::DestroyGame();

@@ -51,7 +51,7 @@ void GridRender()
 void GridCreate()
 {
     pugi::xml_document map;
-    auto result = map.load_file("resources/tiled_files/map_test.tmx");
+    auto result = map.load_file("resources/tiled_files/RPGTest.tmx");
     if (!result)
     {
         FAST_THROW(result.description());
@@ -64,7 +64,7 @@ void GridCreate()
         registry.emplace<TileGridCollider>(id);
         registry.emplace<CollisionLayer>(id, LayersID::FLOOR);
         registry.emplace<Active>(id);
-        tilegrid.scale = {2, 2};
+        tilegrid.scale = {1, 1};
         tilegrid.layer = 0;
     }
 
@@ -75,18 +75,18 @@ void GridCreate()
         registry.emplace<TileGridCollider>(id);
         registry.emplace<CollisionLayer>(id, LayersID::WALLS);
         registry.emplace<Active>(id);
-        tilegrid.scale = {2, 2};
+        tilegrid.scale = {1, 1};
         tilegrid.layer = 1;
     }
-    //{
-    //    auto id = registry.create();
-    //    auto &tilegrid = registry.emplace<TileGrid>(id, map, &tileset, 3);
-    //    registry.emplace<Position>(id);
-    //    registry.emplace<TileGridCollider>(id);
-    //    registry.emplace<CollisionLayer>(id, LayersID::WALLS);
-    //    registry.emplace<Active>(id);
+    {
+        auto id = registry.create();
+        auto &tilegrid = registry.emplace<TileGrid>(id, map, &tileset, 3);
+        registry.emplace<Position>(id);
+        registry.emplace<TileGridCollider>(id);
+        registry.emplace<CollisionLayer>(id, LayersID::WALLS);
+        registry.emplace<Active>(id);
 
-    //    tilegrid.scale = {2, 2};
-    //    tilegrid.layer = 2;
-    //}
+        tilegrid.scale = {1, 1};
+        tilegrid.layer = 2;
+    }
 }

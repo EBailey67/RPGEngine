@@ -173,6 +173,9 @@
     <ClInclude Include="Source\Utility\Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Component\UIPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\fonts\license.txt" />

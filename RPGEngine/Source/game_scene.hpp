@@ -37,7 +37,7 @@ public:
         std::cout << "Old Volume :" << vol << std::endl;
 
 
-        textureCache.load(tileid, ResourceLoader::Sprite("resources/sprites/tilemap.png"));
+        textureCache.load(tileid, ResourceLoader::Sprite("resources/tiled_files/GameTiles.png"));
         textureCache.load(spriteid, ResourceLoader::Sprite("resources/sprites/spritesheet.png"));
 
         fontCache.load("font23", ResourceLoader::Font("resources/fonts/dpcomic.ttf", 23));
@@ -46,7 +46,7 @@ public:
         scoreTable.Open("resources/score.txt");
 
         spriteSheet.Load("resources/tiled_files/sprite.tsx", textureCache.resource(spriteid));
-        tileset.Load("resources/tiled_files/tile.tsx", textureCache.resource(tileid));
+        tileset.Load("resources/tiled_files/RPG Test.tsx", textureCache.resource(tileid));
         
         CameraCreate();
         GridCreate();
