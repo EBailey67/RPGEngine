@@ -15,6 +15,7 @@
 #include "events.hpp"
 #include "graphics.hpp"
 
+#include "../UI/UISystem.h"
 
 class Game
 {

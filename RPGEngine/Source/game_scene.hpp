@@ -6,6 +6,7 @@
 
 #include "core.hpp"
 #include "systems/systems.hpp"
+#include "UI/UISystem.h"
 #include "xml/pugixml.hpp"
 
 constexpr const auto tileid = "tileset";
@@ -40,8 +41,8 @@ public:
         textureCache.load(tileid, ResourceLoader::Sprite("resources/tiled_files/GameTiles.png"));
         textureCache.load(spriteid, ResourceLoader::Sprite("resources/sprites/spritesheet.png"));
 
-        fontCache.load("font23", ResourceLoader::Font("resources/fonts/dpcomic.ttf", 23));
-        fontCache.load("font35", ResourceLoader::Font("resources/fonts/dpcomic.ttf", 35));
+        fontCache.load(GetUIFontName(UIFont::Debug), ResourceLoader::Font("resources/fonts/consola.ttf", 20));
+        fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/segoeui.ttf", 22));
 
         scoreTable.Open("resources/score.txt");
 
@@ -60,7 +61,18 @@ public:
         EnemyCreate(Enemy::spawns[5]);
         Enemy::currentSpawn = 6;
 
-        CreateLabels();
+        std::unique_ptr<UIPanel> panel = std::make_unique<UIPanel>(50, 50, 200, 200);
+        panel->SetActive(true);
+        panel->color.a = 128;
+        
+        std::unique_ptr<UILabel> label = std::make_unique<UILabel>(55, 55, "Hello World");
+        label->SetActive(true);
+        panel->AddChild("HW", move(label));
+
+        m_uiSystem->AddComponent("Test", move(panel));
+        
+
+        // CreateLabels();
     }
 
     void FixedUpdate() override
@@ -69,7 +81,9 @@ public:
         CameraFollow();
         CollisionDetection();
         HealthUpdate();
+        m_uiSystem->OnFixedUpdate();
     }
+
     void Update(const float dt) override
     {
         CollisionTileDetection(dt);
@@ -79,12 +93,15 @@ public:
         PlayerMovement(dt);
         PlayerAttack(dt);
         ParticleUpdate(dt);
+        m_uiSystem->OnUpdate(dt);
     }
+
     void InputUpdate() override
     {
         CameraUpdateDebug();
         OpenGame();
         DebugMode();
+        m_uiSystem->OnInputUpdate();
     }
 
     void Render() override
@@ -93,8 +110,14 @@ public:
         SpriteRender();
         PositionDebug();
         RectDebug();
-        LabelsRender();
+        m_uiSystem->OnRender();
+        //UIPanelsRender();
+        //UILabelsRender();
+        //LabelsRender();
     }
+
+private:
+    std::unique_ptr<UISystem> m_uiSystem = std::make_unique<UISystem>();
 };
 
 

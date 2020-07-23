@@ -27,7 +27,7 @@ void EnemyCreate(Vector2D spawn)
 
     sprite.scale = {2, 2};
     sprite.rect = spriteSheet[spriteSheet("zombie_idle").first->second];
-    sprite.layer = 2;
+    sprite.layer = Layer::Mobs;
     sprite.isFliped = false;
 
     rect.rect.w = sprite.rect.w * sprite.scale.x();

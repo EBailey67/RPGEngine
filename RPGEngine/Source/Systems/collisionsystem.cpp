@@ -148,7 +148,7 @@ void CollisionTileDetection(float dt)
                 SDL_FRect world_tile{grid_pos.position.x(), grid_pos.position.y(),
                                      tile_grid.tileSet->TileWidth() * tile_grid.scale.x(),
                                      tile_grid.tileSet->TileHeight() * tile_grid.scale.y()};
-                int j = tile_grid.cell.size() - 1;
+                int j = static_cast<int>(tile_grid.cell.size()) - 1;
                 for (auto &row : tile_grid.cell)
                 {
                     world_tile.y = grid_pos.position.y() + j * world_tile.h;

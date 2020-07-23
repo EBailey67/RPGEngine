@@ -167,8 +167,12 @@
     <ClCompile Include="Source\Systems\positionsystem.cpp" />
     <ClCompile Include="Source\Systems\spritesystem.cpp" />
     <ClCompile Include="Source\Systems\tilegridsystem.cpp" />
+    <ClCompile Include="Source\UI\UISystem.cpp" />
     <ClCompile Include="Source\Utility\Debug.cpp" />
     <ClCompile Include="Source\XML\pugixml.cpp" />
+    <ClCompile Include="Source\UI\UIElement.cpp" />
+    <ClCompile Include="Source\UI\UIPanel.cpp" />
+    <ClCompile Include="Source\UI\UILabel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Component\ai.hpp" />
@@ -180,7 +184,6 @@
     <ClInclude Include="Source\Component\tilegrid.hpp" />
     <ClInclude Include="Source\Component\tileset.hpp" />
     <ClInclude Include="Source\Component\transform.hpp" />
-    <ClInclude Include="Source\Component\UIPanel.h" />
     <ClInclude Include="Source\Component\vector2d.hpp" />
     <ClInclude Include="Source\config.hpp" />
     <ClInclude Include="Source\core.hpp" />
@@ -209,9 +212,13 @@
     <ClInclude Include="Source\Systems\spritesystem.hpp" />
     <ClInclude Include="Source\Systems\systems.hpp" />
     <ClInclude Include="Source\Systems\tilegridsystem.hpp" />
+    <ClInclude Include="Source\UI\UISystem.h" />
     <ClInclude Include="Source\Utility\Debug.h" />
     <ClInclude Include="Source\XML\pugiconfig.hpp" />
     <ClInclude Include="Source\XML\pugixml.hpp" />
+    <ClInclude Include="Source\UI\UIElement.h" />
+    <ClInclude Include="Source\UI\UIPanel.h" />
+    <ClInclude Include="Source\UI\UILabel.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Licenses\LICENSE.FLAC.txt" />

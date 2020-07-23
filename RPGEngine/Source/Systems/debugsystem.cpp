@@ -15,10 +15,14 @@ void PositionDebug()
             Graphics::SetDrawColor(255, 0, 0, SDL_ALPHA_OPAQUE);
 
             auto position = activeCamera.FromWorldToScreenView(pos.position);
-            Graphics::DrawLineToLayer(5, position.x(), position.y(), position.x() + 20, position.y());
+            Graphics::DrawLineToLayer(Layer::Debug, 
+                static_cast<int>(position.x()), static_cast<int>(position.y()), 
+                static_cast<int>(position.x()) + 20, static_cast<int>(position.y()));
 
             Graphics::SetDrawColor(0, 255, 0, SDL_ALPHA_OPAQUE);
-            Graphics::DrawLineToLayer(5, position.x(), position.y(), position.x(), position.y() - 20);
+            Graphics::DrawLineToLayer(Layer::Debug, 
+                static_cast<int>(position.x()), static_cast<int>(position.y()), 
+                static_cast<int>(position.x()), static_cast<int>(position.y()) - 20);
             Graphics::ResetDrawColor();
         }
     }
@@ -83,9 +87,9 @@ void RectDebug()
             SDL_FRect frect = {pos.position.x() + rect.rect.x, pos.position.y() + rect.rect.y, rect.rect.w, rect.rect.h};
             auto position = activeCamera.FromWorldToScreenRect(frect);
             Graphics::SetDrawColor(255, 255, 0, 120);
-            Graphics::DrawFillRectToLayer(5, &position);
+            Graphics::DrawFillRectToLayer(Layer::Debug, &position);
             Graphics::SetDrawColor(0, 255, 255, 255);
-            Graphics::DrawRectToLayer(5, &position);
+            Graphics::DrawRectToLayer(Layer::Debug, &position);
             Graphics::ResetDrawColor();
         }
     }

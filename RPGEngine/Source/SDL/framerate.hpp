@@ -17,7 +17,7 @@ public:
     }
 
 private:
-    float dt;
+    float dt = 0.0f;
 
     float m_targetFrameRate = 60;
     bool m_hasFrameLock = true;

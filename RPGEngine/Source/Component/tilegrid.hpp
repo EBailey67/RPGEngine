@@ -28,7 +28,7 @@ public:
         auto map = xml_doc.child("map");
         auto next_id = static_cast<id_type>(std::stoi(map.attribute("nextlayerid").value()));
         SSECS_ASSERT(layer < next_id && layer > 0);
-        this->layer = layer;
+        this->layer = static_cast<Layer>(layer);
 
         {
             auto width = std::stoi(map.attribute("width").value());
@@ -59,7 +59,7 @@ public:
         }
     }
 
-    std::size_t layer;
+    Layer layer;
     TileSet *tileSet;
     std::vector<std::vector<id_type>> cell;
     Vector2D scale;

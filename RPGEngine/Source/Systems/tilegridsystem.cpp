@@ -36,7 +36,7 @@ void GridRender()
                         if (TileGrid::hasDebugDraw)
                         {
                             Graphics::SetDrawColor(0, 0, 255, 255);
-                            Graphics::DrawRectToLayer(6, &screenRect);
+                            Graphics::DrawRectToLayer(Layer::Debug, &screenRect);
                             Graphics::ResetDrawColor();
                         }
                     }
@@ -65,7 +65,7 @@ void GridCreate()
         registry.emplace<CollisionLayer>(id, LayersID::FLOOR);
         registry.emplace<Active>(id);
         tilegrid.scale = {1, 1};
-        tilegrid.layer = 0;
+        tilegrid.layer = Layer::Floor;
     }
 
     {
@@ -76,7 +76,7 @@ void GridCreate()
         registry.emplace<CollisionLayer>(id, LayersID::WALLS);
         registry.emplace<Active>(id);
         tilegrid.scale = {1, 1};
-        tilegrid.layer = 1;
+        tilegrid.layer = Layer::Walls;
     }
     {
         auto id = registry.create();
@@ -87,6 +87,6 @@ void GridCreate()
         registry.emplace<Active>(id);
 
         tilegrid.scale = {1, 1};
-        tilegrid.layer = 2;
+        tilegrid.layer = Layer::Objects;
     }
 }

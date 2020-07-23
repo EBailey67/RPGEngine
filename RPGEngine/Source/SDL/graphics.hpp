@@ -8,11 +8,22 @@
 #include "config.hpp"
 #include "fwd.hpp"
 
+enum class Layer
+{
+    None = -1,
+    Floor = 0,
+    Walls = 1,
+    Objects = 2,
+    Mobs = 3,
+    Debug = 5,
+    UI = 6,
+};
+
 class Graphics
 {
     friend Game;
 
-    static constexpr const auto reset_layer = std::numeric_limits<std::size_t>::max();
+    static constexpr const auto reset_layer = Layer::None;
 
 private:
     Graphics()
@@ -86,9 +97,9 @@ private:
         m_currentLayer = reset_layer;
     }
 
-    static void RenderTarget(std::size_t layer)
+    static void RenderTarget(Layer layer)
     {
-        if (SDL_SetRenderTarget(m_renderer, m_layers.at(layer)))
+        if (SDL_SetRenderTarget(m_renderer, m_layers.at(static_cast<int>(layer))))
         {
             SDL_THROW();
         }
@@ -155,7 +166,7 @@ public:
         return m_renderer;
     }
 
-    static void RenderToLayer(std::size_t layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
+    static void RenderToLayer(Layer layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
                               const SDL_Rect *dst_rect = nullptr, const SDL_RendererFlip flip = SDL_FLIP_NONE)
     {
         if (layer != m_currentLayer)
@@ -169,7 +180,7 @@ public:
         }
     }
 
-    static void RenderToLayerF(std::size_t layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
+    static void RenderToLayerF(Layer layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
                                const SDL_FRect *dst_rect = nullptr, const SDL_RendererFlip flip = SDL_FLIP_NONE)
     {
         if (layer != m_currentLayer)
@@ -182,30 +193,33 @@ public:
         }
     }
 
-    static void DrawRectToLayer(std::size_t layer, const SDL_Rect *rect)
+    static void DrawRectToLayer(Layer layer, const SDL_Rect *rect)
     {
         if (layer != m_currentLayer)
         {
             RenderTarget(layer);
         }
+
         if (SDL_RenderDrawRect(m_renderer, rect))
         {
             SDL_THROW();
         }
     }
 
-    static void DrawRectToLayerF(std::size_t layer, const SDL_FRect *rect)
+    static void DrawRectToLayerF(Layer layer, const SDL_FRect *rect)
     {
         if (layer != m_currentLayer)
         {
             RenderTarget(layer);
         }
+
         if (SDL_RenderDrawRectF(m_renderer, rect))
         {
             SDL_THROW();
         }
     }
-    static void DrawFillRectToLayer(std::size_t layer, const SDL_Rect *rect)
+
+    static void DrawFillRectToLayer(Layer layer, const SDL_Rect *rect)
     {
         if (layer != m_currentLayer)
         {
@@ -216,19 +230,20 @@ public:
             SDL_THROW();
         }
     }
-    static void DrawFillRectToLayerF(std::size_t layer, const SDL_FRect *rect)
+    static void DrawFillRectToLayerF(Layer layer, const SDL_FRect *rect)
     {
         if (layer != m_currentLayer)
         {
             RenderTarget(layer);
         }
+
         if (SDL_RenderFillRectF(m_renderer, rect))
         {
             SDL_THROW();
         }
     }
 
-    static void DrawLineToLayer(std::size_t layer, int x1, int y1, int x2, int y2)
+    static void DrawLineToLayer(Layer layer, int x1, int y1, int x2, int y2)
     {
         if (layer != m_currentLayer)
         {
@@ -245,6 +260,7 @@ public:
     {
         SDL_SetRenderDrawColor(Graphics::Renderer(), r, g, b, a);
     }
+
     static void ResetDrawColor() noexcept
     {
         SDL_SetRenderDrawColor(Graphics::Renderer(), 0, 0, 0, SDL_ALPHA_TRANSPARENT);
@@ -254,6 +270,6 @@ private:
     static inline SDL_Window *m_window = nullptr;
     static inline SDL_Renderer *m_renderer = nullptr;
     static inline std::array<SDL_Texture *, SDL_RENDER_LAYERS> m_layers{};
-    static inline std::size_t m_currentLayer = reset_layer;
+    static inline Layer m_currentLayer = reset_layer;
 };
 
