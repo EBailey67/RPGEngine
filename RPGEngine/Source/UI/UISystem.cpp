@@ -20,7 +20,6 @@ UISystem::UISystem()
 
 UISystem::~UISystem()
 {
-//    for (auto e: elements)
 }
 
 void UISystem::OnFixedUpdate()
@@ -44,8 +43,13 @@ void UISystem::OnRender()
     }
 }
 
-const UIElement* UISystem::AddComponent(std::string name, std::unique_ptr<UIElement> element)
+const UIElement* UISystem::AddComponent(std::string name, std::shared_ptr<UIElement> element)
 {
-    elements.emplace(name, std::move(element));
+    elements.emplace(name, element);
     return elements[name].get();
+}
+
+const UIElement* UISystem::FindComponent(std::string name)
+{
+    return nullptr;
 }

@@ -15,8 +15,8 @@ void SpriteRender()
         {
             Position position = view.get<Position>(entity);
 
-            SDL_FRect rect{position.position.x(), position.position.y(), sprite.rect.w * sprite.scale.x(),
-                           sprite.rect.h * sprite.scale.y()};
+            SDL_FRect rect{position.position.x, position.position.y, sprite.rect.w * sprite.scale.x,
+                           sprite.rect.h * sprite.scale.y};
 
             if (camera.Contains(rect))
             {
@@ -67,8 +67,8 @@ void PlayerCreate()
     sprite.layer = Layer::Mobs;
     sprite.isFliped = false;
 
-    rect.rect.w = sprite.rect.w * sprite.scale.x();
-    rect.rect.h = sprite.rect.h * sprite.scale.y();
+    rect.rect.w = sprite.rect.w * sprite.scale.x;
+    rect.rect.h = sprite.rect.h * sprite.scale.y;
 
     speed.speed = 400.f;
 
@@ -94,8 +94,8 @@ void PlayerCreate()
     attack_sprite.isFliped = false;
     attack_sprite.isHidden = true;
 
-    attack_rect.rect.w = attack_sprite.scale.x() * attack_sprite.rect.w;
-    attack_rect.rect.h = attack_sprite.scale.y() * attack_sprite.rect.h;
+    attack_rect.rect.w = attack_sprite.scale.x * attack_sprite.rect.w;
+    attack_rect.rect.h = attack_sprite.scale.y * attack_sprite.rect.h;
 
     auto animation_type = spriteSheet.GetTypeFamily("attack");
 

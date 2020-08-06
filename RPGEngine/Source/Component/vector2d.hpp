@@ -14,31 +14,40 @@ class Vector2D
 public:
     using coordinate_type = float;
 
+    coordinate_type x;
+    coordinate_type y;
+
+
     // Shorthand for writing Vector2(0, 0).
     static constexpr const auto zero()
     {
         return Vector2D();
     }
+
     /*! @brief Shorthand for writing Vector2(0, 1). */
     static constexpr const auto up()
     {
         return Vector2D(0, 1);
     }
+
     /*! @brief Shorthand for writing Vector2(0, -1). */
     static constexpr const auto down()
     {
         return Vector2D(0, -1);
     }
+
     /*! @brief Shorthand for writing Vector2(-1, 0). */
     static constexpr const auto left()
     {
         return Vector2D(-1, 0);
     }
+
     /*! @brief Shorthand for writing Vector2(0, 1). */
     static constexpr const auto right()
     {
         return Vector2D(0, 1);
     }
+
     /*! @brief Shorthand for writing Vector2(1, 1). */
     static constexpr const auto one()
     {
@@ -46,12 +55,12 @@ public:
     }
 
     /*! @brief Default constructor !*/
-    constexpr Vector2D() : m_x(0), m_y(0)
+    constexpr Vector2D() : x(0), y(0)
     {
     }
 
     /*! @brief Construct vector with desired coordinates. */
-    constexpr Vector2D(const coordinate_type x, const coordinate_type y) : m_x(x), m_y(y)
+    constexpr Vector2D(const coordinate_type x, const coordinate_type y) : x(x), y(y)
     {
     }
     /*! @brief Copy constructor. */
@@ -62,29 +71,29 @@ public:
     /*! @brief Default destructor. */
     ~Vector2D() = default;
 
-    /*! @brief Returns x coordinate. */
-    const coordinate_type &x() const noexcept
-    {
-        return m_x;
-    }
+    ///*! @brief Returns x coordinate. */
+    //const coordinate_type &x() const noexcept
+    //{
+    //    return x;
+    //}
 
-    /*! @brief Returns y coordinate. */
-    const coordinate_type &y() const noexcept
-    {
-        return m_y;
-    }
+    ///*! @brief Returns y coordinate. */
+    //const coordinate_type &y() const noexcept
+    //{
+    //    return y;
+    //}
 
     /*! @brief Compute vector lenght and returns it. */
     const coordinate_type magnitude() const noexcept
     {
-        return std::sqrt(m_x * m_x + m_y * m_y);
+        return std::sqrt(x * x + y * y);
     }
 
     /*! @brief Returns vector with lenght 1. */
     const Vector2D normalized() const noexcept
     {
         auto length = magnitude();
-        return Vector2D(m_x / length, m_y / length);
+        return Vector2D(x / length, y / length);
     }
 
     /*! @brief Self normalize. */
@@ -94,10 +103,10 @@ public:
     }
 
     /*! @brief Set x and y coordinates. */
-    void Set(const coordinate_type x, const coordinate_type y) noexcept
+    void Set(const coordinate_type xIn, const coordinate_type yIn) noexcept
     {
-        m_x = x;
-        m_y = y;
+        x = xIn;
+        y = yIn;
     }
 
     /*! @brief Check if two vectors are equals. */
@@ -109,7 +118,7 @@ public:
     /*! @brief Returns formated coordinates in string. */
     std::string ToString() const noexcept
     {
-        return "x: " + std::to_string(m_x) + "\t" + "y:" + std::to_string(m_y);
+        return "x: " + std::to_string(x) + "\t" + "y:" + std::to_string(y);
     }
 
     /*! @brief Copy assgment. */
@@ -117,8 +126,8 @@ public:
     {
         if (this != &other)
         {
-            this->m_x = other.m_x;
-            this->m_y = other.m_y;
+            this->x = other.x;
+            this->y = other.y;
         }
 
         return *this;
@@ -126,34 +135,34 @@ public:
     /*! @brief Multiplys vector by number. */
     Vector2D operator*(coordinate_type multiplier) const noexcept
     {
-        Vector2D other(m_x * multiplier, m_y * multiplier);
+        Vector2D other(x * multiplier, y * multiplier);
         return other;
     }
     /*! @brief Divides vector by number. */
     Vector2D operator/(coordinate_type divider) const
     {
-        Vector2D other(m_x / divider, m_y / divider);
+        Vector2D other(x / divider, y / divider);
         return other;
     }
 
     /*! @brief Adds to vectors. */
     Vector2D operator+(const Vector2D &other) const noexcept
     {
-        Vector2D result(m_x + other.m_x, m_y + other.m_y);
+        Vector2D result(x + other.x, y + other.y);
         return result;
     }
 
     /*! @brief Subtracts one vector from another. */
     Vector2D operator-(const Vector2D &other) const noexcept
     {
-        Vector2D result(m_x - other.m_x, m_y - other.m_y);
+        Vector2D result(x - other.x, y - other.y);
         return result;
     }
 
     /*! @brief Returns true if two vectors are approximately equal. */
     bool operator==(const Vector2D &other) const noexcept
     {
-        return (m_x == other.m_x && m_y == other.m_y);
+        return (x == other.x && y == other.y);
     }
 
     /*! @brief Returns false if two vectors are approximately equal. */
@@ -166,8 +175,4 @@ public:
     {
         return b * t + a * (1 - t);
     }
-
-private:
-    coordinate_type m_x;
-    coordinate_type m_y;
 };

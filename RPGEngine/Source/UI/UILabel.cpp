@@ -13,7 +13,7 @@ UILabel::UILabel(int x, int y, std::string text)
 
 UILabel::~UILabel()
 {
-
+    std::cout << "Label Deleted..." << std::endl;
 }
 
 void UILabel::OnRender()
@@ -25,10 +25,20 @@ void UILabel::OnRender()
     SDL_QueryTexture(labelTex, nullptr, nullptr, &bounds.w, &bounds.h);
 
     SDL_Rect srcRect = { 0, 0, bounds.w, bounds.h };
-    if (camera.Contains(bounds))
+    SDL_Rect destRect = bounds;
+    if (parent != nullptr)
+    {
+        destRect = parent->GetBounds();
+        destRect.x += bounds.x;
+        destRect.y += bounds.y;
+        destRect.w = bounds.w;
+        destRect.h = bounds.h;
+    }
+
+    if (camera.Contains(destRect))
     {
         SDL_SetTextureAlphaMod(labelTex, 255);
-        Graphics::RenderToLayer(Layer::UI, labelTex, &srcRect, &bounds);
+        Graphics::RenderToLayer(Layer::UI, labelTex, &srcRect, &destRect);
     }
     SDL_DestroyTexture(labelTex);
 }

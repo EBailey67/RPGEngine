@@ -13,8 +13,8 @@ void GridRender()
     {
         const auto& grid = gridView.get<TileGrid>(tile);
         const auto& position = gridView.get<Position>(tile);
-        SDL_FRect world_tile{position.position.x(), position.position.y(), grid.tileSet->TileWidth() * grid.scale.x(),
-                             grid.tileSet->TileHeight() * grid.scale.y()};
+        SDL_FRect world_tile{position.position.x, position.position.y, grid.tileSet->TileWidth() * grid.scale.x,
+                             grid.tileSet->TileHeight() * grid.scale.y};
         auto screenRect = activeCamera.FromWorldToScreenRect(world_tile);
         SDL_Rect screenPosition = {screenRect.x, screenRect.y};
 

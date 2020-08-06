@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <map>
 #include <string>
@@ -34,7 +35,7 @@ public:
         isActive = active;
     }
 
-    virtual ~UIElement() {};
+    virtual ~UIElement() { std::cout << "Element deleted" << std::endl; };
 
     virtual void OnFixedUpdate()
     {
@@ -57,15 +58,16 @@ public:
         parent = &element;
     }
 
-    virtual void AddChild(std::string name, std::unique_ptr<UIElement> element)
+    virtual void AddChild(std::string name, std::shared_ptr<UIElement> element)
     {
-        children.emplace(name, std::move(element));
+        element->parent = this;
+        children.emplace(name, element);
     }
 
 protected:
     SDL_Rect bounds{0, 0, 0, 0};
     bool isActive{ false };
     UIElement* parent{ nullptr };
-    std::map<std::string, std::unique_ptr<UIElement>> children;
+    std::map<std::string, std::shared_ptr<UIElement>> children;
 };
 

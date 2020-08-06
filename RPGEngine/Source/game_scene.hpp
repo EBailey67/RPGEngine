@@ -61,16 +61,14 @@ public:
         EnemyCreate(Enemy::spawns[5]);
         Enemy::currentSpawn = 6;
 
-        std::unique_ptr<UIPanel> panel = std::make_unique<UIPanel>(50, 50, 200, 200);
+        std::shared_ptr<UIPanel> panel = std::make_shared<UIPanel>(50, 50, 200, 200);
         panel->SetActive(true);
         panel->color.a = 128;
-        
-        std::unique_ptr<UILabel> label = std::make_unique<UILabel>(55, 55, "Hello World");
-        label->SetActive(true);
-        panel->AddChild("HW", move(label));
+        m_uiSystem->AddComponent("Test", panel);
 
-        m_uiSystem->AddComponent("Test", move(panel));
-        
+        std::shared_ptr<UILabel> label = std::make_shared<UILabel>(4, 4, "Hello World");
+        label->SetActive(true);
+        panel->AddChild("HW", label);
 
         // CreateLabels();
     }

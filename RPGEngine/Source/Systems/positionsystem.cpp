@@ -9,6 +9,6 @@ void MovementUpdate(float dt)
     for (auto &entity : view)
     {
         auto &&[pos, vel] = view.get<Position, Velocity>(entity);
-        pos.position.Set(pos.position.x() + vel.x * dt, pos.position.y() + vel.y * dt);
+        pos.position.Set(pos.position.x + vel.x * dt, pos.position.y + vel.y * dt);
     }
 }

@@ -20,7 +20,7 @@ void CameraFollow()
         auto cameraView = registry.view<Camera>();
         auto &activeCamera = cameraView.get(*cameraView.begin());
 
-        activeCamera.position.Set(position.position.x() + sprite.rect.w * sprite.scale.x() / 2,
-                                  position.position.y() + sprite.rect.h * sprite.scale.y() / 2);
+        activeCamera.position.Set(position.position.x + sprite.rect.w * sprite.scale.x / 2,
+                                  position.position.y + sprite.rect.h * sprite.scale.y / 2);
     }
 }

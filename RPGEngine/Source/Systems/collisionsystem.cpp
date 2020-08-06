@@ -95,8 +95,8 @@ void CollisionDetection()
 
         auto &&[prev_rect, prev_position, prev_layer, prev_hierarchy] =
             viewRect.get<RectCollider, Position, CollisionLayer, Hierarchy>(entity);
-        SDL_FRect prev_frect{prev_position.position.x() + prev_rect.rect.x,
-                             prev_position.position.y() + prev_rect.rect.y, prev_rect.rect.w, prev_rect.rect.h};
+        SDL_FRect prev_frect{prev_position.position.x + prev_rect.rect.x,
+                             prev_position.position.y + prev_rect.rect.y, prev_rect.rect.w, prev_rect.rect.h};
         for (auto &entt : viewRect)
         {
             if (entity != entt)
@@ -109,8 +109,8 @@ void CollisionDetection()
                 {
                     Vector2D parent_pos{};
 
-                    SDL_FRect frect{position.position.x() + parent_pos.x() + rect.rect.x,
-                                    position.position.y() + parent_pos.y() + rect.rect.y, rect.rect.w, rect.rect.h};
+                    SDL_FRect frect{position.position.x + parent_pos.x + rect.rect.x,
+                                    position.position.y + parent_pos.y + rect.rect.y, rect.rect.w, rect.rect.h};
 
                     auto direction = AABBW(frect, prev_frect);
                     if (direction.first != Vector2D::zero() && direction.second != Vector2D::zero())
@@ -136,8 +136,8 @@ void CollisionTileDetection(float dt)
         auto &&[rect_pos, rect_collider, rect_vel, rect_layer] =
             viewRect.get<Position, RectCollider, Velocity, CollisionLayer>(rect_entt);
 
-        SDL_FRect world_rect{rect_pos.position.x() + rect_vel.x * dt + rect_collider.rect.x,
-                             rect_pos.position.y() + rect_vel.y * dt + rect_collider.rect.y, rect_collider.rect.w,
+        SDL_FRect world_rect{rect_pos.position.x + rect_vel.x * dt + rect_collider.rect.x,
+                             rect_pos.position.y + rect_vel.y * dt + rect_collider.rect.y, rect_collider.rect.w,
                              rect_collider.rect.h};
         for (auto grid_entt : viewGrid)
         {
@@ -145,20 +145,20 @@ void CollisionTileDetection(float dt)
             auto &&[grid_pos, tile_grid, tile_layer] = viewGrid.get<Position, TileGrid, CollisionLayer>(grid_entt);
             if (true) // rect_entt != grid_entt && CollisionLayer::Matrix[rect_layer.layer][tile_layer.layer])
             {
-                SDL_FRect world_tile{grid_pos.position.x(), grid_pos.position.y(),
-                                     tile_grid.tileSet->TileWidth() * tile_grid.scale.x(),
-                                     tile_grid.tileSet->TileHeight() * tile_grid.scale.y()};
+                SDL_FRect world_tile{grid_pos.position.x, grid_pos.position.y,
+                                     tile_grid.tileSet->TileWidth() * tile_grid.scale.x,
+                                     tile_grid.tileSet->TileHeight() * tile_grid.scale.y};
                 int j = static_cast<int>(tile_grid.cell.size()) - 1;
                 for (auto &row : tile_grid.cell)
                 {
-                    world_tile.y = grid_pos.position.y() + j * world_tile.h;
+                    world_tile.y = grid_pos.position.y + j * world_tile.h;
                     int i = 0;
                     for (auto &id : row)
                     {
 
                         if (id)
                         {
-                            world_tile.x = grid_pos.position.x() + i * world_tile.w;
+                            world_tile.x = grid_pos.position.x + i * world_tile.w;
                             auto direction = AABBW(world_rect, world_tile);
                             if (direction.first != Vector2D::zero() && direction.second != Vector2D::zero())
                             {
@@ -279,6 +279,7 @@ void SetPlayerHealth(int hp)
 
 void SetPlayerScore(int score)
 {
+    
     auto view = registry.view<Label, entt::tag<"score"_hs>>();
     auto &label = view.get<Label>(*view.begin());
     label.AssignTexture(textureCache.resource(std::to_string(score)));

@@ -30,8 +30,8 @@ void EnemyCreate(Vector2D spawn)
     sprite.layer = Layer::Mobs;
     sprite.isFliped = false;
 
-    rect.rect.w = sprite.rect.w * sprite.scale.x();
-    rect.rect.h = sprite.rect.h * sprite.scale.y();
+    rect.rect.w = sprite.rect.w * sprite.scale.x;
+    rect.rect.h = sprite.rect.h * sprite.scale.y;
 
     auto &animation = registry.emplace<AnimationPool>(enemy);
 
@@ -51,10 +51,10 @@ void EnemyCreate(Vector2D spawn)
     registry.emplace<Position>(view);
     auto &view_rect = registry.emplace<RectCollider>(view);
 
-    view_rect.rect.w = sprite.rect.w * sprite.scale.x() * multiplier.multiplier;
-    view_rect.rect.h = sprite.rect.h * sprite.scale.y() * multiplier.multiplier;
-    view_rect.rect.x = -view_rect.rect.w / 2 + sprite.rect.w * sprite.scale.x();
-    view_rect.rect.y = -view_rect.rect.h / 2 + sprite.rect.h * sprite.scale.y();
+    view_rect.rect.w = sprite.rect.w * sprite.scale.x * multiplier.multiplier;
+    view_rect.rect.h = sprite.rect.h * sprite.scale.y * multiplier.multiplier;
+    view_rect.rect.x = -view_rect.rect.w / 2 + sprite.rect.w * sprite.scale.x;
+    view_rect.rect.y = -view_rect.rect.h / 2 + sprite.rect.h * sprite.scale.y;
 
     auto &parent = registry.emplace<Hierarchy>(enemy);
     parent.child = view;
@@ -68,7 +68,7 @@ void UpdateView()
     view.each([](auto &hierarchy, auto &position, auto &rect, auto &view) 
     {
         auto parent_pos = registry.get<Position>(hierarchy.parent);
-        position.position.Set(parent_pos.position.x(), parent_pos.position.y());
+        position.position.Set(parent_pos.position.x, parent_pos.position.y);
     });
 }
 
@@ -82,9 +82,9 @@ void EnemyCharging(const CollisionData &lhs, const CollisionData &rhs)
         auto &&[enemy_pos, enemy_vel, enemy_speed, enemy] =
             registry.get<Position, Velocity, MovementSpeed, Enemy>(parent);
 
-        enemy_vel.x = (player_pos.position.normalized()).x() * enemy_speed.speed;
-        enemy_vel.y = (player_pos.position.normalized()).y() * enemy_speed.speed;
-        if (enemy_pos.position.x() > player_pos.position.x())
+        enemy_vel.x = (player_pos.position.normalized()).x * enemy_speed.speed;
+        enemy_vel.y = (player_pos.position.normalized()).y * enemy_speed.speed;
+        if (enemy_pos.position.x > player_pos.position.x)
         {
             enemy_vel.x *= -1;
         }
@@ -93,7 +93,7 @@ void EnemyCharging(const CollisionData &lhs, const CollisionData &rhs)
             enemy_vel.x *= 1;
         }
 
-        if (enemy_pos.position.y() > player_pos.position.y())
+        if (enemy_pos.position.y > player_pos.position.y)
         {
             enemy_vel.y *= -1;
         }
