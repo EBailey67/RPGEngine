@@ -169,6 +169,7 @@
     <ClCompile Include="Source\Systems\tilegridsystem.cpp" />
     <ClCompile Include="Source\UI\UISystem.cpp" />
     <ClCompile Include="Source\Utility\Debug.cpp" />
+    <ClCompile Include="Source\Utility\FramerateCounter.cpp" />
     <ClCompile Include="Source\XML\pugixml.cpp" />
     <ClCompile Include="Source\UI\UIElement.cpp" />
     <ClCompile Include="Source\UI\UIPanel.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Source\Systems\tilegridsystem.hpp" />
     <ClInclude Include="Source\UI\UISystem.h" />
     <ClInclude Include="Source\Utility\Debug.h" />
+    <ClInclude Include="Source\Utility\FramerateCounter.h" />
     <ClInclude Include="Source\XML\pugiconfig.hpp" />
     <ClInclude Include="Source\XML\pugixml.hpp" />
     <ClInclude Include="Source\UI\UIElement.h" />

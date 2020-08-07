@@ -4,13 +4,13 @@
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
-    auto game = Instances::CreateGame();
+	auto* game = Instances::CreateGame();
     try
     {
         game->InitializeSubsystems();
-        game->AssignWindow(
-            SDL_CreateWindow("RPG Playground", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_SHOWN),
-            SDL_RENDERER_SOFTWARE | SDL_RENDERER_TARGETTEXTURE);
+        Game::AssignWindow(
+            SDL_CreateWindow("RPG Playground", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 800, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE),
+            SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
         game->CreateScene<GameScene>();
         game->Run();
 

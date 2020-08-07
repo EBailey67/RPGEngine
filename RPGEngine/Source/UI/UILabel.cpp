@@ -2,7 +2,7 @@
 #include "UILabel.h"
 
 
-UILabel::UILabel(int x, int y, std::string text)
+UILabel::UILabel(const int x, const int y, const std::string& text)
 {
 	bounds.x = x;
 	bounds.y = y;
@@ -18,32 +18,34 @@ UILabel::~UILabel()
 
 void UILabel::OnRender()
 {
-    auto cameraView = registry.view<Camera>();
-    auto camera = cameraView.get(*cameraView.begin());
+    const auto camera_view = registry.view<Camera>();
+    const auto& camera = camera_view.get(*camera_view.begin());
 
-    SDL_Texture* labelTex = ResourceLoader::Text(fontCache.resource(GetUIFontName(font)), m_text, color);
-    SDL_QueryTexture(labelTex, nullptr, nullptr, &bounds.w, &bounds.h);
+    auto* const label_tex = ResourceLoader::Text(fontCache.resource(GetUIFontName(font)), m_text, color);
+    SDL_QueryTexture(label_tex, nullptr, nullptr, &bounds.w, &bounds.h);
 
-    SDL_Rect srcRect = { 0, 0, bounds.w, bounds.h };
-    SDL_Rect destRect = bounds;
-    if (parent != nullptr)
+    SDL_Rect src_rect = { 0, 0, bounds.w, bounds.h };
+    auto dest_rect = bounds;
+
+	if (parent != nullptr)
     {
-        destRect = parent->GetBounds();
-        destRect.x += bounds.x;
-        destRect.y += bounds.y;
-        destRect.w = bounds.w;
-        destRect.h = bounds.h;
+        dest_rect = parent->GetBounds();
+        dest_rect.x += bounds.x;
+        dest_rect.y += bounds.y;
+        dest_rect.w = bounds.w;
+        dest_rect.h = bounds.h;
     }
 
-    if (camera.Contains(destRect))
+    if (camera.Contains(dest_rect))
     {
-        SDL_SetTextureAlphaMod(labelTex, 255);
-        Graphics::RenderToLayer(Layer::UI, labelTex, &srcRect, &destRect);
+        SDL_SetTextureAlphaMod(label_tex, 255);
+        Graphics::RenderToLayer(Layer::UI, label_tex, &src_rect, &dest_rect);
     }
-    SDL_DestroyTexture(labelTex);
+
+	SDL_DestroyTexture(label_tex);
 }
 
-void UILabel::SetText(std::string text)
+void UILabel::SetText(const std::string& text)
 {
 	m_text = text;
 }

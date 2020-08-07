@@ -20,8 +20,8 @@ public:
     void OnUpdate([[maybe_unused]] const float dt);
     void OnInputUpdate();
     void OnRender();
-    const UIElement* AddComponent(std::string name, std::shared_ptr<UIElement> element);
-    const UIElement* FindComponent(std::string name);
+    const UIElement* AddComponent(const std::string& name, const std::shared_ptr<UIElement>& element);
+    const UIElement* FindComponent(const std::string& name);
 
 private:
     std::map<std::string, std::shared_ptr<UIElement>> elements;

@@ -16,14 +16,19 @@
 #include "graphics.hpp"
 
 #include "../UI/UISystem.h"
+#include "../Utility/FramerateCounter.h"
 
 class Game
 {
     friend Instances;
+public:
+    FramerateCounter fps_counter;
 
+	
 private:
-    Game() {}
-    ~Game() {}
+
+	Game() = default;
+    ~Game() = default;
 
     void InputUpdate()
     {
@@ -46,15 +51,16 @@ private:
 
     void Update(const float dt)
     {
+        fps_counter.Update(dt);
         m_scene->Update(dt);
     }
 
-    void FixedUpdate()
+    void FixedUpdate() const
     {
         m_scene->FixedUpdate();
     }
 
-    void Render()
+    void Render() const
     {
         Graphics::OnRenderStart();
 
@@ -66,7 +72,7 @@ private:
 
     /* Destroy window and renderer.
      * Close all subsystems. */
-    void Destroy()
+    static void Destroy()
     {
         Graphics::DestroyData();
 
@@ -94,15 +100,15 @@ public:
 
         m_hadInitialization = true;
     }
-    
-    bool HadInitialization() const noexcept
+
+    [[nodiscard]] bool HadInitialization() const noexcept
     {
         return m_hadInitialization;
     }
     
     // Assign the window to graphic engine and create render from it.
     // Also create all the render layers
-    void AssignWindow(SDL_Window *window, const Uint32 rendererFlags = 0)
+    static void AssignWindow(SDL_Window *window, const Uint32 rendererFlags = 0)
     {
         Graphics::AssignWindow(window, rendererFlags);
     }
@@ -114,7 +120,6 @@ public:
 
         while (m_isRunning)
         {
-
             m_frameRate.OnFrameStart();
 
             FixedUpdate();
@@ -156,4 +161,5 @@ private:
     FrameRate m_frameRate;
     std::unique_ptr<BasicScene> m_scene = std::make_unique<BasicScene>();
 };
+
 

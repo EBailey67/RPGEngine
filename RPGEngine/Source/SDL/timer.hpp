@@ -2,7 +2,9 @@
 
 #include <SDL.h>
 
-// Timer built on SDL_GetTicks()
+/**
+ * \brief Timer buildon SDL_GetTicks()
+ */
 class Timer
 {
 private:
@@ -15,13 +17,13 @@ public:
         return SDL_GetTicks();
     }
 
-    Uint32 Started()
+    [[nodiscard]] Uint32 Started() const
     {
         return m_previous;
     }
 
     // Return time since last call elapsed.
-    Uint32 Elapsed()
+    [[nodiscard]] Uint32 Elapsed() const
     {
         return SDL_GetTicks() - m_previous;
     }

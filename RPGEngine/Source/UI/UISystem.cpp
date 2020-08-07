@@ -14,13 +14,8 @@ const char* GetUIFontName(UIFont uiFont)
 }
 
 
-UISystem::UISystem()
-{
-}
-
-UISystem::~UISystem()
-{
-}
+UISystem::UISystem() = default;
+UISystem::~UISystem() = default;
 
 void UISystem::OnFixedUpdate()
 {
@@ -43,13 +38,13 @@ void UISystem::OnRender()
     }
 }
 
-const UIElement* UISystem::AddComponent(std::string name, std::shared_ptr<UIElement> element)
+const UIElement* UISystem::AddComponent(const std::string& name, const std::shared_ptr<UIElement>& element)
 {
     elements.emplace(name, element);
     return elements[name].get();
 }
 
-const UIElement* UISystem::FindComponent(std::string name)
+const UIElement* UISystem::FindComponent(const std::string& name)
 {
     return nullptr;
 }

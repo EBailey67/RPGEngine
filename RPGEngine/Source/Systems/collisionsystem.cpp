@@ -2,6 +2,7 @@
 
 #include "../core.hpp"
 #include "playerinputsystem.hpp"
+#include "../game_scene.hpp"
 
 std::pair<Vector2D, Vector2D> AABBW(const SDL_FRect &lhs, const SDL_FRect &rhs)
 {
@@ -90,21 +91,21 @@ bool AABB(const SDL_FRect &lhs, const SDL_FRect &rhs)
 void CollisionDetection()
 {
     auto viewRect = registry.view<RectCollider, Position, CollisionLayer, Hierarchy, Active>();
-    for (auto &entity : viewRect)
+    for (const auto &entity : viewRect)
     {
-
         auto &&[prev_rect, prev_position, prev_layer, prev_hierarchy] =
             viewRect.get<RectCollider, Position, CollisionLayer, Hierarchy>(entity);
         SDL_FRect prev_frect{prev_position.position.x + prev_rect.rect.x,
                              prev_position.position.y + prev_rect.rect.y, prev_rect.rect.w, prev_rect.rect.h};
-        for (auto &entt : viewRect)
+        for (const auto &entt : viewRect)
         {
             if (entity != entt)
             {
 
                 auto &&[rect, position, layer, hierarchy] =
                     viewRect.get<RectCollider, Position, CollisionLayer, Hierarchy>(entt);
-                if (CollisionLayer::Matrix[layer.layer][prev_layer.layer] ||
+
+            	if (CollisionLayer::Matrix[layer.layer][prev_layer.layer] ||
                     CollisionLayer::Matrix[prev_layer.layer][layer.layer])
                 {
                     Vector2D parent_pos{};
@@ -126,7 +127,8 @@ void CollisionDetection()
         }
     }
 }
-void CollisionTileDetection(float dt)
+
+void CollisionTileDetection(const float dt)
 {
     auto viewRect = registry.view<RectCollider, Position, CollisionLayer, Velocity, Active>();
     auto viewGrid = registry.view<TileGridCollider, Position, TileGrid, CollisionLayer, Active>();
@@ -155,7 +157,6 @@ void CollisionTileDetection(float dt)
                     int i = 0;
                     for (auto &id : row)
                     {
-
                         if (id)
                         {
                             world_tile.x = grid_pos.position.x + i * world_tile.w;
@@ -270,17 +271,17 @@ void OnHit(const CollisionData &lhs, const CollisionData &rhs)
         }
     }
 }
-void SetPlayerHealth(int hp)
+
+void SetPlayerHealth(const int hp)
 {
-    auto view = registry.view<Label, entt::tag<"hp"_hs>>();
-    auto &label = view.get<Label>(*view.begin());
-    label.AssignTexture(textureCache.resource("hp_" + std::to_string(hp)));
+	auto* game = Instances::GetGameInstance();
+    auto* gs = dynamic_cast<GameScene *>(game->Scene());
+    gs->label_health->SetText("Health :" + std::to_string(hp));
 }
 
-void SetPlayerScore(int score)
+void SetPlayerScore(const int score)
 {
-    
-    auto view = registry.view<Label, entt::tag<"score"_hs>>();
-    auto &label = view.get<Label>(*view.begin());
-    label.AssignTexture(textureCache.resource(std::to_string(score)));
+	auto* game = Instances::GetGameInstance();
+    auto* gs = dynamic_cast<GameScene*>(game->Scene());
+    gs->label_score->SetText("Score :" + std::to_string(score));
 }

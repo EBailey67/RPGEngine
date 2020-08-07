@@ -20,7 +20,7 @@ private:
     float dt = 0.0f;
 
     float m_targetFrameRate = 60;
-    bool m_hasFrameLock = true;
+    bool m_hasFrameLock = false;
     float m_deltaTime = 0;
 
     Timer m_timer;

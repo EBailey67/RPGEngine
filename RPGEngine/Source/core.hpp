@@ -10,11 +10,11 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include "component/components.hpp"
 #include "config.hpp"
+#include "Component/components.hpp"
 #include "entt/entt.hpp"
-#include "resource/cache.hpp"
-#include "sdl/sdl.hpp"
+#include "Resource/cache.hpp"
+#include "SDL/sdl.hpp"
 #include "Utility/Debug.h"
 
 
