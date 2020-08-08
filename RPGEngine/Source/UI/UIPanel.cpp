@@ -1,9 +1,9 @@
 #include "../core.hpp"
-#include "../systems/systems.hpp"
+#include "../Systems/systems.hpp"
 #include "UIPanel.h"
 
 
-UIPanel::UIPanel(int x, int y, int w, int h)
+UIPanel::UIPanel(const int x, const int y, const int w, const int h)
 {
     bounds.x = x;
     bounds.y = y;
@@ -11,15 +11,10 @@ UIPanel::UIPanel(int x, int y, int w, int h)
     bounds.h = h;
 }
 
-UIPanel::~UIPanel()
-{
-
-}
-
 void UIPanel::OnRender()
 {
-    auto cameraView = registry.view<Camera>();
-    auto camera = cameraView.get(*cameraView.begin());
+	const auto cameraView = registry.view<Camera>();
+	const auto& camera = cameraView.get(*cameraView.begin());
 
     if (camera.Contains(GetBounds()))
     {

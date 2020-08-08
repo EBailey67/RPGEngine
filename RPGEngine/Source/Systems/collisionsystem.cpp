@@ -10,40 +10,40 @@ std::pair<Vector2D, Vector2D> AABBW(const SDL_FRect &lhs, const SDL_FRect &rhs)
     {
         if (lhs.x < rhs.x && lhs.y < rhs.y)
         {
-            return std::make_pair(Vector2D::right(), Vector2D::up());
+            return std::make_pair(Vector2D::Right(), Vector2D::Up());
         }
         if (lhs.x > rhs.x && lhs.y < rhs.y)
         {
-            return std::make_pair(Vector2D::left(), Vector2D::up());
+            return std::make_pair(Vector2D::Left(), Vector2D::Up());
         }
         if (lhs.x < rhs.x && lhs.y > rhs.y)
         {
-            return std::make_pair(Vector2D::right(), Vector2D::down());
+            return std::make_pair(Vector2D::Right(), Vector2D::Down());
         }
         if (lhs.x > rhs.x && lhs.y > rhs.y)
         {
-            return std::make_pair(Vector2D::left(), Vector2D::down());
+            return std::make_pair(Vector2D::Left(), Vector2D::Down());
         }
         if (lhs.x < rhs.x)
         {
-            return std::make_pair(Vector2D::right(), Vector2D::zero());
+            return std::make_pair(Vector2D::Right(), Vector2D::Zero());
         }
         if (lhs.x > rhs.x)
         {
-            return std::make_pair(Vector2D::left(), Vector2D::zero());
+            return std::make_pair(Vector2D::Left(), Vector2D::Zero());
         }
         if (lhs.y < rhs.y)
         {
-            return std::make_pair(Vector2D::up(), Vector2D::zero());
+            return std::make_pair(Vector2D::Up(), Vector2D::Zero());
         }
         if (lhs.y > rhs.y)
         {
-            return std::make_pair(Vector2D::down(), Vector2D::zero());
+            return std::make_pair(Vector2D::Down(), Vector2D::Zero());
         }
-        return std::make_pair(Vector2D::one(), Vector2D::one());
+        return std::make_pair(Vector2D::One(), Vector2D::One());
     }
 
-    return std::make_pair(Vector2D::zero(), Vector2D::zero());
+    return std::make_pair(Vector2D::Zero(), Vector2D::Zero());
 }
 
 void NullVelocity(const CollisionData &lhs, const CollisionData &rhs)
@@ -56,19 +56,19 @@ void NullVelocity(const CollisionData &lhs, const CollisionData &rhs)
 
                 auto &&[xDir, yDir] = col.direction;
                 auto &&[vel, pos] = registry.get<Velocity, Position>(col.id);
-                if (xDir == Vector2D::left() && vel.x < 0)
+                if (xDir == Vector2D::Left() && vel.x < 0)
                 {
                     vel.x = 0;
                 }
-                else if (xDir == Vector2D::right() && vel.x > 0)
+                else if (xDir == Vector2D::Right() && vel.x > 0)
                 {
                     vel.x = 0;
                 }
-                if (yDir == Vector2D::up() && vel.y > 0)
+                if (yDir == Vector2D::Up() && vel.y > 0)
                 {
                     vel.y = 0;
                 }
-                else if (yDir == Vector2D::down() && vel.y < 0)
+                else if (yDir == Vector2D::Down() && vel.y < 0)
                 {
                     vel.y = 0;
                 }
@@ -114,13 +114,13 @@ void CollisionDetection()
                                     position.position.y + parent_pos.y + rect.rect.y, rect.rect.w, rect.rect.h};
 
                     auto direction = AABBW(frect, prev_frect);
-                    if (direction.first != Vector2D::zero() && direction.second != Vector2D::zero())
+                    if (direction.first != Vector2D::Zero() && direction.second != Vector2D::Zero())
                     {
                         registry.ctx<collision_signal>().publish(
                             {entt, frect, direction},
                             {entity,
                              prev_frect,
-                             {Vector2D::zero() - direction.first, Vector2D::zero() - direction.second}});
+                             {Vector2D::Zero() - direction.first, Vector2D::Zero() - direction.second}});
                     }
                 }
             }
@@ -161,7 +161,7 @@ void CollisionTileDetection(const float dt)
                         {
                             world_tile.x = grid_pos.position.x + i * world_tile.w;
                             auto direction = AABBW(world_rect, world_tile);
-                            if (direction.first != Vector2D::zero() && direction.second != Vector2D::zero())
+                            if (direction.first != Vector2D::Zero() && direction.second != Vector2D::Zero())
                             {
                                 //                                registry.ctx<collision_signal>().publish(
                                 //                                    {rect_entt, world_rect, direction},
@@ -171,20 +171,20 @@ void CollisionTileDetection(const float dt)
                                 //                                     Vector2D::zero() - direction.second}});
                                 if (tile_layer.layer == LayersID::WALLS)
                                 {
-                                    if (direction.first == Vector2D::left() && rect_vel.x < 0)
+                                    if (direction.first == Vector2D::Left() && rect_vel.x < 0)
                                     {
                                         rect_vel.x = 0;
                                     }
-                                    else if (direction.first == Vector2D::right() && rect_vel.x > 0)
+                                    else if (direction.first == Vector2D::Right() && rect_vel.x > 0)
                                     {
 
                                         rect_vel.x = 0;
                                     }
-                                    if (direction.second == Vector2D::up() && rect_vel.y > 0)
+                                    if (direction.second == Vector2D::Up() && rect_vel.y > 0)
                                     {
                                         rect_vel.y = 0;
                                     }
-                                    else if (direction.second == Vector2D::down() && rect_vel.y < 0)
+                                    else if (direction.second == Vector2D::Down() && rect_vel.y < 0)
                                     {
                                         rect_vel.y = 0;
                                     }

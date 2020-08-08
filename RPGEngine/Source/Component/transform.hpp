@@ -44,8 +44,8 @@ struct Dash
 
 struct ScoreTable
 {
-    inline static constexpr const auto TABLE_SIZE = 3;
-    std::array<std::pair<std::string, int>, TABLE_SIZE> table{};
+    inline static constexpr auto table_size = 3;
+    std::array<std::pair<std::string, int>, table_size> table{};
 
     void Open(std::string_view path)
     {

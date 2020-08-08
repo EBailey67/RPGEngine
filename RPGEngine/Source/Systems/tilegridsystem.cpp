@@ -5,7 +5,7 @@
 void GridRender()
 {
     auto gridView = registry.view<TileGrid, Position>();
-    auto cameraView = registry.view<Camera>();
+    const auto cameraView = registry.view<Camera>();
     auto &activeCamera = cameraView.get(*cameraView.begin());
 
     activeCamera.UpdateWindowSize(Graphics::Window());
@@ -16,12 +16,12 @@ void GridRender()
         SDL_FRect world_tile{position.position.x, position.position.y, grid.tileSet->TileWidth() * grid.scale.x,
                              grid.tileSet->TileHeight() * grid.scale.y};
         auto screenRect = activeCamera.FromWorldToScreenRect(world_tile);
-        SDL_Rect screenPosition = {screenRect.x, screenRect.y};
+        const SDL_Rect screenPosition = {screenRect.x, screenRect.y};
 
-        size_t j = grid.cell.size() - 1;
+        auto j = grid.cell.size() - 1;
         for (const auto &row : grid.cell)
         {
-            int i = 0;
+	        auto i = 0;
             screenRect.y = static_cast<int>(screenPosition.y - screenRect.h * j);
             for (const auto &id : row)
             {
@@ -51,7 +51,7 @@ void GridRender()
 void GridCreate()
 {
     pugi::xml_document map;
-    auto result = map.load_file("resources/tiled_files/RPGTest.tmx");
+    const auto result = map.load_file("resources/tiled_files/RPGTest.tmx");
     if (!result)
     {
         FAST_THROW(result.description());

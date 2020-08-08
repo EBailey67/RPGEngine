@@ -7,8 +7,8 @@
 
 struct Pathfinding
 {
-    inline static constexpr const auto DIAGONAL_COST = 14;
-    inline static constexpr const auto SIDE_COST = 10;
+    inline static constexpr auto DIAGONAL_COST = 14;
+    inline static constexpr auto SIDE_COST = 10;
 };
 
 struct Enemy

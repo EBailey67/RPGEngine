@@ -6,7 +6,7 @@
 
 void PlayerMovement(const float dt)
 {
-    auto state = Events::KeyboardState();
+	const auto* const state = Events::KeyboardState();
     auto view = registry.view<Player, Velocity, MovementSpeed, AnimationPool, Sprite, Dash, Active>();
     if (view.begin() != view.end())
     {
@@ -104,7 +104,7 @@ void PlayerMovement(const float dt)
 
 void PlayerAttack(const float dt)
 {
-    auto state = Events::KeyboardState();
+	const auto* const state = Events::KeyboardState();
     auto view = registry.view<Player, Hierarchy, Position, Sprite, Velocity, RectCollider, Active>();
     if (view.begin() != view.end())
     {
@@ -184,7 +184,7 @@ void PlayerAttack(const float dt)
 void ActiveGame()
 {
     auto enemyView = registry.view<Enemy, Hierarchy, Health>();
-    for (auto &entt : enemyView)
+    for (const auto& entt : enemyView)
     {
         registry.emplace<Active>(entt);
         auto &hierarchy = enemyView.get<Hierarchy>(entt);
@@ -272,11 +272,12 @@ void OpenGame()
 {
     if (isMenu)
     {
-        auto state = Events::KeyboardState();
-        auto event = Events::Event();
-        auto view = registry.view<Player>();
+	    const auto* const state = Events::KeyboardState();
+	    const auto& event = Events::Event();
+	    const auto view = registry.view<Player>();
         auto &player = view.get<Player>(*view.begin());
-        if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
+
+    	if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
         {
             if (event.key.keysym.sym >= SDLK_a && event.key.keysym.sym <= SDLK_z)
             {
@@ -289,7 +290,7 @@ void OpenGame()
             }
             if (event.key.keysym.sym == SDLK_BACKSPACE)
             {
-                if (player.name.size() > 0)
+                if (!player.name.empty())
                 {
                     player.name.pop_back();
                     ResetName();

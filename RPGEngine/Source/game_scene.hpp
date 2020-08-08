@@ -40,7 +40,7 @@ public:
 		Mix_PlayMusic(music, -1);
 
 		// (FIXME) - Quiet this down for now.  This should be a user preference in a config file
-		const auto vol = Mix_VolumeMusic(3);
+		const auto vol = Mix_VolumeMusic(1);
 		std::cout << "Old Volume :" << vol << std::endl;
 
 
@@ -133,7 +133,6 @@ public:
 		PositionDebug();
 		RectDebug();
 		m_uiSystem->OnRender();
-		//LabelsRender();
 	}
 
 	

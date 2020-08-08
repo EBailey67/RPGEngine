@@ -26,9 +26,7 @@ class Graphics
     static constexpr const auto reset_layer = Layer::None;
 
 private:
-    Graphics()
-    {
-    }
+    Graphics() = default;
 
     ~Graphics()
     {
@@ -128,7 +126,7 @@ private:
     {
         ResetRenderer();
         TargetClear();
-        for (auto layer : m_layers)
+        for (auto* layer : m_layers)
         {
             if (SDL_RenderCopy(m_renderer, layer, nullptr, nullptr))
             {
@@ -166,7 +164,7 @@ public:
         return m_renderer;
     }
 
-    static void RenderToLayer(Layer layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
+    static void RenderToLayer(const Layer layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
                               const SDL_Rect *dst_rect = nullptr, const SDL_RendererFlip flip = SDL_FLIP_NONE)
     {
         if (layer != m_currentLayer)
