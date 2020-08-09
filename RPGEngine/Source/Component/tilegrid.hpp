@@ -7,12 +7,12 @@
 
 #include <iostream>
 
-#include "../xml/pugixml.hpp"
+#include "../XML/pugixml.hpp"
 
 #include "../config.hpp"
 #include "colliders.hpp"
 #include "tileset.hpp"
-#include "vector2d.hpp"
+#include "../Utility/Vector2D.h"
 
 class TileGrid
 {
@@ -50,7 +50,7 @@ public:
             {
                 for (auto &col : row)
                 {
-                    auto pos = data.find_first_of(",");
+	                const auto pos = data.find_first_of(",");
                     col = std::stoi(data.substr(0, pos));
 
                     data = data.substr(pos + 1);

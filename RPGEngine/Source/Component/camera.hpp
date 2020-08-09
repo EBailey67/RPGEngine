@@ -5,7 +5,7 @@
 #include <SDL_rect.h>
 #include <SDL_video.h>
 
-#include "vector2d.hpp"
+#include "../Utility/Vector2D.h"
 
 class Camera
 {

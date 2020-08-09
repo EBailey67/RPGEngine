@@ -169,7 +169,10 @@
     <ClCompile Include="Source\Systems\tilegridsystem.cpp" />
     <ClCompile Include="Source\UI\UISystem.cpp" />
     <ClCompile Include="Source\Utility\Debug.cpp" />
+    <ClCompile Include="Source\Utility\Floats.cpp" />
     <ClCompile Include="Source\Utility\FramerateCounter.cpp" />
+    <ClCompile Include="Source\Utility\Ray.cpp" />
+    <ClCompile Include="Source\Utility\Rectangle.cpp" />
     <ClCompile Include="Source\Utility\Timer.cpp" />
     <ClCompile Include="Source\XML\pugixml.cpp" />
     <ClCompile Include="Source\UI\UIElement.cpp" />
@@ -186,7 +189,8 @@
     <ClInclude Include="Source\Component\tilegrid.hpp" />
     <ClInclude Include="Source\Component\tileset.hpp" />
     <ClInclude Include="Source\Component\transform.hpp" />
-    <ClInclude Include="Source\Component\vector2d.hpp" />
+    <ClInclude Include="Source\Utility\Ray.h" />
+    <ClInclude Include="Source\Utility\Vector2D.h" />
     <ClInclude Include="Source\config.hpp" />
     <ClInclude Include="Source\core.hpp" />
     <ClInclude Include="Source\fwd.hpp" />
@@ -214,7 +218,10 @@
     <ClInclude Include="Source\Systems\tilegridsystem.hpp" />
     <ClInclude Include="Source\UI\UISystem.h" />
     <ClInclude Include="Source\Utility\Debug.h" />
+    <ClInclude Include="Source\Utility\Floats.h" />
     <ClInclude Include="Source\Utility\FramerateCounter.h" />
+    <ClInclude Include="Source\Utility\Primitives.h" />
+    <ClInclude Include="Source\Utility\Rectangle.h" />
     <ClInclude Include="Source\Utility\Timer.h" />
     <ClInclude Include="Source\XML\pugiconfig.hpp" />
     <ClInclude Include="Source\XML\pugixml.hpp" />

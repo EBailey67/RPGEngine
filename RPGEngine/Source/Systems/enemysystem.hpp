@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../component/colliders.hpp"
-#include "../component/vector2d.hpp"
+#include "../Component/colliders.hpp"
+#include "../Utility/Vector2D.h"
 
 void EnemyCreate(Vector2D spawn);
 void EnemyCharging(const CollisionData &lhs, const CollisionData &rhs);

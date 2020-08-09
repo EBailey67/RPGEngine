@@ -51,6 +51,12 @@ public:
         return Vector2D(1, 1);
     }
 
+	/*! @brief Returns a unit vector based on the angle (in radians) */
+	static constexpr auto FromAngle(const float radians)
+    {
+		return Vector2D(cosf(radians), sinf(radians));
+    }
+	
     /*! @brief Default constructor !*/
     constexpr Vector2D() : x(0), y(0)
     {
@@ -67,7 +73,7 @@ public:
     /*! @brief Default destructor. */
     ~Vector2D() = default;
 
-    /*! @brief Compute vector lenght and returns it. */
+    /*! @brief Compute vector length and returns it. */
     [[nodiscard]] float Magnitude() const noexcept
     {
         return std::sqrt(x * x + y * y);
@@ -99,6 +105,26 @@ public:
         return lhs == rhs;
     }
 
+    /*! @brief returns the cross-product of two vectors */
+	static float Cross(const Vector2D& lhs, const Vector2D& rhs)
+    {
+        return lhs.x * rhs.y - lhs.y * rhs.x;
+    }
+
+    /*! @brief returns the dot-product of two vectors */
+    static float Dot(const Vector2D& lhs, const Vector2D& rhs)
+    {
+        return lhs.x * rhs.x - lhs.y * rhs.y;
+    }
+
+    /*! @brief returns the distance between two vectors */
+    static float Distance(const Vector2D& lhs, const Vector2D& rhs)
+    {
+	    const auto xd = rhs.x - lhs.x;
+	    const auto yd = rhs.y - lhs.y;
+        return sqrtf(xd * xd + yd * yd);
+    }
+	
     /*! @brief Returns formatted coordinates in string. */
     [[nodiscard]] std::string ToString() const noexcept
     {

@@ -9,9 +9,9 @@
 #include <vector>
 
 #include "../config.hpp"
-#include "../sdl/graphics.hpp"
+#include "../SDL/graphics.hpp"
 #include "tileset.hpp"
-#include "vector2d.hpp"
+#include "../Utility/Vector2D.h"
 
 struct Sprite
 {
