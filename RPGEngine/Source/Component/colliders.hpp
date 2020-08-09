@@ -2,8 +2,6 @@
 
 #include <entt/entt.hpp>
 #include <SDL_rect.h>
-#include <array>
-#include <map>
 #include <string>
 
 #include "../Utility/Vector2D.h"

@@ -1,6 +1,7 @@
 #include "spritesystem.hpp"
 
 #include "../core.hpp"
+#include "../UI/UIElement.h"
 
 void SpriteRender()
 {

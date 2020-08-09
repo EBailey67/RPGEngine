@@ -1,7 +1,6 @@
 #pragma once
 
 #include "entt/entity/entity.hpp"
-#include "entt/fwd.hpp"
 
 struct Hierarchy
 {

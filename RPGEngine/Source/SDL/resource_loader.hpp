@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_render.h>
@@ -14,7 +12,7 @@ struct ResourceLoader
 {
     static SDL_Texture *Sprite(std::string_view path)
     {
-        auto texture = IMG_LoadTexture(Graphics::Renderer(), path.data());
+	    const auto texture = IMG_LoadTexture(Graphics::Renderer(), path.data());
         if (!texture)
         {
             SDL_THROW();

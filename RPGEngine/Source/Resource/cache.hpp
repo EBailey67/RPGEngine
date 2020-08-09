@@ -4,7 +4,7 @@
 #include <string>
 
 template <typename Resource, void (*Eraser)(Resource) = nullptr>
-class cache
+class Cache
 {
 
 public:
@@ -13,9 +13,9 @@ public:
     using id_type = std::string;
     using eraser_type = void (*)(resource_type);
 
-    cache() = default;
+    Cache() = default;
 
-    ~cache()
+    ~Cache()
     {
         reset();
     }
@@ -25,14 +25,14 @@ public:
         return Eraser;
     }
 
-    size_type size() const noexcept
+    [[nodiscard]] size_type size() const noexcept
     {
-        m_resources.size();
+        return m_resources.size();
     }
 
-    bool empty() const noexcept
+    [[nodiscard]] bool empty() const noexcept
     {
-        m_resources.empty();
+        return m_resources.empty();
     }
 
     void reset()

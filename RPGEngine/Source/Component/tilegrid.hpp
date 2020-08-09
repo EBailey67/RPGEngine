@@ -1,16 +1,9 @@
 #pragma once
 
-#include <cmath>
-#include <memory>
 #include <string>
 #include <vector>
 
-#include <iostream>
-
-#include "../XML/pugixml.hpp"
-
 #include "../config.hpp"
-#include "colliders.hpp"
 #include "tileset.hpp"
 #include "../Utility/Vector2D.h"
 

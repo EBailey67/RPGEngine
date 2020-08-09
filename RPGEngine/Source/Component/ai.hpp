@@ -1,9 +1,6 @@
 #pragma once
 
-#include <array>
-
 #include "../Utility/Vector2D.h"
-
 
 struct Pathfinding
 {
@@ -14,7 +11,7 @@ struct Pathfinding
 struct Enemy
 {
     inline static int currentSpawn = 0;
-    inline static constexpr const auto MAX_SPAWNS = 8;
+    inline static constexpr auto MAX_SPAWNS = 8;
     inline static const Vector2D spawns[MAX_SPAWNS]
     {
         {250.0f, 250.0f},

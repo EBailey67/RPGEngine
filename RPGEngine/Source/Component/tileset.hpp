@@ -3,13 +3,11 @@
 #include <cstddef>
 #include <map>
 #include <string>
-#include <type_traits>
+//#include <type_traits>
 #include <vector>
 
 #include <SDL_render.h>
-
-#include "../xml/pugixml.hpp"
-
+#include "../XML/pugixml.hpp"
 #include "../config.hpp"
 
 class TileSet
@@ -59,13 +57,13 @@ public:
     {
         pugi::xml_document document;
 
-        auto result = document.load_file(xml_doc.data());
+        const auto result = document.load_file(xml_doc.data());
         if (!result)
         {
             FAST_THROW(result.description());
         }
 
-        auto tileset = document.child("tileset");
+        const auto tileset = document.child("tileset");
         m_name = tileset.attribute("name").value();
         m_tileWidth = std::stoi(tileset.attribute("tilewidth").value());
         m_tileHeight = std::stoi(tileset.attribute("tileheight").value());
@@ -78,7 +76,7 @@ public:
         m_texture = texture;
 
         {
-            auto offset = tileset.child("tileoffset");
+	        const auto offset = tileset.child("tileoffset");
             if (offset)
             {
                 m_offset.x = std::stoi(offset.attribute("x").value());
@@ -92,8 +90,8 @@ public:
             m_offset.h = std::stoi(image.attribute("height").value());
         }
         {
-            auto tiles = tileset.children("tile");
-            for (auto it = tiles.begin(); it != tiles.end(); it++)
+	        const auto tiles = tileset.children("tile");
+            for (auto it = tiles.begin(); it != tiles.end(); ++it)
             {
                 auto id = std::stoi(it->attribute("id").value());
                 auto type = it->attribute("type");
@@ -114,22 +112,22 @@ public:
         }
     }
 
-    texture_type *Texture() const noexcept
+    [[nodiscard]] texture_type *Texture() const noexcept
     {
         return m_texture;
     }
 
-    size_type Columns() const noexcept
+    [[nodiscard]] size_type Columns() const noexcept
     {
         return m_columns;
     }
 
-    size_type Rows() const noexcept
+    [[nodiscard]] size_type Rows() const noexcept
     {
         return m_rows;
     }
 
-    size_type Count() const noexcept
+    [[nodiscard]] size_type Count() const noexcept
     {
         return m_columns * m_rows;
     }
@@ -139,11 +137,11 @@ public:
      * -- id Valid id.
      * returns Row and column pair.
      */
-    std::pair<size_type, size_type> Position(const size_type id) const noexcept
+    [[nodiscard]] std::pair<size_type, size_type> Position(const size_type id) const noexcept
     {
         SSECS_ASSERT(Valid(id));
-        size_type row = id / Columns();
-        size_type column = id - row * Columns();
+        auto row = id / Columns();
+        auto column = id - row * Columns();
 
         return std::make_pair(row, column);
     }
@@ -154,7 +152,7 @@ public:
      * @param column Valid column type.
      * @return True if exist, otherwise false.
      */
-    bool Valid(const size_type row, const size_type column) const noexcept
+    [[nodiscard]] bool Valid(const size_type row, const size_type column) const noexcept
     {
         return row <= m_rows && column <= m_columns;
     }
@@ -165,21 +163,22 @@ public:
      * @param tile Valid tile type.
      * @return True if exist, otherwise false.
      */
-    bool Valid(const tile_type tile) const noexcept
+    [[nodiscard]] bool Valid(const tile_type tile) const noexcept
     {
-        bool size = (tile.w == m_tileWidth && tile.h == m_tileHeight);
-        bool in_range = (tile.x > 0 && tile.x + tile.w < m_offset.w) && (tile.y > 0 && tile.y + tile.h < m_offset.h);
-        bool integral = std::is_integral_v<decltype((tile.x - m_offset.x) / m_tileWidth)> &&
+	    const auto size = (tile.w == m_tileWidth && tile.h == m_tileHeight);
+	    const auto in_range = (tile.x > 0 && tile.x + tile.w < m_offset.w) && (tile.y > 0 && tile.y + tile.h < m_offset.h);
+	    const auto integral = std::is_integral_v<decltype((tile.x - m_offset.x) / m_tileWidth)> &&
                         std::is_integral_v<decltype((tile.y - m_offset.y) / m_tileHeight)>;
+    	
         return size && in_range && integral;
     }
 
     /**
      * @brief Check if id exist in TileSet.
-     * @param row Valid id type.
+     * @param id Valid id type
      * @return True if exist, otherwise false.
      */
-    bool Valid(const size_type id) const noexcept
+    [[nodiscard]] bool Valid(const size_type id) const noexcept
     {
         return id < Count();
     }
@@ -230,30 +229,32 @@ public:
      * @param name Map key.
      * @return True if exist, false otherwise.
      */
-    bool HasName(std::string_view name) const
+    [[nodiscard]] bool HasName(const std::string_view name) const
     {
         return m_namedTiles.find(name.data()) != m_namedTiles.end();
     }
+	
     /**
      * @brief Check if type exist in a map.
      * @param type Map key.
      * @return True if exist, false otherwise.
      */
-    bool HasType(std::string_view type) const
+    [[nodiscard]] bool HasType(const std::string_view type) const
     {
         return m_typedTiles.find(type.data()) != m_typedTiles.end();
     }
+	
     /**
      * @brief Return iterator for id's of desired type.
-     * @param Type Tile's type.
+     * @param type Tile's type.
      * @return Iterator.
      */
-    decltype(auto) operator()(std::string_view type) const
+    decltype(auto) operator()(const std::string_view type) const
     {
         return m_typedTiles.equal_range(type.data());
     }
 
-    std::vector<SDL_Rect> GetTypeFamily(std::string_view type)
+    std::vector<SDL_Rect> GetTypeFamily(const std::string_view type)
     {
         std::vector<SDL_Rect> vec;
 
@@ -266,11 +267,12 @@ public:
         return vec;
     }
 
-    int TileWidth() const noexcept
+    [[nodiscard]] int TileWidth() const noexcept
     {
         return m_tileWidth;
     }
-    int TileHeight() const noexcept
+	
+    [[nodiscard]] int TileHeight() const noexcept
     {
         return m_tileHeight;
     }
@@ -282,8 +284,8 @@ private:
 
     int m_tileWidth{};
     int m_tileHeight{};
-    size_type m_rows;
-    size_type m_columns;
+    size_type m_rows{};
+    size_type m_columns{};
 
     std::string m_name{};
 

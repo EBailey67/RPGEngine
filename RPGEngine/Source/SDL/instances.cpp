@@ -17,9 +17,8 @@ Game *Instances::CreateGame()
 
 void Instances::DestroyGame()
 {
-
     if (m_gameInstance)
     {
-        m_gameInstance->Destroy();
+        Game::Destroy();
     }
 }

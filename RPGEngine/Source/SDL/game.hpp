@@ -13,7 +13,6 @@
 #include "events.hpp"
 #include "graphics.hpp"
 
-#include "../UI/UISystem.h"
 #include "../Utility/FramerateCounter.h"
 #include "../Utility/Timer.h"
 

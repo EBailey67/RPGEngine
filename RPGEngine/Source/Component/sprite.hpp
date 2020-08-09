@@ -3,12 +3,9 @@
 #include <SDL_rect.h>
 #include <SDL_render.h>
 #include <SDL_ttf.h>
-#include <cstdint>
-#include <iostream>
 #include <string>
 #include <vector>
 
-#include "../config.hpp"
 #include "../SDL/graphics.hpp"
 #include "tileset.hpp"
 #include "../Utility/Vector2D.h"

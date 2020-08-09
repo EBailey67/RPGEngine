@@ -28,9 +28,7 @@ class Graphics
 private:
     Graphics() = default;
 
-    ~Graphics()
-    {
-    }
+    ~Graphics() = default;
 
     static void AssignWindow(SDL_Window *window, const Uint32 rendererFlags = 0)
     {
