@@ -178,7 +178,7 @@ public:
         }
     }
 
-    static void RenderToLayerF(Layer layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
+    static void RenderToLayerF(const Layer layer, SDL_Texture *texture, const SDL_Rect *src_rect = nullptr,
                                const SDL_FRect *dst_rect = nullptr, const SDL_RendererFlip flip = SDL_FLIP_NONE)
     {
         if (layer != m_currentLayer)

@@ -20,19 +20,19 @@ extern const char* GetUIFontName(UIFont uiFont);
 class UIElement
 {
 public:
-    const SDL_Rect& GetBounds()
+	[[nodiscard]] const SDL_Rect& GetBounds() const
     {
         return bounds;
     }
     
     virtual bool IsActive()
     {
-        return isActive;
+        return is_active;
     }
 
-    virtual void SetActive(bool active)
+    virtual void SetActive(const bool active)
     {
-        isActive = active;
+        is_active = active;
     }
 
     virtual ~UIElement() { std::cout << "Element deleted" << std::endl; };
@@ -58,7 +58,7 @@ public:
         parent = &element;
     }
 
-    virtual void AddChild(std::string name, std::shared_ptr<UIElement> element)
+    virtual void AddChild(std::string_view name, const std::shared_ptr<UIElement>& element)
     {
         element->parent = this;
         children.emplace(name, element);
@@ -66,7 +66,7 @@ public:
 
 protected:
     SDL_Rect bounds{0, 0, 0, 0};
-    bool isActive{ false };
+    bool is_active{ false };
     UIElement* parent{ nullptr };
     std::map<std::string, std::shared_ptr<UIElement>> children;
 };

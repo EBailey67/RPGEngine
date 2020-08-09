@@ -8,22 +8,20 @@
 #include <SDL_ttf.h>
 
 #include "config.hpp"
-#include "framerate.hpp"
 #include "scene.hpp"
-#include "timer.hpp"
 
 #include "events.hpp"
 #include "graphics.hpp"
 
 #include "../UI/UISystem.h"
 #include "../Utility/FramerateCounter.h"
+#include "../Utility/Timer.h"
 
 class Game
 {
     friend Instances;
 public:
     FramerateCounter fps_counter;
-
 	
 private:
 
@@ -32,21 +30,24 @@ private:
 
     void InputUpdate()
     {
-        SDL_PollEvent(&Events::m_event);
-
-        // Check for terminate.
-        if (Events::Event().type == SDL_QUIT)
+        if (SDL_PollEvent(&Events::m_event))
         {
-            Quit();
-        }
+	        switch(Events::Event().type)
+	        {
+            case SDL_QUIT:      // Check for terminate
+                Quit();
+                break;
+            default: break;
+	        }
 
-        if (Events::Event().window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-        {
-            Graphics::DestroyLayers();
-            Graphics::CreateLayers();
-        }
+            if (Events::Event().window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+            {
+                Graphics::DestroyLayers();
+                Graphics::CreateLayers();
+            }
 
-        m_scene->InputUpdate();
+        	m_scene->InputUpdate();
+        }
     }
 
     void Update(const float dt)
@@ -117,19 +118,23 @@ public:
     void Run()
     {
         m_isRunning = true;
-
+        auto* timer = RPGEngine::Timer::Instance();
+        const auto frameRate = 60.0f;
+    	
         while (m_isRunning)
         {
-            m_frameRate.OnFrameStart();
+            timer->Tick();
+        	
+        	if (timer->DeltaTime() >= 1.0f / frameRate)
+            {
+                timer->Reset();
+                // Variable-timed update:
+                Update(timer->DeltaTime());
 
-            FixedUpdate();
-
-            // Variable-timed update:
-            Update(m_frameRate.dt);
-
-            InputUpdate();
-
-            Render();
+        		FixedUpdate();
+                InputUpdate();
+                Render();
+            }
         }
     }
 
@@ -138,12 +143,12 @@ public:
         m_isRunning = false;
     }
 
-    bool IsRunning() const noexcept
+    [[nodiscard]] bool IsRunning() const noexcept
     {
         return m_isRunning;
     }
 
-    const auto Scene() const noexcept
+    auto Scene() const noexcept
     {
         return m_scene.get();
     }
@@ -158,7 +163,6 @@ public:
 private:
     bool m_hadInitialization = false;
     bool m_isRunning = false;
-    FrameRate m_frameRate;
     std::unique_ptr<BasicScene> m_scene = std::make_unique<BasicScene>();
 };
 

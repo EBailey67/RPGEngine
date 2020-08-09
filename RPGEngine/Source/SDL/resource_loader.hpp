@@ -23,9 +23,9 @@ struct ResourceLoader
         return texture;
     }
 
-    static TTF_Font *Font(std::string_view path, int size)
+    static TTF_Font *Font(const std::string_view path, const int size)
     {
-        auto font = TTF_OpenFont(path.data(), size);
+	    auto* font = TTF_OpenFont(path.data(), size);
         if (!font)
         {
             SDL_THROW();
@@ -34,15 +34,21 @@ struct ResourceLoader
         return font;
     }
 
-    static SDL_Texture *Text(TTF_Font *font, std::string_view text, SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE})
+    static SDL_Texture *Text(TTF_Font *font, const std::string_view text, const SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE}, const int width = -1)
     {
-        auto surface = TTF_RenderUTF8_Blended(font, text.data(), color);
+        SDL_Surface* surface;
+
+        if (width != -1)
+            surface = TTF_RenderUTF8_Blended_Wrapped(font, text.data(), color, width);
+        else
+            surface = TTF_RenderUTF8_Blended(font, text.data(), color);
+    	
         if (!surface)
         {
             SDL_THROW();
         }
 
-        auto texture = SDL_CreateTextureFromSurface(Graphics::Renderer(), surface);
+	    auto* const texture = SDL_CreateTextureFromSurface(Graphics::Renderer(), surface);
         if (!texture)
         {
             SDL_THROW();
@@ -51,9 +57,9 @@ struct ResourceLoader
         return texture;
     }
 
-    static Mix_Music *Music(std::string_view path)
+    static Mix_Music *Music(const std::string_view path)
     {
-        auto music = Mix_LoadMUS(path.data());
+	    auto* music = Mix_LoadMUS(path.data());
         if (!music)
         {
             SDL_THROW();

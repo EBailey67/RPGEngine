@@ -43,12 +43,12 @@ public:
 		const auto vol = Mix_VolumeMusic(1);
 		std::cout << "Old Volume :" << vol << std::endl;
 
-
 		textureCache.load(tileid, ResourceLoader::Sprite("resources/tiled_files/GameTiles.png"));
 		textureCache.load(spriteid, ResourceLoader::Sprite("resources/sprites/spritesheet.png"));
 
-		fontCache.load(GetUIFontName(UIFont::Debug), ResourceLoader::Font("resources/fonts/consola.ttf", 20));
-		fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/segoeui.ttf", 20));
+		fontCache.load(GetUIFontName(UIFont::Debug), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
+	//	fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
+		fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/kongtext.ttf", 12));
 
 		scoreTable.Open("resources/score.txt");
 
@@ -72,24 +72,22 @@ public:
 		panel->color.a = 128;
 		m_uiSystem->AddComponent("Test", panel);
 
-		auto label = std::make_shared<UILabel>(4, 4, "Hello World");
+		auto label = std::make_shared<UILabel>(4, 4, "Hello World\nGoodbye World");
 		label->SetActive(true);
 		panel->AddChild("HW", label);
 
-		label_score = std::make_shared<UILabel>(4, 26, "Score : 0");
+		label_score = std::make_shared<UILabel>(4, 46, "Score : 0");
 		label_score->SetActive(true);
 		panel->AddChild("Score", label_score);
 
-		label_health = std::make_shared<UILabel>(4, 46  , "Health : 0");
+		label_health = std::make_shared<UILabel>(4, 66  , "Health : 0");
 		label_health->SetActive(true);
 		panel->AddChild("Health", label_health);
 
-		label_FPS = std::make_shared<UILabel>(4, 66, "FPS : 0");
+		label_FPS = std::make_shared<UILabel>(4, 86, "FPS : 0");
 		label_FPS->SetActive(true);
 		panel->AddChild("FPS", label_FPS);
 
-		
-		
 		// CreateLabels();
 	}
 

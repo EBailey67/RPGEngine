@@ -105,7 +105,7 @@ void PlayerMovement(const float dt)
 void PlayerAttack(const float dt)
 {
 	const auto* const state = Events::KeyboardState();
-    auto view = registry.view<Player, Hierarchy, Position, Sprite, Velocity, RectCollider, Active>();
+	const auto view = registry.view<Player, Hierarchy, Position, Sprite, Velocity, RectCollider, Active>();
     if (view.begin() != view.end())
     {
 

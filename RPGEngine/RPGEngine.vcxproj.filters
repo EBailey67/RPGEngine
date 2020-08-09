@@ -66,15 +66,15 @@
     <ClCompile Include="Source\Utility\FramerateCounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Utility\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\SDL\config.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDL\events.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SDL\framerate.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDL\fwd.hpp">
@@ -96,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDL\sdl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SDL\timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Systems\camerasystem.hpp">
@@ -201,6 +198,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Utility\FramerateCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utility\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

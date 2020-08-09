@@ -97,7 +97,7 @@ void RectDebug()
 
 void DebugMode()
 {
-    auto state = Events::KeyboardState();
+	const auto* const state = Events::KeyboardState();
     if (state[SDL_SCANCODE_F5])
     {
         RectCollider::hasDebugDraw = !RectCollider::hasDebugDraw;

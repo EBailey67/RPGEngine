@@ -16,7 +16,7 @@ public:
 
     static const Uint8 *KeyboardState() noexcept
     {
-        return SDL_GetKeyboardState(NULL);
+        return SDL_GetKeyboardState(nullptr);
     }
 
 private:

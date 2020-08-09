@@ -20,12 +20,23 @@ void UILabel::OnRender()
 {
     const auto camera_view = registry.view<Camera>();
     const auto& camera = camera_view.get(*camera_view.begin());
+    auto dest_rect = bounds;
 
-    auto* const label_tex = ResourceLoader::Text(fontCache.resource(GetUIFontName(font)), m_text, color);
+	if (parent != nullptr)
+	{
+        dest_rect = parent->GetBounds();
+	}
+
+    auto fixed_width = -1;
+	if (parent != nullptr)
+	{
+        fixed_width = dest_rect.w - bounds.x;
+	}
+	
+    auto* const label_tex = ResourceLoader::Text(fontCache.resource(GetUIFontName(font)), m_text, color, fixed_width);
     SDL_QueryTexture(label_tex, nullptr, nullptr, &bounds.w, &bounds.h);
 
     SDL_Rect src_rect = { 0, 0, bounds.w, bounds.h };
-    auto dest_rect = bounds;
 
 	if (parent != nullptr)
     {

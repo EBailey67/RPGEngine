@@ -218,8 +218,8 @@ void UILabelsRender()
 void ResetTable()
 {
     auto view = registry.view<entt::tag<"table"_hs>, Label>();
-    int i = ScoreTable::table_size - 1;
-    for (auto &entt : view)
+    auto i = ScoreTable::table_size - 1;
+    for (const auto& entt : view)
     {
         auto &label = view.get<Label>(entt);
         std::string text;
