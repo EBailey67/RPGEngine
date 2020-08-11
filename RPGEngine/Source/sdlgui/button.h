@@ -43,7 +43,7 @@ namespace GUI
             Right
         };
 
-        Button(Widget* parent, const std::string& caption = "Untitled", int icon = 0);
+        Button(Widget* parent, std::string caption = "Untitled", int icon = 0);
         Button(Widget* parent, const std::string& caption, const std::function<void()>& callback)
             : Button(parent, caption)
     	{

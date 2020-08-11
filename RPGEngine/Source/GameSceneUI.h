@@ -208,7 +208,13 @@ namespace GUI
 
                 // Use overloaded variadic add to fill the tab widget with Different tabs.
                 layer->add<Label>("Color wheel widget", "sans-bold");
-                layer->add<ColorWheel>();
+                ColorWheel* colorwheel = layer->add<ColorWheel>();
+                colorwheel->setCallback([colorwheel](const Color& value) 
+					{
+                	colorwheel->setColor(value);
+                	colorwheel->dirty();
+                    });
+
 
                 layer = tabWidget->createTab("Function Graph");
                 layer->setLayout(new GroupLayout());
@@ -335,8 +341,12 @@ namespace GUI
                 Color c = colorwheel.color();
                 colorBtn.setBackgroundColor(c);
 
-                colorwheel.setCallback([&colorBtn](const Color& value) {
+                colorwheel.setCallback([&colorBtn, &colorwheel](const Color& value) 
+					{
                     colorBtn.setBackgroundColor(value);
+                	
+                	colorwheel.setColor(value);
+                	colorwheel.dirty();
                     });
 
                 colorBtn.setChangeCallback([&colorBtn, &popupBtn](bool pushed) {

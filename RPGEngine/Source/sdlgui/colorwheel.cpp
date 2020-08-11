@@ -18,6 +18,9 @@
 #include "nanovg.h"
 #include "nanovg_rt.h"
 
+#define EIGEN_HAS_STD_RESULT_OF 0
+#include <Eigen/Dense>
+
 namespace GUI
 {
 	struct ColorWheel::AsyncTexture
@@ -45,6 +48,18 @@ namespace GUI
             tgr.detach();
         }
 
+        void loadSync(ColorWheel* ptr)
+        {
+            ColorWheel* colorWheel = ptr;
+            AsyncTexture* self = this;
+
+            NVGcontext* ctx = nullptr;
+            int realw, realh;
+            colorWheel->renderBodyTexture(ctx, realw, realh);
+            self->tex.rrect = { 0, 0, realw, realh };
+            self->ctx = ctx;
+        }
+    	
         void perform(SDL_Renderer* renderer)
         {
             if (!ctx)
@@ -77,6 +92,15 @@ namespace GUI
         return { 100, 100 };
     }
 
+    void ColorWheel::dirty()
+    {
+	    _txs.clear();
+        AsyncTexturePtr newtx = std::make_shared<AsyncTexture>(0);
+        newtx->loadSync(this);
+        _txs.push_back(newtx);
+
+    }
+	
     void ColorWheel::draw(SDL_Renderer* renderer)
     {
             Widget::draw(renderer);
@@ -112,7 +136,7 @@ namespace GUI
         }
     }
 
-        void ColorWheel::drawBodyTemp(SDL_Renderer* renderer)
+    void ColorWheel::drawBodyTemp(SDL_Renderer* renderer)
     {
         Vector2i ap = absolutePosition();
         SDL_Color bodyclr = mTheme->mTextColorShadow.toSdlColor();
@@ -151,13 +175,11 @@ namespace GUI
         realh = hh + 2;
         nvgBeginFrame(ctx, realw, realh, pxRatio);
     	
-        float x = _pos.x,
-              y = _pos.y,
+        float x = 0,
+              y = 0,
               w = mSize.x,
               h = mSize.y;
 
-    	x = 0;
-    	y = 0;
         int i;
         float r0, r1, ax,ay, bx,by, cx,cy, aeps, r;
         float hue = m_hue;
@@ -284,13 +306,13 @@ namespace GUI
 
     ColorWheel::Region ColorWheel::adjustPosition(const Vector2i& p, Region consideredRegions)
     {
-        /*   float x = p.x - _pos.x,
+        float x = p.x - _pos.x,
                  y = p.y - _pos.y,
                  w = mSize.x,
                  h = mSize.y;
 
-           float cx = w*0.5f;
-           float cy = h*0.5f;
+           float cx = w * 0.5f;
+           float cy = h * 0.5f;
            float r1 = (w < h ? w : h) * 0.5f - 5.0f;
            float r0 = r1 * .75f;
 
@@ -300,16 +322,17 @@ namespace GUI
            float mr = std::sqrt(x*x + y*y);
 
            if ((consideredRegions & OuterCircle) &&
-               ((mr >= r0 && mr <= r1) || (consideredRegions == OuterCircle))) {
+               ((mr >= r0 && mr <= r1) || (consideredRegions == OuterCircle))) 
+           {
                if (!(consideredRegions & OuterCircle))
                    return None;
-               mHue = std::atan(y / x);
+               m_hue = std::atan(y / x);
                if (x < 0)
-                   mHue += NVG_PI;
-               mHue /= 2*NVG_PI;
+                   m_hue += M_PI;
+               m_hue /= 2 * M_PI;
 
-               if (mCallback)
-                   mCallback(color());
+               if (m_callback)
+                   m_callback(color());
 
                return OuterCircle;
            }
@@ -326,14 +349,14 @@ namespace GUI
            Eigen::Matrix<float, 2, 3> triangle;
            triangle << ax,bx,r,
                        ay,by,0;
-           triangle = Eigen::Rotation2D<float>(mHue * 2 * NVG_PI).matrix() * triangle;
+           triangle = Eigen::Rotation2D<float>(m_hue * 2 * NVG_PI).matrix() * triangle;
 
-           Matrix2f T;
+           Eigen::Matrix2f T;
            T << triangle(0,0) - triangle(0,2), triangle(0,1) - triangle(0,2),
                 triangle(1,0) - triangle(1,2), triangle(1,1) - triangle(1,2);
-           Vector2f pos { x - triangle(0,2), y - triangle(1,2) };
+           Eigen::Vector2f pos { x - triangle(0,2), y - triangle(1,2) };
 
-           Vector2f bary = T.colPivHouseholderQr().solve(pos);
+           Eigen::Vector2f bary = T.colPivHouseholderQr().solve(pos);
            float l0 = bary[0], l1 = bary[1], l2 = 1 - l0 - l1;
            bool triangleTest = l0 >= 0 && l0 <= 1.f && l1 >= 0.f && l1 <= 1.f &&
                                l2 >= 0.f && l2 <= 1.f;
@@ -348,13 +371,12 @@ namespace GUI
                float sum = l0 + l1 + l2;
                l0 /= sum;
                l1 /= sum;
-               mWhite = l0;
-               mBlack = l1;
-               if (mCallback)
-                   mCallback(color());
+               m_white = l0;
+               m_black = l1;
+               if (m_callback)
+                   m_callback(color());
                return InnerTriangle;
            }
-           */
         return None;
 
     }
@@ -394,16 +416,17 @@ namespace GUI
 
     void ColorWheel::setColor(const Color& rgb)
     {
-        /*    float r = rgb[0], g = rgb[1], b = rgb[2];
+            float r = rgb.r(), g = rgb.g(), b = rgb.b();
 
             float max = std::max({ r, g, b });
             float min = std::min({ r, g, b });
             float l = (max + min) / 2;
 
-            if (max == min) {
-                mHue = 0.;
-                mBlack = 1. - l;
-                mWhite = l;
+            if (max == min) 
+            {
+                m_hue = 0.;
+                m_black = 1. - l;
+                m_white = l;
             } else {
                 float d = max - min, h;
                 if (max == r)
@@ -414,21 +437,23 @@ namespace GUI
                     h = (r - g) / d + 4;
                 h /= 6;
 
-                mHue = h;
+                m_hue = h;
 
                 Eigen::Matrix<float, 4, 3> M;
-                M.topLeftCorner<3, 1>() = hue2rgb(h).head<3>();
+                Color c = hue2rgb(h);
+            	Eigen::Vector4f color{c.r(), c.g(), c.b(), c.a()};
+                M.topLeftCorner<3, 1>() = color.head<3>();
                 M(3, 0) = 1.;
-                M.col(1) = Vector4f{ 0., 0., 0., 1. };
-                M.col(2) = Vector4f{ 1., 1., 1., 1. };
+                M.col(1) = Eigen::Vector4f{ 0., 0., 0., 1. };
+                M.col(2) = Eigen::Vector4f{ 1., 1., 1., 1. };
 
-                Vector4f rgb4{ rgb[0], rgb[1], rgb[2], 1. };
-                Vector3f bary = M.colPivHouseholderQr().solve(rgb4);
+                Eigen::Vector4f rgb4{ rgb.r(), rgb.g(), rgb.b(), 1. };
+                Eigen::Vector3f bary = M.colPivHouseholderQr().solve(rgb4);
 
-                mBlack = bary[1];
-                mWhite = bary[2];
+                m_black = bary[1];
+                m_white = bary[2];
             }
-            */
+            
     }
 
 }

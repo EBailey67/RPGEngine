@@ -35,10 +35,11 @@ namespace GUI
         void draw(SDL_Renderer* renderer) override;
         void drawBody(SDL_Renderer* renderer);
         void drawBodyTemp(SDL_Renderer* renderer);
-
+        void dirty();
+    	
         bool mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) override;
         bool mouseDragEvent(const Vector2i& p, const Vector2i& rel, int button, int modifiers) override;
-
+        
     private:
         enum Region
     	{

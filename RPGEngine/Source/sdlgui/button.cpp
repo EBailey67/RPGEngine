@@ -14,6 +14,7 @@
 #include <SDL.h>
 #include <array>
 #include <thread>
+#include <utility>
 
 #include "nanovg.h"
 #define NANOVG_RT_IMPLEMENTATION
@@ -59,7 +60,7 @@ namespace GUI
 
             int pitch;
             uint8_t* pixels;
-            int ok = SDL_LockTexture(tex.tex, nullptr, (void**)&pixels, &pitch);
+            int ok = SDL_LockTexture(tex.tex, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
             memcpy(pixels, rgba, sizeof(uint32_t) * tex.w() * tex.h());
             SDL_SetTextureBlendMode(tex.tex, SDL_BLENDMODE_BLEND);
             SDL_UnlockTexture(tex.tex);
@@ -70,8 +71,8 @@ namespace GUI
     };
 
 
-    Button::Button(Widget* parent, const std::string& caption, int icon)
-        : Widget(parent), mCaption(caption), mIcon(icon),
+    Button::Button(Widget* parent, std::string caption, const int icon)
+        : Widget(parent), mCaption(std::move(caption)), mIcon(icon),
         mIconPosition(IconPosition::LeftCentered), mPushed(false),
         mFlags(NormalButton), mBackgroundColor(Color(0, 0)),
         mTextColor(Color(0, 0))
