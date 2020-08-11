@@ -13,75 +13,76 @@
 
 #pragma once
 
-#include <sdlgui/popupbutton.h>
+#include "popupbutton.h"
 
-NAMESPACE_BEGIN(sdlgui)
-
-/**
- * \class DropdownBox dropdownbox.h nanogui/dropdownbox.h
- *
- * \brief Simple dropdownbox box widget based on a popup button.
- */
-class DropdownBox : public PopupButton
+namespace GUI
 {
-public:
-    /// Create an empty combo box
-    DropdownBox(Widget *parent);
-
-    /// Create a new combo box with the given items
-    DropdownBox(Widget *parent, const std::vector<std::string> &items);
 
     /**
-     * \brief Create a new dropdownbox with the given items, providing both short and
-     * long descriptive labels for each item
+     * \class DropdownBox dropdownbox.h nanogui/dropdownbox.h
+     *
+     * \brief Simple dropdownbox box widget based on a popup button.
      */
-    DropdownBox(Widget *parent, const std::vector<std::string> &items,
-             const std::vector<std::string> &itemsShort);
+    class DropdownBox : public PopupButton
+    {
+    public:
+        /// Create an empty combo box
+        DropdownBox(Widget* parent);
 
-    /// The callback to execute for this widget.
-    std::function<void(int)> callback() const { return mCallback; }
+        /// Create a new combo box with the given items
+        DropdownBox(Widget* parent, const std::vector<std::string>& items);
 
-    /// Sets the callback to execute for this widget.
-    void setCallback(const std::function<void(int)> &callback) { mCallback = callback; }
+        /**
+         * \brief Create a new dropdownbox with the given items, providing both short and
+         * long descriptive labels for each item
+         */
+        DropdownBox(Widget* parent, const std::vector<std::string>& items,
+            const std::vector<std::string>& itemsShort);
 
-    /// The current index this dropdownbox has selected.
-    int selectedIndex() const { return mSelectedIndex; }
+        /// The callback to execute for this widget.
+        std::function<void(int)> callback() const { return mCallback; }
 
-    void performLayout(SDL_Renderer *renderer) override;
+        /// Sets the callback to execute for this widget.
+        void setCallback(const std::function<void(int)>& callback) { mCallback = callback; }
 
-    /// Sets the current index this dropdownbox has selected.
-    void setSelectedIndex(int idx);
+        /// The current index this dropdownbox has selected.
+        int selectedIndex() const { return mSelectedIndex; }
 
-    /// Sets the items for this dropdownbox, providing both short and long descriptive lables for each item.
-    void setItems(const std::vector<std::string> &items, const std::vector<std::string> &itemsShort);
+        void performLayout(SDL_Renderer* renderer) override;
 
-    /// Sets the items for this dropdownbox.
-    void setItems(const std::vector<std::string> &items) { setItems(items, items); }
+        /// Sets the current index this dropdownbox has selected.
+        void setSelectedIndex(int idx);
 
-    /// The items associated with this dropdownbox.
-    const std::vector<std::string> &items() const { return mItems; }
+        /// Sets the items for this dropdownbox, providing both short and long descriptive lables for each item.
+        void setItems(const std::vector<std::string>& items, const std::vector<std::string>& itemsShort);
 
-    /// The short descriptions associated with this dropdownbox.
-    const std::vector<std::string> &itemsShort() const { return mItemsShort; }
+        /// Sets the items for this dropdownbox.
+        void setItems(const std::vector<std::string>& items) { setItems(items, items); }
 
-    /// Handles mouse scrolling events for this dropdownbox.
-    virtual bool scrollEvent(const Vector2i &p, const Vector2f &rel) override;
+        /// The items associated with this dropdownbox.
+        const std::vector<std::string>& items() const { return mItems; }
 
-    virtual void draw(SDL_Renderer* renderer) override;
-    virtual bool mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) override; 
+        /// The short descriptions associated with this dropdownbox.
+        const std::vector<std::string>& itemsShort() const { return mItemsShort; }
 
-protected:
-    /// The items associated with this dropdownbox.
-    std::vector<std::string> mItems;
+        /// Handles mouse scrolling events for this dropdownbox.
+        virtual bool scrollEvent(const Vector2i& p, const Vector2f& rel) override;
 
-    /// The short descriptions of items associated with this dropdownbox.
-    std::vector<std::string> mItemsShort;
+        virtual void draw(SDL_Renderer* renderer) override;
+        virtual bool mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) override;
 
-    /// The callback for this dropdownbox.
-    std::function<void(int)> mCallback;
+    protected:
+        /// The items associated with this dropdownbox.
+        std::vector<std::string> mItems;
 
-    /// The current index this dropdownbox has selected.
-    int mSelectedIndex;
-};
+        /// The short descriptions of items associated with this dropdownbox.
+        std::vector<std::string> mItemsShort;
 
-NAMESPACE_END(sdlgui)
+        /// The callback for this dropdownbox.
+        std::function<void(int)> mCallback;
+
+        /// The current index this dropdownbox has selected.
+        int mSelectedIndex;
+    };
+
+}

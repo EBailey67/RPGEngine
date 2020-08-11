@@ -14,89 +14,90 @@
 
 #pragma once
 
-#include <sdlgui/widget.h>
+#include "widget.h"
 #include <functional>
 
-NAMESPACE_BEGIN(sdlgui)
-
-class StackedWidget;
-class TabHeader;
-/**
- * \class TabWidget tabwidget.h sdl_gui/tabwidget.h
- *
- * \brief A wrapper around the widgets TabHeader and StackedWidget which hooks
- *        the two classes together.
- */
-class  TabWidget : public Widget 
+namespace GUI
 {
-public:
-    TabWidget(Widget* parent);
 
-    void setActiveTab(int tabIndex);
-    int activeTab() const;
-    int tabCount() const;
-
+    class StackedWidget;
+    class TabHeader;
     /**
-     * Sets the callable objects which is invoked when a tab is changed.
-     * The argument provided to the callback is the index of the new active tab.
+     * \class TabWidget tabwidget.h sdl_gui/tabwidget.h
+     *
+     * \brief A wrapper around the widgets TabHeader and StackedWidget which hooks
+     *        the two classes together.
      */
-    void setCallback(const std::function<void(int)> &callback) { mCallback = callback; };
-    const std::function<void(int)> &callback() const { return mCallback; }
+    class  TabWidget : public Widget
+    {
+    public:
+        TabWidget(Widget* parent);
 
-    /// Creates a new tab with the specified name and returns a pointer to the layer.
-    Widget* createTab(const std::string &label);
-    Widget* createTab(int index, const std::string &label);
+        void setActiveTab(int tabIndex);
+        int activeTab() const;
+        int tabCount() const;
 
-    /// Inserts a tab at the end of the tabs collection and associates it with the provided widget.
-    void addTab(const std::string &label, Widget *tab);
+        /**
+         * Sets the callable objects which is invoked when a tab is changed.
+         * The argument provided to the callback is the index of the new active tab.
+         */
+        void setCallback(const std::function<void(int)>& callback) { mCallback = callback; };
+        const std::function<void(int)>& callback() const { return mCallback; }
 
-    /// Inserts a tab into the tabs collection at the specified index and associates it with the provided widget.
-    void addTab(int index, const std::string &label, Widget *tab);
+        /// Creates a new tab with the specified name and returns a pointer to the layer.
+        Widget* createTab(const std::string& label);
+        Widget* createTab(int index, const std::string& label);
 
-    /**
-     * Removes the tab with the specified label and returns the index of the label.
-     * Returns whether the removal was successful.
-     */
-    bool removeTab(const std::string &label);
+        /// Inserts a tab at the end of the tabs collection and associates it with the provided widget.
+        void addTab(const std::string& label, Widget* tab);
 
-    /// Removes the tab with the specified index.
-    void removeTab(int index);
+        /// Inserts a tab into the tabs collection at the specified index and associates it with the provided widget.
+        void addTab(int index, const std::string& label, Widget* tab);
 
-    /// Retrieves the label of the tab at a specific index.
-    const std::string &tabLabelAt(int index) const;
+        /**
+         * Removes the tab with the specified label and returns the index of the label.
+         * Returns whether the removal was successful.
+         */
+        bool removeTab(const std::string& label);
 
-    /**
-     * Retrieves the index of a specific tab using its tab label.
-     * Returns -1 if there is no such tab.
-     */
-    int tabLabelIndex(const std::string &label);
+        /// Removes the tab with the specified index.
+        void removeTab(int index);
 
-    /**
-     * Retrieves the index of a specific tab using a widget pointer.
-     * Returns -1 if there is no such tab.
-     */
-    int tabIndex(Widget* tab);
+        /// Retrieves the label of the tab at a specific index.
+        const std::string& tabLabelAt(int index) const;
 
-    /**
-     * This function can be invoked to ensure that the tab with the provided
-     * index the is visible, i.e to track the given tab. Forwards to the tab
-     * header widget. This function should be used whenever the client wishes
-     * to make the tab header follow a newly added tab, as the content of the
-     * new tab is made visible but the tab header does not track it by default.
-     */
-    void ensureTabVisible(int index);
+        /**
+         * Retrieves the index of a specific tab using its tab label.
+         * Returns -1 if there is no such tab.
+         */
+        int tabLabelIndex(const std::string& label);
 
-    const Widget* tab(const std::string &label) const;
-    Widget* tab(const std::string &label);
+        /**
+         * Retrieves the index of a specific tab using a widget pointer.
+         * Returns -1 if there is no such tab.
+         */
+        int tabIndex(Widget* tab);
 
-    void performLayout(SDL_Renderer* ctx) override;
-    Vector2i preferredSize(SDL_Renderer* ctx) const override;
-    void draw(SDL_Renderer* ctx) override;
+        /**
+         * This function can be invoked to ensure that the tab with the provided
+         * index the is visible, i.e to track the given tab. Forwards to the tab
+         * header widget. This function should be used whenever the client wishes
+         * to make the tab header follow a newly added tab, as the content of the
+         * new tab is made visible but the tab header does not track it by default.
+         */
+        void ensureTabVisible(int index);
 
-private:
-    TabHeader* mHeader;
-    StackedWidget* mContent;
-    std::function<void(int)> mCallback;
-};
+        const Widget* tab(const std::string& label) const;
+        Widget* tab(const std::string& label);
 
-NAMESPACE_END(sdlgui)
+        void performLayout(SDL_Renderer* ctx) override;
+        Vector2i preferredSize(SDL_Renderer* ctx) const override;
+        void draw(SDL_Renderer* ctx) override;
+
+    private:
+        TabHeader* mHeader;
+        StackedWidget* mContent;
+        std::function<void(int)> mCallback;
+    };
+
+}

@@ -10,20 +10,21 @@
 
 #pragma once
 
-#include <sdlgui/button.h>
+#include "button.h"
 
-NAMESPACE_BEGIN(sdlgui)
-
-class ToolButton : public Button
+namespace GUI
 {
-public:
-    ToolButton(Widget *parent, int icon,
-           const std::string &caption = "")
-        : Button(parent, caption, icon)
-    {
-        setFlags(Flags::RadioButton | Flags::ToggleButton);
-        setFixedSize(Vector2i(25, 25));
-    }
-};
 
-NAMESPACE_END(sdlgui)
+    class ToolButton : public Button
+    {
+    public:
+        ToolButton(Widget* parent, int icon,
+            const std::string& caption = "")
+            : Button(parent, caption, icon)
+        {
+            setFlags(Flags::RadioButton | Flags::ToggleButton);
+            setFixedSize(Vector2i(25, 25));
+        }
+    };
+
+}

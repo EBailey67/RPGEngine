@@ -13,111 +13,112 @@
 
 #pragma once
 
-#include <sdlgui/common.h>
+#include "common.h"
 #include <mutex>
 
 struct SDL_Renderer;
 struct SDL_Texture;
 struct SDL_Rect;
 
-NAMESPACE_BEGIN(sdlgui)
-
-struct Texture
+namespace GUI
 {
-  SDL_Texture* tex = nullptr;
-  SDL_Rect rrect;
-  bool dirty = false;
 
-  inline int w() const { return rrect.w; }
-  inline int h() const { return rrect.h; }
-};
+    struct Texture
+    {
+        SDL_Texture* tex = nullptr;
+        SDL_Rect rrect;
+        bool dirty = false;
 
-void SDL_RenderCopy(SDL_Renderer* renderer, Texture& tex, const Vector2i& pos);
-/**
- * \class Theme theme.h sdlgui/theme.h
- *
- * \brief Storage class for basic theme-related properties.
- */
+        inline int w() const { return rrect.w; }
+        inline int h() const { return rrect.h; }
+    };
 
-class  Theme : public Object 
-{
-public:
-    Theme(SDL_Renderer *ctx);
+    void SDL_RenderCopy(SDL_Renderer* renderer, Texture& tex, const Vector2i& pos);
+    /**
+     * \class Theme theme.h sdlgui/theme.h
+     *
+     * \brief Storage class for basic theme-related properties.
+     */
 
-    /* Spacing-related parameters */
-    int mStandardFontSize;
-    int mButtonFontSize;
-    int mTextBoxFontSize;
-    int mWindowCornerRadius;
-    int mWindowHeaderHeight;
-    int mWindowDropShadowSize;
-    int mButtonCornerRadius;
-    float mTabBorderWidth;
-    int mTabInnerMargin;
-    int mTabMinButtonWidth;
-    int mTabMaxButtonWidth;
-    int mTabControlWidth;
-    int mTabButtonHorizontalPadding;
-    int mTabButtonVerticalPadding;
+    class  Theme : public Object
+    {
+    public:
+        Theme(SDL_Renderer* ctx);
 
-    std::mutex loadMutex;
+        /* Spacing-related parameters */
+        int mStandardFontSize;
+        int mButtonFontSize;
+        int mTextBoxFontSize;
+        int mWindowCornerRadius;
+        int mWindowHeaderHeight;
+        int mWindowDropShadowSize;
+        int mButtonCornerRadius;
+        float mTabBorderWidth;
+        int mTabInnerMargin;
+        int mTabMinButtonWidth;
+        int mTabMaxButtonWidth;
+        int mTabControlWidth;
+        int mTabButtonHorizontalPadding;
+        int mTabButtonVerticalPadding;
 
-    /* Generic colors */
-    Color mDropShadow;
-    Color mTransparent;
-    Color mBorderDark;
-    Color mBorderLight;
-    Color mBorderMedium;
-    Color mTextColor;
-    Color mDisabledTextColor;
-    Color mTextColorShadow;
-    Color mIconColor;
+        std::mutex loadMutex;
 
-    /* Button colors */
-    Color mButtonGradientTopFocused;
-    Color mButtonGradientBotFocused;
-    Color mButtonGradientTopUnfocused;
-    Color mButtonGradientBotUnfocused;
-    Color mButtonGradientTopPushed;
-    Color mButtonGradientBotPushed;
+        /* Generic colors */
+        Color mDropShadow;
+        Color mTransparent;
+        Color mBorderDark;
+        Color mBorderLight;
+        Color mBorderMedium;
+        Color mTextColor;
+        Color mDisabledTextColor;
+        Color mTextColorShadow;
+        Color mIconColor;
 
-    /* Window colors */
-    Color mWindowFillUnfocused;
-    Color mWindowFillFocused;
-    Color mWindowTitleUnfocused;
-    Color mWindowTitleFocused;
+        /* Button colors */
+        Color mButtonGradientTopFocused;
+        Color mButtonGradientBotFocused;
+        Color mButtonGradientTopUnfocused;
+        Color mButtonGradientBotUnfocused;
+        Color mButtonGradientTopPushed;
+        Color mButtonGradientBotPushed;
 
-    /* Slider coloes */
-    Color mSliderKnobOuter;
-    Color mSliderKnobInner;
+        /* Window colors */
+        Color mWindowFillUnfocused;
+        Color mWindowFillFocused;
+        Color mWindowTitleUnfocused;
+        Color mWindowTitleFocused;
 
-    Color mWindowHeaderGradientTop;
-    Color mWindowHeaderGradientBot;
-    Color mWindowHeaderSepTop;
-    Color mWindowHeaderSepBot;
+        /* Slider coloes */
+        Color mSliderKnobOuter;
+        Color mSliderKnobInner;
 
-    Color mWindowPopup;
-    Color mWindowPopupTransparent;
+        Color mWindowHeaderGradientTop;
+        Color mWindowHeaderGradientBot;
+        Color mWindowHeaderSepTop;
+        Color mWindowHeaderSepBot;
 
-    void getTexAndRect(SDL_Renderer *renderer, int x, int y, const char *text,
-      const char* fontname, size_t ptsize, SDL_Texture **texture, SDL_Rect *rect, SDL_Color *textColor);
+        Color mWindowPopup;
+        Color mWindowPopupTransparent;
 
-    void getTexAndRectUtf8(SDL_Renderer *renderer, int x, int y, const char *text,
-      const char* fontname, size_t ptsize, SDL_Texture **texture, SDL_Rect *rect, SDL_Color *textColor);
+        void getTexAndRect(SDL_Renderer* renderer, int x, int y, const char* text,
+            const char* fontname, size_t ptsize, SDL_Texture** texture, SDL_Rect* rect, SDL_Color* textColor);
 
-    std::string breakText(SDL_Renderer* renderer, const char* string, const char* fontname, int ptsize,
-                       float breakRowWidth);
+        void getTexAndRectUtf8(SDL_Renderer* renderer, int x, int y, const char* text,
+            const char* fontname, size_t ptsize, SDL_Texture** texture, SDL_Rect* rect, SDL_Color* textColor);
 
-    int getTextWidth(const char* fontname, size_t ptsize, const char* text);
-    int getUtf8Width(const char* fontname, size_t ptsize, const char* text);
-    int getTextBounds(const char* fontname, size_t ptsize, const char* text, int *w, int *h);
-    int getUtf8Bounds(const char* fontname, size_t ptsize, const char* text, int *w, int *h);
+        std::string breakText(SDL_Renderer* renderer, const char* string, const char* fontname, int ptsize,
+            float breakRowWidth);
 
-    void getTexAndRectUtf8(SDL_Renderer *renderer, Texture& tx, int x, int y, const char *text,
-                           const char* fontname, size_t ptsize, const Color& textColor);
+        int getTextWidth(const char* fontname, size_t ptsize, const char* text);
+        int getUtf8Width(const char* fontname, size_t ptsize, const char* text);
+        int getTextBounds(const char* fontname, size_t ptsize, const char* text, int* w, int* h);
+        int getUtf8Bounds(const char* fontname, size_t ptsize, const char* text, int* w, int* h);
 
-protected:
-    virtual ~Theme() { };
-};
+        void getTexAndRectUtf8(SDL_Renderer* renderer, Texture& tx, int x, int y, const char* text,
+            const char* fontname, size_t ptsize, const Color& textColor);
 
-NAMESPACE_END(sdlgui)
+    protected:
+        virtual ~Theme() { };
+    };
+
+}

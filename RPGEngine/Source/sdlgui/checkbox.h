@@ -10,48 +10,49 @@
 
 #pragma once
 
-#include <sdlgui/widget.h>
+#include "widget.h"
 #include <vector>
 #include <memory>
 
-NAMESPACE_BEGIN(sdlgui)
-
-class  CheckBox : public Widget
+namespace GUI
 {
-public:
-    CheckBox(Widget *parent, const std::string &caption = "Untitled",
-             const std::function<void(bool)> &callback = std::function<void(bool)>());
 
-    const std::string &caption() const { return mCaption; }
-    void setCaption(const std::string &caption) { mCaption = caption; }
+    class  CheckBox : public Widget
+    {
+    public:
+        CheckBox(Widget* parent, const std::string& caption = "Untitled",
+            const std::function<void(bool)>& callback = std::function<void(bool)>());
 
-    const bool &checked() const { return mChecked; }
-    void setChecked(const bool &checked) { mChecked = checked; }
+        const std::string& caption() const { return mCaption; }
+        void setCaption(const std::string& caption) { mCaption = caption; }
 
-    CheckBox& withChecked(bool value) { setChecked(value); return *this; }
+        const bool& checked() const { return mChecked; }
+        void setChecked(const bool& checked) { mChecked = checked; }
 
-    const bool &pushed() const { return mPushed; }
-    void setPushed(const bool &pushed) { mPushed = pushed; }
+        CheckBox& withChecked(bool value) { setChecked(value); return *this; }
 
-    std::function<void(bool)> callback() const { return mCallback; }
-    void setCallback(const std::function<void(bool)> &callback) { mCallback = callback; }
+        const bool& pushed() const { return mPushed; }
+        void setPushed(const bool& pushed) { mPushed = pushed; }
 
-    virtual bool mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers);
-    Vector2i preferredSize(SDL_Renderer *ctx) const override;
-    void draw(SDL_Renderer *ctx) override;
-    virtual void drawBody(SDL_Renderer* renderer);
-protected:
-    std::string mCaption;
-    bool mPushed, mChecked;
+        std::function<void(bool)> callback() const { return mCallback; }
+        void setCallback(const std::function<void(bool)>& callback) { mCallback = callback; }
 
-    Texture _captionTex;
-    Texture _pointTex;
+        virtual bool mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers);
+        Vector2i preferredSize(SDL_Renderer* ctx) const override;
+        void draw(SDL_Renderer* ctx) override;
+        virtual void drawBody(SDL_Renderer* renderer);
+    protected:
+        std::string mCaption;
+        bool mPushed, mChecked;
 
-    std::function<void(bool)> mCallback;
+        Texture _captionTex;
+        Texture _pointTex;
 
-    struct AsyncTexture;
-    typedef std::shared_ptr<AsyncTexture> AsyncTexturePtr;
-    std::vector<AsyncTexturePtr> _txs;
-};
+        std::function<void(bool)> mCallback;
 
-NAMESPACE_END(sdlgui)
+        struct AsyncTexture;
+        typedef std::shared_ptr<AsyncTexture> AsyncTexturePtr;
+        std::vector<AsyncTexturePtr> _txs;
+    };
+
+}

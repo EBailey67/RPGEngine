@@ -11,48 +11,49 @@
     BSD-style license that can be found in the LICENSE.txt file.
 */
 
-#include <sdlgui/stackedwidget.h>
+#include "stackedwidget.h"
+#include <cassert>
 
-NAMESPACE_BEGIN(sdlgui)
-
-StackedWidget::StackedWidget(Widget *parent)
-    : Widget(parent) { }
-
-void StackedWidget::setSelectedIndex(int index) 
+namespace GUI
 {
-    assert(index < childCount());
-    if (mSelectedIndex >= 0)
-        mChildren[mSelectedIndex]->setVisible(false);
-    mSelectedIndex = index;
-    mChildren[mSelectedIndex]->setVisible(true);
-}
+    StackedWidget::StackedWidget(Widget* parent)
+        : Widget(parent) { }
 
-int StackedWidget::selectedIndex() const {
-    return mSelectedIndex;
-}
-
-void StackedWidget::performLayout(SDL_Renderer *ctx) {
-    for (auto child : mChildren) {
-      child->setPosition({ 0, 0 });
-        child->setSize(mSize);
-        child->performLayout(ctx);
+    void StackedWidget::setSelectedIndex(int index)
+    {
+        assert(index < childCount());
+        if (mSelectedIndex >= 0)
+            mChildren[mSelectedIndex]->setVisible(false);
+        mSelectedIndex = index;
+        mChildren[mSelectedIndex]->setVisible(true);
     }
-}
 
-Vector2i StackedWidget::preferredSize(SDL_Renderer *ctx) const 
-{
-  Vector2i size{ 0, 0 };
-    for (auto child : mChildren)
-        size = size.cmax(child->preferredSize(ctx));
-    return size;
-}
+    int StackedWidget::selectedIndex() const {
+        return mSelectedIndex;
+    }
 
-void StackedWidget::addChild(int index, Widget *widget) {
-    if (mSelectedIndex >= 0)
-        mChildren[mSelectedIndex]->setVisible(false);
-    Widget::addChild(index, widget);
-    widget->setVisible(true);
-    setSelectedIndex(index);
-}
+    void StackedWidget::performLayout(SDL_Renderer* ctx) {
+        for (auto child : mChildren) {
+            child->setPosition({ 0, 0 });
+            child->setSize(mSize);
+            child->performLayout(ctx);
+        }
+    }
 
-NAMESPACE_END(sdlgui)
+    Vector2i StackedWidget::preferredSize(SDL_Renderer* ctx) const
+    {
+        Vector2i size{ 0, 0 };
+        for (auto child : mChildren)
+            size = size.cmax(child->preferredSize(ctx));
+        return size;
+    }
+
+    void StackedWidget::addChild(int index, Widget* widget) {
+        if (mSelectedIndex >= 0)
+            mChildren[mSelectedIndex]->setVisible(false);
+        Widget::addChild(index, widget);
+        widget->setVisible(true);
+        setSelectedIndex(index);
+    }
+
+}

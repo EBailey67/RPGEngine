@@ -1,10 +1,10 @@
-#include <sdlgui/common.h>
+#include "common.h"
 
 #include <SDL.h>
 #include <windows.h>
 #include <SDL_image.h>
 
-namespace sdlgui
+namespace GUI
 {
     ListImages loadImageDirectory(SDL_Renderer* renderer, const std::string& path)
     {

@@ -5,8 +5,14 @@
 #include <random>
 
 #include "core.hpp"
+#include "sdlgui/entypo.h"
 #include "Systems/systems.hpp"
 #include "UI/UISystem.h"
+#include "sdlgui/button.h"
+#include "sdlgui/label.h"
+#include "sdlgui/screen.h"
+#include "sdlgui/screen.h"
+#include "sdlgui/window.h"
 // #include "xml/pugixml.hpp"
 
 constexpr auto tileid = "tileset";
@@ -18,6 +24,7 @@ public:
 	std::shared_ptr<UILabel> label_score;
 	std::shared_ptr<UILabel> label_health;
 	std::shared_ptr<UILabel> label_FPS;
+	GUI::Screen* ui;
 
 	GameScene(const GameScene&) = delete;
 	GameScene& operator=(const GameScene&) = delete;
@@ -47,7 +54,7 @@ public:
 		textureCache.load(spriteid, ResourceLoader::Sprite("resources/sprites/spritesheet.png"));
 
 		fontCache.load(GetUIFontName(UIFont::Debug), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
-	//	fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
+		//	fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
 		fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/kongtext.ttf", 12));
 
 		scoreTable.Open("resources/score.txt");
@@ -80,7 +87,7 @@ public:
 		label_score->SetActive(true);
 		panel->AddChild("Score", label_score);
 
-		label_health = std::make_shared<UILabel>(4, 66  , "Health : 0");
+		label_health = std::make_shared<UILabel>(4, 66, "Health : 0");
 		label_health->SetActive(true);
 		panel->AddChild("Health", label_health);
 
@@ -88,7 +95,19 @@ public:
 		label_FPS->SetActive(true);
 		panel->AddChild("FPS", label_FPS);
 
-		// CreateLabels();
+		int ww;
+		int wh;
+		SDL_GetWindowSize(Graphics::Window(), &ww, &wh);
+		ui = new GUI::Screen(Graphics::Window(), GUI::Vector2i(ww, wh), "Sample");
+
+		auto& nwindow = ui->window("Window", GUI::Vector2i{ 200, 200 }).withLayout<GUI::GroupLayout>	();
+		nwindow.label("Push buttons", "sans-bold")._and()
+			.button("Plain button", [] { std::cout << "pushed!" << std::endl; })
+			.withTooltip("This is plain button tips");
+
+		nwindow.button("Super Styled", ENTYPO_ICON_ROCKET, [] { std::cout << "pushed!" << std::endl; })
+			.withBackgroundColor(GUI::Color(0, 0, 255, 25));
+		ui->performLayout(Graphics::Renderer());
 	}
 
 	void FixedUpdate() override
@@ -118,6 +137,8 @@ public:
 
 	void InputUpdate() override
 	{
+		if (ui->onEvent(Events::Event()))
+			return;
 		CameraUpdateDebug();
 		OpenGame();
 		DebugMode();
@@ -131,6 +152,7 @@ public:
 		PositionDebug();
 		RectDebug();
 		m_uiSystem->OnRender();
+		ui->drawAll();
 	}
 
 	

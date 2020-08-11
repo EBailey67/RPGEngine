@@ -36,6 +36,8 @@ THE SOFTWARE.
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <algorithm>
+#include <memory>
 
 namespace nanort {
 
@@ -71,90 +73,104 @@ namespace nanort {
 // be sure to reserve() in the container up to the stack buffer size. Otherwise
 // the container will allocate a small array which will "use up" the stack
 // buffer.
-template <typename T, size_t stack_capacity>
-class StackAllocator : public std::allocator<T> {
-public:
-  typedef typename std::allocator<T>::pointer pointer;
-  typedef typename std::allocator<T>::size_type size_type;
+	template <typename T, size_t stack_capacity>
+	class StackAllocator {
+	public:
+		typedef T value_type;
+		// Backing store for the allocator. The container owner is responsible for
+		// maintaining this for as long as any containers using this allocator are
+		// live.
 
-  // Backing store for the allocator. The container owner is responsible for
-  // maintaining this for as long as any containers using this allocator are
-  // live.
-  struct Source {
-    Source() : used_stack_buffer_(false) {}
+        // template<typename U, size_t stack_capacity> StackAllocator(const StackAllocator<U, stack_capacity>&) noexcept {}
+        template<typename U, size_t stack_capacity> bool operator==(const StackAllocator<U, stack_capacity>&) const noexcept
+        {
+            return true;
+        }
+        template<typename U, size_t stack_capacity> bool operator!=(const StackAllocator<U, stack_capacity>&) const noexcept
+        {
+            return false;
+        }
 
-    // Casts the buffer in its right type.
-    T *stack_buffer() { return reinterpret_cast<T *>(stack_buffer_); }
-    const T *stack_buffer() const {
-      return reinterpret_cast<const T *>(stack_buffer_);
-    }
+		struct Source
+		{
+			Source() : used_stack_buffer_(false) {}
 
-    //
-    // IMPORTANT: Take care to ensure that stack_buffer_ is aligned
-    // since it is used to mimic an array of T.
-    // Be careful while declaring any unaligned types (like bool)
-    // before stack_buffer_.
-    //
+			// Casts the buffer in its right type.
+			T* stack_buffer() { return reinterpret_cast<T*>(stack_buffer_); }
+			const T* stack_buffer() const {
+				return reinterpret_cast<const T*>(stack_buffer_);
+			}
 
-    // The buffer itself. It is not of type T because we don't want the
-    // constructors and destructors to be automatically called. Define a POD
-    // buffer of the right size instead.
-    char stack_buffer_[sizeof(T[stack_capacity])];
 
-    // Set when the stack buffer is used for an allocation. We do not track
-    // how much of the buffer is used, only that somebody is using it.
-    bool used_stack_buffer_;
-  };
+			//
+			// IMPORTANT: Take care to ensure that stack_buffer_ is aligned
+			// since it is used to mimic an array of T.
+			// Be careful while declaring any unaligned types (like bool)
+			// before stack_buffer_.
+			//
 
-  // Used by containers when they want to refer to an allocator of type U.
-  template <typename U> struct rebind {
-    typedef StackAllocator<U, stack_capacity> other;
-  };
+			// The buffer itself. It is not of type T because we don't want the
+			// constructors and destructors to be automatically called. Define a POD
+			// buffer of the right size instead.
+			char stack_buffer_[sizeof(T[stack_capacity])];
 
-  // For the straight up copy c-tor, we can share storage.
-  StackAllocator(const StackAllocator<T, stack_capacity> &rhs)
-      : source_(rhs.source_) {}
+			// Set when the stack buffer is used for an allocation. We do not track
+			// how much of the buffer is used, only that somebody is using it.
+			bool used_stack_buffer_;
+		};
 
-  // ISO C++ requires the following constructor to be defined,
-  // and std::vector in VC++2008SP1 Release fails with an error
-  // in the class _Container_base_aux_alloc_real (from <xutility>)
-  // if the constructor does not exist.
-  // For this constructor, we cannot share storage; there's
-  // no guarantee that the Source buffer of Ts is large enough
-  // for Us.
-  // TODO: If we were fancy pants, perhaps we could share storage
-  // iff sizeof(T) == sizeof(U).
-  template <typename U, size_t other_capacity>
-  StackAllocator(const StackAllocator<U, other_capacity> &other)
-      : source_(NULL) {}
+		// Used by containers when they want to refer to an allocator of type U.
+		template <typename U> struct rebind {
+			typedef StackAllocator<U, stack_capacity> other;
+		};
 
-  explicit StackAllocator(Source *source) : source_(source) {}
+		// For the straight up copy c-tor, we can share storage.
+		StackAllocator(const StackAllocator<T, stack_capacity>& rhs)
+			: source_(rhs.source_) {}
 
-  // Actually do the allocation. Use the stack buffer if nobody has used it yet
-  // and the size requested fits. Otherwise, fall through to the standard
-  // allocator.
-  pointer allocate(size_type n, void *hint = 0) {
-    if (source_ != NULL && !source_->used_stack_buffer_ &&
-        n <= stack_capacity) {
-      source_->used_stack_buffer_ = true;
-      return source_->stack_buffer();
-    } else {
-      return std::allocator<T>::allocate(n, hint);
-    }
-  }
+		// ISO C++ requires the following constructor to be defined,
+		// and std::vector in VC++2008SP1 Release fails with an error
+		// in the class _Container_base_aux_alloc_real (from <xutility>)
+		// if the constructor does not exist.
+		// For this constructor, we cannot share storage; there's
+		// no guarantee that the Source buffer of Ts is large enough
+		// for Us.
+		// TODO: If we were fancy pants, perhaps we could share storage
+		// iff sizeof(T) == sizeof(U).
+		template <typename U, size_t other_capacity>
+		StackAllocator(const StackAllocator<U, other_capacity>& other)
+			: source_(nullptr) {}
 
-  // Free: when trying to free the stack buffer, just mark it as free. For
-  // non-stack-buffer pointers, just fall though to the standard allocator.
-  void deallocate(pointer p, size_type n) {
-    if (source_ != NULL && p == source_->stack_buffer())
-      source_->used_stack_buffer_ = false;
-    else
-      std::allocator<T>::deallocate(p, n);
-  }
+		explicit StackAllocator(Source* source) : source_(source) {}
 
-private:
-  Source *source_;
-};
+		// Actually do the allocation. Use the stack buffer if nobody has used it yet
+		// and the size requested fits. Otherwise, fall through to the standard
+		// allocator.
+		T* allocate(const size_t n, void* hint = 0) {
+			if (source_ != nullptr && !source_->used_stack_buffer_ &&
+				n <= stack_capacity) {
+				source_->used_stack_buffer_ = true;
+				return source_->stack_buffer();
+			}
+			else {
+                return static_cast<T*>(::operator new(n * sizeof(T)));
+				// return std::allocator<T>::allocate(n, hint);
+			}
+		}
+
+		// Free: when trying to free the stack buffer, just mark it as free. For
+		// non-stack-buffer pointers, just fall though to the standard allocator.
+		void deallocate(T* p, const size_t n) {
+            if (source_ != nullptr && p == source_->stack_buffer())
+                source_->used_stack_buffer_ = false;
+            else
+                ::operator delete(p);
+                // std::allocator<T>::deallocate(p, n);
+		}
+
+	private:
+		Source* source_;
+	};
 
 // A wrapper around STL containers that maintains a stack-sized buffer that the
 // initial capacity of the vector is based on. Growing the container beyond the
@@ -967,7 +983,7 @@ bool FindCutFromBinBuffer(float *cutPos,    // [out] xyz
   return true;
 }
 
-class SAHPred : public std::unary_function<unsigned int, bool> {
+class SAHPred /*: public std::unary_function<unsigned int, bool>*/ {
 public:
   SAHPred(int axis, float pos, const float *vertices, const unsigned int *faces)
       : axis_(axis), pos_(pos), vertices_(vertices), faces_(faces) {}
@@ -1603,11 +1619,12 @@ inline bool BVHAccel::Build(const float *vertices, const unsigned int *faces,
 }
 
 inline bool BVHAccel::Dump(const char *filename) {
-  FILE *fp = fopen(filename, "wb");
-  if (!fp) {
+	FILE* fp;
+	if (!fopen_s(&fp, filename, "wb"))
+	{
     fprintf(stderr, "[BVHAccel] Cannot write a file: %s\n", filename);
     return false;
-  }
+	}
 
   unsigned long long numNodes = nodes_.size();
   assert(nodes_.size() > 0);
@@ -1633,11 +1650,12 @@ inline bool BVHAccel::Dump(const char *filename) {
 }
 
 inline bool BVHAccel::Load(const char *filename) {
-  FILE *fp = fopen(filename, "rb");
-  if (!fp) {
+    FILE* fp;
+	if(!fopen_s(&fp, filename, "rb"))
+    {
     fprintf(stderr, "Cannot open file: %s\n", filename);
     return false;
-  }
+    }
 
   unsigned long long numNodes;
   unsigned long long numIndices;

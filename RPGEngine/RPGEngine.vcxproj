@@ -360,7 +360,6 @@
     <None Include="SDL2_image.dll" />
     <None Include="SDL2_mixer.dll" />
     <None Include="SDL2_ttf.dll" />
-    <None Include="Source\sdlgui\darwin.mm" />
     <None Include="zlib1.dll" />
   </ItemGroup>
   <ItemGroup>

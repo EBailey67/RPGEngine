@@ -10,46 +10,47 @@
 
 #pragma once
 
-#include <sdlgui/popupbutton.h>
+#include "popupbutton.h"
 
-NAMESPACE_BEGIN(sdlgui)
-
-class  ComboBox : public PopupButton
+namespace GUI
 {
-public:
-    /// Create an empty combo box
-    ComboBox(Widget *parent);
 
-    /// Create a new combo box with the given items
-    //ComboBox(Widget *parent, const std::vector<std::string>& items={});
-    ComboBox(Widget *parent, const std::vector<std::string>& items);
+    class  ComboBox : public PopupButton
+    {
+    public:
+        /// Create an empty combo box
+        ComboBox(Widget* parent);
 
-    /**
-     * \brief Create a new combo box with the given items, providing both short and
-     * long descriptive labels for each item
-     */
-    ComboBox(Widget *parent, const std::vector<std::string> &items,
-             const std::vector<std::string> &itemsShort);
+        /// Create a new combo box with the given items
+        //ComboBox(Widget *parent, const std::vector<std::string>& items={});
+        ComboBox(Widget* parent, const std::vector<std::string>& items);
 
-    std::function<void(int)> callback() const { return mCallback; }
-    void setCallback(const std::function<void(int)> &callback) { mCallback = callback; }
+        /**
+         * \brief Create a new combo box with the given items, providing both short and
+         * long descriptive labels for each item
+         */
+        ComboBox(Widget* parent, const std::vector<std::string>& items,
+            const std::vector<std::string>& itemsShort);
 
-    int selectedIndex() const { return mSelectedIndex; }
-    void setSelectedIndex(int idx);
+        std::function<void(int)> callback() const { return mCallback; }
+        void setCallback(const std::function<void(int)>& callback) { mCallback = callback; }
 
-    void setItems(const std::vector<std::string> &items, const std::vector<std::string> &itemsShort);
-    void setItems(const std::vector<std::string> &items) { setItems(items, items); }
-    const std::vector<std::string> &items() const { return mItems; }
-    const std::vector<std::string> &itemsShort() const { return mItemsShort; }
+        int selectedIndex() const { return mSelectedIndex; }
+        void setSelectedIndex(int idx);
 
-    ComboBox& withItems(const std::vector<std::string>& items) {setItems(items); return *this;}
+        void setItems(const std::vector<std::string>& items, const std::vector<std::string>& itemsShort);
+        void setItems(const std::vector<std::string>& items) { setItems(items, items); }
+        const std::vector<std::string>& items() const { return mItems; }
+        const std::vector<std::string>& itemsShort() const { return mItemsShort; }
 
-    bool scrollEvent(const Vector2i &p, const Vector2f &rel);
+        ComboBox& withItems(const std::vector<std::string>& items) { setItems(items); return *this; }
 
-protected:
-    std::vector<std::string> mItems, mItemsShort;
-    std::function<void(int)> mCallback;
-    int mSelectedIndex;
-};
+        bool scrollEvent(const Vector2i& p, const Vector2f& rel);
 
-NAMESPACE_END(sdlgui)
+    protected:
+        std::vector<std::string> mItems, mItemsShort;
+        std::function<void(int)> mCallback;
+        int mSelectedIndex;
+    };
+
+}

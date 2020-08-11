@@ -11,42 +11,43 @@
 
 #pragma once
 
-#include <sdlgui/button.h>
-#include <sdlgui/popup.h>
-#include <sdlgui/entypo.h>
+#include "button.h"
+#include "popup.h"
+#include "entypo.h"
 
-NAMESPACE_BEGIN(sdlgui)
-
-/**
- * \class PopupButton popupbutton.h sdl_gui/popupbutton.h
- *
- * \brief Button which launches a popup widget.
- */
-class  PopupButton : public Button 
+namespace GUI
 {
-public:
-    PopupButton(Widget *parent, const std::string &caption = "Untitled",
-                int buttonIcon = 0,
-                int chevronIcon = ENTYPO_ICON_CHEVRON_SMALL_RIGHT);
 
-    void setChevronIcon(int icon) { mChevronIcon = icon; }
-    int chevronIcon() const { return mChevronIcon; }
+    /**
+     * \class PopupButton popupbutton.h sdl_gui/popupbutton.h
+     *
+     * \brief Button which launches a popup widget.
+     */
+    class  PopupButton : public Button
+    {
+    public:
+        PopupButton(Widget* parent, const std::string& caption = "Untitled",
+            int buttonIcon = 0,
+            int chevronIcon = ENTYPO_ICON_CHEVRON_SMALL_RIGHT);
 
-    Popup& popup(const Vector2i& size) { mPopup->setFixedSize(size); return *mPopup; }
-    Popup& popup() { return *mPopup; }
-    Popup* popupptr() { return mPopup; }
+        void setChevronIcon(int icon) { mChevronIcon = icon; }
+        int chevronIcon() const { return mChevronIcon; }
 
-    void draw(SDL_Renderer* renderer) override;
-    Vector2i preferredSize(SDL_Renderer *ctx) const override;
-    void performLayout(SDL_Renderer *ctx) override;
+        Popup& popup(const Vector2i& size) { mPopup->setFixedSize(size); return *mPopup; }
+        Popup& popup() { return *mPopup; }
+        Popup* popupptr() { return mPopup; }
 
-    PopupButton& withChevron(int icon) { setChevronIcon(icon); return *this; }
-protected:
-    
-    Popup *mPopup = nullptr;
-    int mChevronIcon;
+        void draw(SDL_Renderer* renderer) override;
+        Vector2i preferredSize(SDL_Renderer* ctx) const override;
+        void performLayout(SDL_Renderer* ctx) override;
 
-    Texture _chevronTex;
-};
+        PopupButton& withChevron(int icon) { setChevronIcon(icon); return *this; }
+    protected:
 
-NAMESPACE_END(sdlgui)
+        Popup* mPopup = nullptr;
+        int mChevronIcon;
+
+        Texture _chevronTex;
+    };
+
+}

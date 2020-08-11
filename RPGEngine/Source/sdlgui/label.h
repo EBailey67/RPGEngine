@@ -11,54 +11,55 @@
 
 #pragma once
 
-#include <sdlgui/widget.h>
+#include "widget.h"
 
-NAMESPACE_BEGIN(sdlgui)
-
-/**
- * \class Label label.h sdl_gui/label.h
- *
- * \brief Text label widget.
- *
- * The font and color can be customized. When \ref Widget::setFixedWidth()
- * is used, the text is wrapped when it surpasses the specified width.
- */
-class  Label : public Widget 
+namespace GUI
 {
-public:
-    Label(Widget *parent, const std::string &caption,
-          const std::string &font = "sans", int fontSize = -1);
 
-    /// Get the label's text caption
-    const std::string &caption() const { return mCaption; }
-    /// Set the label's text caption
-    void setCaption(const std::string &caption) { mCaption = caption; }
+    /**
+     * \class Label label.h sdl_gui/label.h
+     *
+     * \brief Text label widget.
+     *
+     * The font and color can be customized. When \ref Widget::setFixedWidth()
+     * is used, the text is wrapped when it surpasses the specified width.
+     */
+    class  Label : public Widget
+    {
+    public:
+        Label(Widget* parent, const std::string& caption,
+            const std::string& font = "sans", int fontSize = -1);
 
-    /// Set the currently active font (2 are available by default: 'sans' and 'sans-bold')
-    void setFont(const std::string &font) { mFont = font; }
-    /// Get the currently active font
-    const std::string &font() const { return mFont; }
+        /// Get the label's text caption
+        const std::string& caption() const { return mCaption; }
+        /// Set the label's text caption
+        void setCaption(const std::string& caption) { mCaption = caption; }
 
-    /// Get the label color
-    Color color() const { return mColor; }
-    /// Set the label color
-    void setColor(const Color& color) { mColor = color; }
+        /// Set the currently active font (2 are available by default: 'sans' and 'sans-bold')
+        void setFont(const std::string& font) { mFont = font; }
+        /// Get the currently active font
+        const std::string& font() const { return mFont; }
 
-    /// Set the \ref Theme used to draw this widget
-    virtual void setTheme(Theme *theme) override;
+        /// Get the label color
+        Color color() const { return mColor; }
+        /// Set the label color
+        void setColor(const Color& color) { mColor = color; }
 
-    /// Compute the size needed to fully display the label
-    virtual Vector2i preferredSize(SDL_Renderer *ctx) const override;
+        /// Set the \ref Theme used to draw this widget
+        virtual void setTheme(Theme* theme) override;
 
-    /// Draw the label
-    void draw(SDL_Renderer *renderer) override;
-    void setFontSize(int fontSize) override;
+        /// Compute the size needed to fully display the label
+        virtual Vector2i preferredSize(SDL_Renderer* ctx) const override;
 
-protected:
-    std::string mCaption;
-    std::string mFont;
-    Color mColor;
-    Texture _texture;
-};
+        /// Draw the label
+        void draw(SDL_Renderer* renderer) override;
+        void setFontSize(int fontSize) override;
 
-NAMESPACE_END(sdlgui)
+    protected:
+        std::string mCaption;
+        std::string mFont;
+        Color mColor;
+        Texture _texture;
+    };
+
+}

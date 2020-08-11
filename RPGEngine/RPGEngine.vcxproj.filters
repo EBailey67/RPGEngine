@@ -537,7 +537,6 @@
     <None Include="resources\tiled_files\sprite.tsx" />
     <None Include="resources\tiled_files\tile.tsx" />
     <None Include="resources\tiled_files\map_test.tmx" />
-    <None Include="Source\sdlgui\darwin.mm" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="resources\fonts\dpcomic.ttf" />

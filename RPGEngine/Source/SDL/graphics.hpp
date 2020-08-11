@@ -47,6 +47,8 @@ private:
             SDL_THROW();
         }
 
+    	SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+
         SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, SDL_ALPHA_TRANSPARENT);
         CreateLayers();
     }

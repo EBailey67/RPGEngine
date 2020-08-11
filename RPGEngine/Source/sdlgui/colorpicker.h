@@ -12,30 +12,30 @@
 
 #pragma once
 
-#include <sdlgui/popupbutton.h>
+#include "popupbutton.h"
 
-NAMESPACE_BEGIN(sdlgui)
-
-class ColorWheel;
-
-class  ColorPicker : public PopupButton 
+namespace GUI
 {
-public:
-    ColorPicker(Widget *parent, const Color& color = { 1.f, 0.f, 0.f, 1.f });
+    class ColorWheel;
 
-    /// Set the change callback
-    std::function<void(const Color &)> callback() const                  { return mCallback; }
-    void setCallback(const std::function<void(const Color &)> &callback) { mCallback = callback; }
+    class  ColorPicker : public PopupButton
+    {
+    public:
+        ColorPicker(Widget* parent, const Color& color = { 1.f, 0.f, 0.f, 1.f });
 
-    /// Get the current color
-    Color color() const;
-    /// Set the current color
-    void setColor(const Color& color);
+        /// Set the change callback
+        std::function<void(const Color&)> callback() const { return mCallback; }
+        void setCallback(const std::function<void(const Color&)>& callback) { mCallback = callback; }
 
-protected:
-    std::function<void(const Color &)> mCallback;
-    ColorWheel *mColorWheel;
-    Button *mPickButton;
-};
+        /// Get the current color
+        Color color() const;
+        /// Set the current color
+        void setColor(const Color& color);
 
-NAMESPACE_END(sdlgui)
+    protected:
+        std::function<void(const Color&)> mCallback;
+        ColorWheel* mColorWheel;
+        Button* mPickButton;
+    };
+
+}

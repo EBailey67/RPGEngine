@@ -11,36 +11,37 @@
 
 #pragma once
 
-#include <sdlgui/widget.h>
+#include "widget.h"
 #include <memory>
 
-NAMESPACE_BEGIN(sdlgui)
-
-/**
- * \class ProgressBar progressbar.h sdl_gui/progressbar.h
- *
- * \brief Standard widget for visualizing progress.
- */
-class  ProgressBar : public Widget 
+namespace GUI
 {
-public:
-    ProgressBar(Widget *parent);
 
-    float value() { return mValue; }
-    void setValue(float value);
+    /**
+     * \class ProgressBar progressbar.h sdl_gui/progressbar.h
+     *
+     * \brief Standard widget for visualizing progress.
+     */
+    class  ProgressBar : public Widget
+    {
+    public:
+        ProgressBar(Widget* parent);
 
-    Vector2i preferredSize(SDL_Renderer *ctx) const override;
-    void draw(SDL_Renderer* renderer) override;
-    void drawBody(SDL_Renderer* renderer);
-    void drawBar(SDL_Renderer* renderer);
+        float value() { return mValue; }
+        void setValue(float value);
 
-protected:
-  float mValue;
+        Vector2i preferredSize(SDL_Renderer* ctx) const override;
+        void draw(SDL_Renderer* renderer) override;
+        void drawBody(SDL_Renderer* renderer);
+        void drawBar(SDL_Renderer* renderer);
 
-    struct AsyncTexture;
-    typedef std::shared_ptr<AsyncTexture> AsyncTexturePtr;
-    AsyncTexturePtr _body;
-    AsyncTexturePtr _bar;
-};
+    protected:
+        float mValue;
 
-NAMESPACE_END(sdlgui)
+        struct AsyncTexture;
+        typedef std::shared_ptr<AsyncTexture> AsyncTexturePtr;
+        AsyncTexturePtr _body;
+        AsyncTexturePtr _bar;
+    };
+
+}

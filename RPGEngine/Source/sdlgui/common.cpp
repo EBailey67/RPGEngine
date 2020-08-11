@@ -8,7 +8,7 @@
     BSD-style license that can be found in the LICENSE.txt file.
 */
 
-#include <sdlgui/screen.h>
+#include "screen.h""
 #include <windows.h>
 
 #include <SDL.h>
@@ -22,10 +22,10 @@
 #include <iostream>
 
 
-namespace sdlgui
+namespace GUI
 {
     NVGcolor Color::toNvgColor() const
-	{
+    {
         return reinterpret_cast<const NVGcolor&>(this->_d);
     }
 
@@ -78,7 +78,7 @@ namespace sdlgui
     }
 
     std::array<char, 8> utf8(int c)
-	{
+    {
         std::array<char, 8> seq;
         int n = 0;
         if (c < 0x80) n = 1;
@@ -89,7 +89,7 @@ namespace sdlgui
         else if (c <= 0x7fffffff) n = 6;
         seq[n] = '\0';
         switch (n)
-    	{
+        {
         case 6: seq[5] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x4000000;
         case 5: seq[4] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x200000;
         case 4: seq[3] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x10000;
@@ -102,7 +102,7 @@ namespace sdlgui
 
     constexpr int FILE_DIALOG_MAX_BUFFER = 1024;
     std::string file_dialog(const std::vector<std::pair<std::string, std::string>>& filetypes, bool save)
-	{
+    {
         OPENFILENAMEA ofn;
         ZeroMemory(&ofn, sizeof(OPENFILENAME));
         ofn.lStructSize = sizeof(OPENFILENAME);
@@ -114,7 +114,7 @@ namespace sdlgui
 
         std::string filter;
 
-        if (!save && filetypes.size() > 1) 
+        if (!save && filetypes.size() > 1)
         {
             filter.append("Supported file types (");
             for (size_t i = 0; i < filetypes.size(); ++i) {
@@ -134,7 +134,7 @@ namespace sdlgui
             filter.push_back('\0');
         }
 
-    	for (const auto& pair : filetypes) 
+        for (const auto& pair : filetypes)
         {
             filter.append(pair.second);
             filter.append(" (*.");
@@ -162,7 +162,7 @@ namespace sdlgui
     }
 
     void Object::decRef(bool dealloc) const noexcept
-	{
+    {
         --m_refCount;
         if (m_refCount == 0 && dealloc) {
             delete this;
