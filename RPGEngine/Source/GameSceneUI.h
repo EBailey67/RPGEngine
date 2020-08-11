@@ -135,13 +135,13 @@ namespace GUI
                                 SDL_QueryTexture(m_images_data[m_current_image], nullptr, nullptr, &w, &h);
 
                                 SDL_LockTexture(m_images_data[m_current_image], nullptr, &pixels, &pitch);
-                                Uint32* imageData = (Uint32*)pixels;
+                                auto* const imageData = static_cast<Uint32*>(pixels);
 
                                 std::string stringData;
                                 uint16_t channelSum = 0;
                                 for (int i = 0; i != 4; ++i)
                                 {
-                                    uint8_t* data = (uint8_t*)imageData;
+	                                auto data = reinterpret_cast<uint8_t*>(imageData);
                                     auto& channelData = data[4 * index.y * w + 4 * index.x + i];
                                     channelSum += channelData;
                                     stringData += (std::to_string(static_cast<int>(channelData)) + "\n");

@@ -23,8 +23,8 @@ namespace GUI
         ColorWheel(Widget* parent, const Color& color = { 1.f, 0.f, 0.f, 1.f });
 
         /// Set the change callback
-        std::function<void(const Color&)> callback() const { return mCallback; }
-        void setCallback(const std::function<void(const Color&)>& callback) { mCallback = callback; }
+        std::function<void(const Color&)> callback() const { return m_callback; }
+        void setCallback(const std::function<void(const Color&)>& callback) { m_callback = callback; }
 
         /// Get the current color
         Color color() const;
@@ -33,11 +33,15 @@ namespace GUI
 
         Vector2i preferredSize(SDL_Renderer* ctx) const override;
         void draw(SDL_Renderer* renderer) override;
-        bool mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers);
-        bool mouseDragEvent(const Vector2i& p, const Vector2i& rel, int button, int modifiers);
+        void drawBody(SDL_Renderer* renderer);
+        void drawBodyTemp(SDL_Renderer* renderer);
+
+        bool mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) override;
+        bool mouseDragEvent(const Vector2i& p, const Vector2i& rel, int button, int modifiers) override;
 
     private:
-        enum Region {
+        enum Region
+    	{
             None = 0,
             InnerTriangle = 1,
             OuterCircle = 2,
@@ -48,11 +52,17 @@ namespace GUI
         Region adjustPosition(const Vector2i& p, Region consideredRegions = Both);
 
     protected:
-        float mHue;
-        float mWhite;
-        float mBlack;
-        Region mDragRegion;
-        std::function<void(const Color&)> mCallback;
+        virtual void renderBodyTexture(NVGcontext*& ctx, int& realw, int& realh);
+
+        float m_hue;
+        float m_white;
+        float m_black;
+        Region m_drag_region;
+        std::function<void(const Color&)> m_callback;
+
+        struct AsyncTexture;
+        typedef std::shared_ptr<AsyncTexture> AsyncTexturePtr;
+        std::vector<AsyncTexturePtr> _txs;
     };
 
 }
