@@ -43,6 +43,7 @@ private:
             {
                 Graphics::DestroyLayers();
                 Graphics::CreateLayers();
+            	m_scene->ResizeEvent();
             }
 
         	m_scene->InputUpdate();
@@ -63,10 +64,9 @@ private:
     void Render() const
     {
         Graphics::OnRenderStart();
-
         m_scene->Render();
-
         Graphics::DrawLayers();
+        m_scene->RenderUI();
         Graphics::RenderPresent();
     }
 
@@ -155,7 +155,7 @@ public:
         return m_isRunning;
     }
 
-    auto Scene() const noexcept
+    [[nodiscard]] auto Scene() const noexcept
     {
         return m_scene.get();
     }

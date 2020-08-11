@@ -1,7 +1,7 @@
 #pragma once
 
 /*
-    sdlgui/screen.h -- Top-level widget and interface between sdlgui and SDL
+    screen.h -- Top-level widget and interface between sdlgui and SDL
 
     A significant redesign of this code was contributed by Christian Schueller.
 
@@ -37,16 +37,16 @@ namespace GUI
         virtual ~Screen();
 
         /// Get the window titlebar caption
-        const std::string& caption() const { return mCaption; }
+        const std::string& caption() const { return m_caption; }
 
         /// Set the window titlebar caption
         void setCaption(const std::string& caption);
 
         /// Return the screen's background color
-        const Color& background() const { return mBackground; }
+        const Color& background() const { return m_background; }
 
         /// Set the screen's background color
-        void setBackground(const Color& background) { mBackground = background; }
+        void setBackground(const Color& background) { m_background = background; }
 
         /// Set the top-level window visibility (no effect on full-screen windows)
         void setVisible(bool visible);
@@ -55,7 +55,7 @@ namespace GUI
         void setSize(const Vector2i& size);
 
         /// Return the ratio between pixel and device coordinates (e.g. >= 2 on Mac Retina displays)
-        float pixelRatio() const { return mPixelRatio; }
+        float pixelRatio() const { return m_pixel_ratio; }
 
         virtual bool onEvent(const SDL_Event& event);
 
@@ -77,13 +77,13 @@ namespace GUI
         virtual void drawAll();
 
         /// Return the last observed mouse position value
-        Vector2i mousePos() const { return mMousePos; }
+        Vector2i mousePos() const { return m_mouse_pos; }
 
         /// Return a pointer to the underlying GLFW window data structure
-        SDL_Window* window() { return _window; }
+        SDL_Window* window() const { return _window; }
 
         /// Return a pointer to the underlying nanoVG draw context
-        SDL_Renderer* sdlRenderer() { return mSDL_Renderer; }
+        SDL_Renderer* sdlRenderer() const { return m_sdl_renderer; }
 
         /// Compute the layout of all widgets
         void performLayout();
@@ -105,26 +105,26 @@ namespace GUI
         /* Internal helper functions */
         void updateFocus(Widget* widget);
         void disposeWindow(Window* window);
-        void centerWindow(Window* window);
+        void centerWindow(Window* window) const;
         void moveWindowToFront(Window* window);
         void drawWidgets();
 
-        void performLayout(SDL_Renderer* renderer);
+        void performLayout(SDL_Renderer* renderer) override;
 
     protected:
         SDL_Window* _window;
-        std::vector<Widget*> mFocusPath;
-        SDL_Renderer* mSDL_Renderer;
-        Vector2i mFBSize;
-        float mPixelRatio;
-        int mMouseState, mModifiers;
-        Vector2i mMousePos;
-        bool mDragActive;
-        Widget* mDragWidget = nullptr;
-        double mLastInteraction;
-        bool mProcessEvents;
-        Color mBackground;
-        std::string mCaption;
+        std::vector<Widget*> m_focus_path;
+        SDL_Renderer* m_sdl_renderer;
+        Vector2i m_fb_size;
+        float m_pixel_ratio;
+        int m_mouse_state, m_modifiers;
+        Vector2i m_mouse_pos;
+        bool m_drag_active;
+        Widget* m_drag_widget = nullptr;
+        double m_last_interaction;
+        bool m_process_events;
+        Color m_background;
+        std::string m_caption;
         std::string _lastTooltip;
         Texture _tooltipTex;
     };

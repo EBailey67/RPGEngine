@@ -290,7 +290,7 @@ namespace GUI
         Widget* widget = this;
         while (widget->parent())
             widget = widget->parent();
-        ((Screen*)widget)->disposeWindow(this);
+        dynamic_cast<Screen*>(widget)->disposeWindow(this);
     }
 
     void Window::center()
@@ -298,11 +298,10 @@ namespace GUI
         Widget* widget = this;
         while (widget->parent())
             widget = widget->parent();
-        ((Screen*)widget)->centerWindow(this);
+        dynamic_cast<Screen*>(widget)->centerWindow(this);
     }
 
-    bool Window::mouseDragEvent(const Vector2i&, const Vector2i& rel,
-        int button, int /* modifiers */)
+    bool Window::mouseDragEvent(const Vector2i&, const Vector2i& rel, const int button, int /* modifiers */)
     {
         if (mDrag && (button & (1 << SDL_BUTTON_LEFT)) != 0)
         {

@@ -7,13 +7,13 @@
 #include "core.hpp"
 #include "sdlgui/entypo.h"
 #include "Systems/systems.hpp"
-#include "UI/UISystem.h"
 #include "sdlgui/button.h"
 #include "sdlgui/label.h"
 #include "sdlgui/screen.h"
 #include "sdlgui/screen.h"
 #include "sdlgui/window.h"
 // #include "xml/pugixml.hpp"
+#include "GameSceneUI.h"
 
 constexpr auto tileid = "tileset";
 constexpr auto spriteid = "spritesheet";
@@ -21,10 +21,7 @@ constexpr auto spriteid = "spritesheet";
 class GameScene : public BasicScene
 {
 public:
-	std::shared_ptr<UILabel> label_score;
-	std::shared_ptr<UILabel> label_health;
-	std::shared_ptr<UILabel> label_FPS;
-	GUI::Screen* ui;
+	GUI::GameSceneUI* gameUI;
 
 	GameScene(const GameScene&) = delete;
 	GameScene& operator=(const GameScene&) = delete;
@@ -53,9 +50,9 @@ public:
 		textureCache.load(tileid, ResourceLoader::Sprite("resources/tiled_files/GameTiles.png"));
 		textureCache.load(spriteid, ResourceLoader::Sprite("resources/sprites/spritesheet.png"));
 
-		fontCache.load(GetUIFontName(UIFont::Debug), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
-		//	fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
-		fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/kongtext.ttf", 12));
+		//fontCache.load(GetUIFontName(UIFont::Debug), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
+		////	fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
+		//fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/kongtext.ttf", 12));
 
 		scoreTable.Open("resources/score.txt");
 
@@ -74,40 +71,10 @@ public:
 		EnemyCreate(Enemy::spawns[5]);
 		Enemy::currentSpawn = 6;
 
-		auto panel = std::make_shared<UIPanel>(50, 50, 200, 200);
-		panel->SetActive(true);
-		panel->color.a = 128;
-		m_uiSystem->AddComponent("Test", panel);
-
-		auto label = std::make_shared<UILabel>(4, 4, "Hello World\nGoodbye World");
-		label->SetActive(true);
-		panel->AddChild("HW", label);
-
-		label_score = std::make_shared<UILabel>(4, 46, "Score : 0");
-		label_score->SetActive(true);
-		panel->AddChild("Score", label_score);
-
-		label_health = std::make_shared<UILabel>(4, 66, "Health : 0");
-		label_health->SetActive(true);
-		panel->AddChild("Health", label_health);
-
-		label_FPS = std::make_shared<UILabel>(4, 86, "FPS : 0");
-		label_FPS->SetActive(true);
-		panel->AddChild("FPS", label_FPS);
-
 		int ww;
 		int wh;
 		SDL_GetWindowSize(Graphics::Window(), &ww, &wh);
-		ui = new GUI::Screen(Graphics::Window(), GUI::Vector2i(ww, wh), "Sample");
-
-		auto& nwindow = ui->window("Window", GUI::Vector2i{ 200, 200 }).withLayout<GUI::GroupLayout>	();
-		nwindow.label("Push buttons", "sans-bold")._and()
-			.button("Plain button", [] { std::cout << "pushed!" << std::endl; })
-			.withTooltip("This is plain button tips");
-
-		nwindow.button("Super Styled", ENTYPO_ICON_ROCKET, [] { std::cout << "pushed!" << std::endl; })
-			.withBackgroundColor(GUI::Color(0, 0, 255, 25));
-		ui->performLayout(Graphics::Renderer());
+		gameUI = new GUI::GameSceneUI(Graphics::Window(), ww, wh);
 	}
 
 	void FixedUpdate() override
@@ -116,14 +83,13 @@ public:
 		CameraFollow();
 		CollisionDetection();
 		HealthUpdate();
-		m_uiSystem->OnFixedUpdate();
 	}
 
 	void Update(const float dt) override
 	{
 		auto* game = Instances::GetGameInstance();
 		auto* gs = dynamic_cast<GameScene*>(game->Scene());
-		gs->label_FPS->SetText("FPS :" + std::to_string(game->fps_counter.GetFrameRate()));
+		// gs->label_FPS->SetText("FPS :" + std::to_string(game->fps_counter.GetFrameRate()));
 
 		CollisionTileDetection(dt);
 		AnimationUpdate(dt);
@@ -132,17 +98,15 @@ public:
 		PlayerMovement(dt);
 		PlayerAttack(dt);
 		ParticleUpdate(dt);
-		m_uiSystem->OnUpdate(dt);
 	}
 
 	void InputUpdate() override
 	{
-		if (ui->onEvent(Events::Event()))
+		if (gameUI->onEvent(Events::Event()))
 			return;
 		CameraUpdateDebug();
 		OpenGame();
 		DebugMode();
-		m_uiSystem->OnInputUpdate();
 	}
 
 	void Render() override
@@ -151,13 +115,18 @@ public:
 		SpriteRender();
 		PositionDebug();
 		RectDebug();
-		m_uiSystem->OnRender();
-		ui->drawAll();
 	}
 
-	
+	virtual void RenderUI() override
+	{
+		gameUI->drawAll();
+	}
+
+	virtual void ResizeEvent() override
+	{
+		gameUI->resizeCallbackEvent(0, 0);
+	}
 private:
-	std::unique_ptr<UISystem> m_uiSystem = std::make_unique<UISystem>();
 };
 
 

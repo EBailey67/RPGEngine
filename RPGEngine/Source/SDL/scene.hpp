@@ -20,4 +20,13 @@ public:
     virtual void Render()
     {
     }
+
+    virtual void RenderUI()
+    {
+    }
+
+	virtual void ResizeEvent()
+    {
+	    
+    }
 };

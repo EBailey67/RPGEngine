@@ -1,7 +1,6 @@
 #include "spritesystem.hpp"
 
 #include "../core.hpp"
-#include "../UI/UIElement.h"
 
 void SpriteRender()
 {
@@ -232,8 +231,8 @@ void ResetTable()
         {
             text = " ";
         }
-        textureCache.load("table" + std::to_string(i),
-                          ResourceLoader::Text(fontCache.resource(GetUIFontName(UIFont::Default)), text, {255, 255, 255, 255}));
+        //textureCache.load("table" + std::to_string(i),
+        //                  ResourceLoader::Text(fontCache.resource(GetUIFontName(UIFont::Default)), text, {255, 255, 255, 255}));
         label.AssignTexture(textureCache.resource("table" + std::to_string(i)));
         i--;
     }
@@ -248,9 +247,9 @@ void ResetName()
     for (auto &entt : view_player)
     {
         auto &player = view_player.get<Player>(entt);
-        textureCache.load("name",
-                          ResourceLoader::Text(fontCache.resource(GetUIFontName(UIFont::Default)),
-                                                    (player.name.empty() ? " " : player.name), {255, 255, 255, 255}));
+        //textureCache.load("name",
+        //                  ResourceLoader::Text(fontCache.resource(GetUIFontName(UIFont::Default)),
+        //                                            (player.name.empty() ? " " : player.name), {255, 255, 255, 255}));
 
         label.AssignTexture(textureCache.resource("name"));
     }

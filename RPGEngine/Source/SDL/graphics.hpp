@@ -95,28 +95,6 @@ private:
         m_currentLayer = reset_layer;
     }
 
-    static void RenderTarget(Layer layer)
-    {
-        if (SDL_SetRenderTarget(m_renderer, m_layers.at(static_cast<int>(layer))))
-        {
-            SDL_THROW();
-        }
-        m_currentLayer = layer;
-    }
-
-    static void ResetRenderer()
-    {
-        if (SDL_SetRenderTarget(m_renderer, nullptr))
-        {
-            SDL_THROW();
-        }
-    }
-
-    static void TargetClear()
-    {
-        SDL_RenderClear(m_renderer);
-    }
-
     static void RenderPresent()
     {
         SDL_RenderPresent(m_renderer);
@@ -146,7 +124,31 @@ private:
     }
 
 public:
-    static std::pair<int, int> WindowSize() noexcept
+    static void RenderTarget(Layer layer)
+    {
+        if (SDL_SetRenderTarget(m_renderer, m_layers.at(static_cast<int>(layer))))
+        {
+            SDL_THROW();
+        }
+        m_currentLayer = layer;
+    }
+
+    static void ResetRenderer()
+    {
+        if (SDL_SetRenderTarget(m_renderer, nullptr))
+        {
+            SDL_THROW();
+        }
+    }
+
+    static void TargetClear()
+    {
+    	SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, SDL_ALPHA_TRANSPARENT);
+        SDL_RenderClear(m_renderer);
+    }
+
+	static std::pair<int, int> WindowSize() noexcept
     {
         SSECS_ASSERT(m_window);
         int w, h;

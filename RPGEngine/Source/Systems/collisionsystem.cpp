@@ -274,14 +274,14 @@ void OnHit(const CollisionData &lhs, const CollisionData &rhs)
 
 void SetPlayerHealth(const int hp)
 {
-	auto* game = Instances::GetGameInstance();
-    auto* gs = dynamic_cast<GameScene *>(game->Scene());
-    gs->label_health->SetText("Health :" + std::to_string(hp));
+	//auto* game = Instances::GetGameInstance();
+ //   auto* gs = dynamic_cast<GameScene *>(game->Scene());
+ //   gs->label_health->SetText("Health :" + std::to_string(hp));
 }
 
 void SetPlayerScore(const int score)
 {
-	auto* game = Instances::GetGameInstance();
-    auto* gs = dynamic_cast<GameScene*>(game->Scene());
-    gs->label_score->SetText("Score :" + std::to_string(score));
+	//auto* game = Instances::GetGameInstance();
+ //   auto* gs = dynamic_cast<GameScene*>(game->Scene());
+ //   gs->label_score->SetText("Score :" + std::to_string(score));
 }

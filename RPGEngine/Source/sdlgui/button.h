@@ -1,5 +1,5 @@
 /*
-    sdlgui/button.h -- [Normal/Toggle/Radio/Popup] Button widget
+    button.h -- [Normal/Toggle/Radio/Popup] Button widget
 
     Based on NanoGUI by Wenzel Jakob <wenzel@inf.ethz.ch>.
     Adaptation for SDL by Dalerank <dalerankn8@gmail.com>
@@ -18,7 +18,7 @@
 namespace GUI
 {
     /**
-     * \class Button button.h sdlgui/button.h
+     * \class Button
      *
      * \brief [Normal/Toggle/Radio/Popup] Button widget.
      */
@@ -26,7 +26,8 @@ namespace GUI
     {
     public:
         /// Flags to specify the button behavior (can be combined with binary OR)
-        enum Flags {
+        enum Flags
+    	{
             NormalButton = (1 << 0), // 1
             RadioButton = (1 << 1), // 2
             ToggleButton = (1 << 2), // 4
@@ -34,7 +35,8 @@ namespace GUI
         };
 
         /// The available icon positions.
-        enum class IconPosition {
+        enum class IconPosition
+    	{
             Left,
             LeftCentered,
             RightCentered,
@@ -43,15 +45,20 @@ namespace GUI
 
         Button(Widget* parent, const std::string& caption = "Untitled", int icon = 0);
         Button(Widget* parent, const std::string& caption, const std::function<void()>& callback)
-            : Button(parent, caption) {
+            : Button(parent, caption)
+    	{
             setCallback(callback);
         }
-        Button(Widget* parent, const std::string& caption, int icon, const std::function<void()>& callback)
-            : Button(parent, caption, icon) {
+
+    	Button(Widget* parent, const std::string& caption, int icon, const std::function<void()>& callback)
+            : Button(parent, caption, icon)
+    	{
             setCallback(callback);
         }
-        Button(Widget* parent, const std::string& caption, const std::function<void(bool state)>& callback)
-            : Button(parent, caption) {
+
+    	Button(Widget* parent, const std::string& caption, const std::function<void(bool state)>& callback)
+            : Button(parent, caption)
+    	{
             setChangeCallback(callback);
         }
 
@@ -64,7 +71,7 @@ namespace GUI
         const Color& textColor() const { return mTextColor; }
         void setTextColor(const Color& textColor);
 
-        int icon() const { return mIcon; }
+        int icon() const { return static_cast<int>(mIcon); }
         void setIcon(int icon) { mIcon = icon; }
 
         int flags() const { return mFlags; }
