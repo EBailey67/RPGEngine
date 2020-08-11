@@ -87,10 +87,6 @@ public:
 
 	void Update(const float dt) override
 	{
-		auto* game = Instances::GetGameInstance();
-		auto* gs = dynamic_cast<GameScene*>(game->Scene());
-		// gs->label_FPS->SetText("FPS :" + std::to_string(game->fps_counter.GetFrameRate()));
-
 		CollisionTileDetection(dt);
 		AnimationUpdate(dt);
 		MovementUpdate(dt);
