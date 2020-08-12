@@ -34,11 +34,6 @@ namespace GUI
 				layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
 				layout->setSpacing(0, 10);
 				window.setLayout(layout);
-
-				window.theme()->mWindowDropShadowSize = 4;
-                window.theme()->mWindowCornerRadius = 4;
-				window.theme()->mWindowHeaderGradientTop = Color(0, 192, 0, 255);
-				window.theme()->mWindowHeaderGradientBot = Color(0, 32, 0, 255);
 					
                 for (auto& ability : abilities)
                 {
@@ -66,11 +61,6 @@ namespace GUI
 				layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
 				layout->setSpacing(0, 10);
 				window.setLayout(layout);
-
-				window.theme()->mWindowDropShadowSize = 4;
-                window.theme()->mWindowCornerRadius = 4;
-				//window.theme()->mWindowHeaderGradientTop = Color(0, 192, 0, 255);
-				//window.theme()->mWindowHeaderGradientBot = Color(0, 32, 0, 255);
 					
                 window.add<Label>("Framerate :", "sans-bold");
 				auto& label = window.wdg<Label>("FPS");
@@ -78,6 +68,49 @@ namespace GUI
                 }
 			}
 
+			{
+
+				{
+				// Create the window
+//				auto& window = wdg<Window>("Player Status").withLayout<GroupLayout>();
+				auto& window = wdg<Widget>().withLayout<GroupLayout>();
+				window.withPosition({rwidth / 2 - 150, 0});
+				
+
+				// Health Bar
+
+				auto& panel = window.wdg<Widget>();
+                panel.setLayout(new BoxLayout(Orientation::Horizontal,
+                    Alignment::Middle, 0, 6));
+
+                panel.add<Label>("HP :", "sans-bold")->setFixedWidth(32);
+				auto& healthBar = panel.wdg<ProgressBar>();
+
+				healthBar.withId("HP");
+				healthBar.setFixedWidth(200);
+				healthBar.setValue(1.0f);
+                 ref<Theme> t = new Theme();
+				healthBar.setTheme(t);
+				healthBar.theme()->mProgressBarTop = Color(192, 64, 64, 255);
+				healthBar.theme()->mProgressBarBot = Color(96, 8, 8, 255);
+					
+                // Mana Bar
+                auto& mana_panel = window.wdg<Widget>();
+                mana_panel.setLayout(new BoxLayout(Orientation::Horizontal,
+                    Alignment::Middle, 0, 6));
+
+				mana_panel.add<Label>("MP :", "sans-bold")->setFixedWidth(32);
+				auto& manaBar = mana_panel.wdg<ProgressBar>();
+				manaBar.withId("MP");
+				manaBar.setFixedWidth(200);
+				manaBar.setValue(0.5f);
+                 ref<Theme> tMana = new Theme();
+				manaBar.setTheme(tMana);
+				manaBar.theme()->mProgressBarTop = Color(96, 96, 255, 255);
+				manaBar.theme()->mProgressBarBot = Color(32, 32, 96, 255);
+					
+                }
+			}
 		
 #if 0
 	            {

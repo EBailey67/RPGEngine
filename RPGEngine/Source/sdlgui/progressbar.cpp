@@ -83,8 +83,8 @@ namespace GUI
 
                 NVGpaint paint = nvgBoxGradient(
                     ctx, 0, 0,
-                    barPos + 1.5f, hh - 1, 3, 4,
-                    Color(220, 100).toNvgColor(), Color(128, 100).toNvgColor());
+                    barPos + 1.5f, hh - 1, 5, 7,
+                    ptr->mTheme->mProgressBarTop.toNvgColor(), ptr->mTheme->mProgressBarBot.toNvgColor());
 
                 nvgBeginPath(ctx);
                 nvgRoundedRect(ctx, 1, 1, barPos, hh - 2, 3);

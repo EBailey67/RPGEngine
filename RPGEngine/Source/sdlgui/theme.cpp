@@ -23,7 +23,7 @@ namespace GUI
         std::map<std::string, TTF_Font*> fonts;
     }
 
-    Theme::Theme(SDL_Renderer* ctx)
+    Theme::Theme()
 	{
         mStandardFontSize = 16;
         mButtonFontSize = 20;
@@ -67,6 +67,9 @@ namespace GUI
         mSliderKnobOuter = Color(92, 255);
         mSliderKnobInner = Color(220, 255);
 
+    	/* Progress Bar */
+    	mProgressBarTop = Color(220, 100);
+    	mProgressBarBot = Color(128, 100);
 
         mWindowHeaderGradientTop = mButtonGradientTopUnfocused;
         mWindowHeaderGradientBot = mButtonGradientBotUnfocused;
@@ -75,8 +78,6 @@ namespace GUI
 
         mWindowPopup = Color(50, 255);
         mWindowPopupTransparent = Color(50, 0);
-
-        TTF_Init();
     }
 
     TTF_Font* getFont(const char* fontname, size_t ptsize)

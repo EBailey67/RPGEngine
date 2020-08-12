@@ -34,7 +34,7 @@ namespace GUI
 
     Widget::~Widget()
     {
-        for (auto child : mChildren)
+        for (auto* child : mChildren)
         {
             if (child)
                 child->decRef();
@@ -46,7 +46,7 @@ namespace GUI
         if (mTheme.get() == theme)
             return;
         mTheme = theme;
-        for (auto child : mChildren)
+        for (auto* child : mChildren)
             child->setTheme(theme);
     }
 
@@ -187,7 +187,7 @@ namespace GUI
         return false;
     }
 
-    void Widget::addChild(int index, Widget* widget)
+    void Widget::addChild(const int index, Widget* widget)
     {
         assert(index <= childCount());
         mChildren.insert(mChildren.begin() + index, widget);

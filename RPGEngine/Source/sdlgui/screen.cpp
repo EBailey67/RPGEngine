@@ -100,7 +100,7 @@ namespace GUI
 			throw std::runtime_error("Could not initialize NanoVG!");
 
 		mVisible = true;
-		mTheme = new Theme(m_sdl_renderer);
+		mTheme = new Theme();
 		m_mouse_pos = { 0, 0 };
 		m_mouse_state = m_modifiers = 0;
 		m_drag_active = false;

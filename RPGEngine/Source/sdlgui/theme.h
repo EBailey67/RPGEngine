@@ -9,7 +9,6 @@
     All rights reserved. Use of this source code is governed by a
     BSD-style license that can be found in the LICENSE.txt file.
 */
-/** \file */
 
 #pragma once
 
@@ -26,16 +25,16 @@ namespace GUI
     struct Texture
     {
         SDL_Texture* tex = nullptr;
-        SDL_Rect rrect;
+        SDL_Rect rrect{0, 0, 0, 0};
         bool dirty = false;
 
-        inline int w() const { return rrect.w; }
-        inline int h() const { return rrect.h; }
+        int w() const { return rrect.w; }
+        int h() const { return rrect.h; }
     };
 
     void SDL_RenderCopy(SDL_Renderer* renderer, Texture& tex, const Vector2i& pos);
     /**
-     * \class Theme theme.h sdlgui/theme.h
+     * \class Theme 
      *
      * \brief Storage class for basic theme-related properties.
      */
@@ -43,8 +42,8 @@ namespace GUI
     class  Theme : public Object
     {
     public:
-        Theme(SDL_Renderer* ctx);
-
+        Theme();
+    	
         /* Spacing-related parameters */
         int mStandardFontSize;
         int mButtonFontSize;
@@ -88,10 +87,15 @@ namespace GUI
         Color mWindowTitleUnfocused;
         Color mWindowTitleFocused;
 
-        /* Slider coloes */
+        /* Slider colors */
         Color mSliderKnobOuter;
         Color mSliderKnobInner;
 
+        /* Progress bar colors*/
+        Color mProgressBarTop;
+    	Color mProgressBarBot;
+
+    	
         Color mWindowHeaderGradientTop;
         Color mWindowHeaderGradientBot;
         Color mWindowHeaderSepTop;
@@ -118,7 +122,7 @@ namespace GUI
             const char* fontname, size_t ptsize, const Color& textColor);
 
     protected:
-        virtual ~Theme() { };
+        virtual ~Theme() = default;
     };
 
 }

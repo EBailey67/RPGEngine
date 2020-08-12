@@ -21,11 +21,12 @@ namespace GUI
     class Widget;
 
     /// The different kinds of alignments a layout can perform.
-    enum class Alignment : uint8_t {
-        Minimum = 0,
-        Middle,
-        Maximum,
-        Fill
+    enum class Alignment : uint8_t
+	{
+        Minimum = 0,    // Take only as much space as is required
+        Middle,         // Center align
+        Maximum,        // Take as much space as allowed
+        Fill            // Fill according to preferred sizes
     };
 
     /// The direction of data flow for a layout.

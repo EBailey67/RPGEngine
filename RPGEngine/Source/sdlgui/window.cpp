@@ -181,7 +181,7 @@ namespace GUI
         {
             mButtonPanel->setVisible(false);
             Widget::performLayout(ctx);
-            for (auto w : mButtonPanel->children())
+            for (auto* w : mButtonPanel->children())
             {
                 w->setFixedSize({ 22, 22 });
                 w->setFontSize(15);
@@ -193,7 +193,7 @@ namespace GUI
         }
     }
 
-    bool Window::focusEvent(bool focused)
+    bool Window::focusEvent(const bool focused)
     {
         _titleTex.dirty = focused != mFocused;
         return Widget::focusEvent(focused);

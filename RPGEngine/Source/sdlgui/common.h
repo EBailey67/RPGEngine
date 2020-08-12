@@ -48,7 +48,7 @@ namespace GUI
     ListImages loadImageDirectory(SDL_Renderer* renderer, const std::string& path);
 
     /**
-    * \class Object object.h sdlgui/object.h
+    * \class Object object.h 
     *
     * \brief Reference counted object base class.
     */
@@ -203,22 +203,6 @@ namespace GUI
     {
     public:
         Color() : Color(0, 0, 0, 0) {}
-
-        //Color(const Eigen::Vector4f &color) : Eigen::Vector4f(color) { }
-
-        //Color(const Eigen::Vector3f &color, float alpha)
-          //  : Color(color(0), color(1), color(2), alpha) { }
-
-        //Color(const Eigen::Vector3i &color, int alpha)
-          //  : Color(color.cast<float>() / 255.f, alpha / 255.f) { }
-
-        //Color(const Eigen::Vector3f &color) : Color(color, 1.0f) {}
-
-        //Color(const Eigen::Vector3i &color)
-          //  : Color((Vector3f)(color.cast<float>() / 255.f)) { }
-
-        //Color(const Eigen::Vector4i &color)
-          //  : Color((Vector4f)(color.cast<float>() / 255.f)) { }
 
         Color(float intensity, float alpha)
         {

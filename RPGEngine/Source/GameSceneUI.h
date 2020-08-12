@@ -27,8 +27,6 @@
 #include "sdlgui/formhelper.h"
 
 #include <SDL.h>
-
-
 #include "SDL/graphics.hpp"
 
 
@@ -40,7 +38,7 @@ namespace GUI
         GameSceneUI(SDL_Window* pwindow, int rwidth, int rheight);
         ~GameSceneUI() = default;
 
-        bool keyboardEvent(int key, int scancode, int action, int modifiers) override
+        bool keyboardEvent(const int key, const int scancode, const int action, const int modifiers) override
         {
             if (Screen::keyboardEvent(key, scancode, action, modifiers))
                 return true;
@@ -56,7 +54,7 @@ namespace GUI
         void draw(SDL_Renderer* renderer) override;
         void drawContents() override  {}
     private:
-        std::vector<SDL_Texture*> m_images_data;
-        int m_current_image;
+        // std::vector<SDL_Texture*> m_images_data;
+        // int m_current_image;
     };
 }
