@@ -3,6 +3,7 @@
 #include "../core.hpp"
 #include "playerinputsystem.hpp"
 #include "../game_scene.hpp"
+#include "../sdlgui/widget.h"
 
 std::pair<Vector2D, Vector2D> AABBW(const SDL_FRect &lhs, const SDL_FRect &rhs)
 {
@@ -274,6 +275,7 @@ void OnHit(const CollisionData &lhs, const CollisionData &rhs)
 
 void SetPlayerHealth(const int hp)
 {
+	
 	//auto* game = Instances::GetGameInstance();
  //   auto* gs = dynamic_cast<GameScene *>(game->Scene());
  //   gs->label_health->SetText("Health :" + std::to_string(hp));

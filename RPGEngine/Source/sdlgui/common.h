@@ -56,7 +56,7 @@ namespace GUI
     {
     public:
         /// Default constructor
-        Object() { }
+        Object() = default;
 
         /// Copy constructor
         Object(const Object&) : m_refCount(0) {}

@@ -65,6 +65,8 @@ namespace GUI
                 window.add<Label>("Framerate :", "sans-bold");
 				auto& label = window.wdg<Label>("FPS");
 				label.withId("FPS");
+
+				window.add<Button>("Debug Overlay");
                 }
 			}
 
@@ -74,7 +76,7 @@ namespace GUI
 				// Create the window
 				auto& window = wdg<Window>("Status").withLayout<GroupLayout>();
 //				auto& window = wdg<Widget>().withLayout<GroupLayout>();
-				window.withPosition({rwidth - 150, 0});
+				window.withPosition({rwidth / 2 - 150, 0});
 				
 
 				// Health Bar
@@ -95,19 +97,30 @@ namespace GUI
 				healthBar.theme()->mProgressBarBot = Color(96, 8, 8, 255);
 					
                 // Mana Bar
-                auto& mana_panel = window.wdg<Widget>();
-                mana_panel.setLayout(new BoxLayout(Orientation::Horizontal,
-                    Alignment::Middle, 0, 6));
+    //            auto& mana_panel = window.wdg<Widget>();
+    //            mana_panel.setLayout(new BoxLayout(Orientation::Horizontal,
+    //                Alignment::Middle, 0, 6));
 
-				mana_panel.add<Label>("MP :", "sans-bold")->setFixedWidth(32);
-				auto& manaBar = mana_panel.wdg<ProgressBar>();
-				manaBar.withId("MP");
-				manaBar.setFixedWidth(200);
-				manaBar.setValue(0.5f);
-                 ref<Theme> tMana = new Theme();
-				manaBar.setTheme(tMana);
-				manaBar.theme()->mProgressBarTop = Color(96, 96, 255, 255);
-				manaBar.theme()->mProgressBarBot = Color(32, 32, 96, 255);
+				//mana_panel.add<Label>("MP :", "sans-bold")->setFixedWidth(32);
+				//auto& manaBar = mana_panel.wdg<ProgressBar>();
+				//manaBar.withId("MP");
+				//manaBar.setFixedWidth(200);
+				//manaBar.setValue(0.5f);
+    //             ref<Theme> tMana = new Theme();
+				//manaBar.setTheme(tMana);
+				//manaBar.theme()->mProgressBarTop = Color(96, 96, 255, 255);
+				//manaBar.theme()->mProgressBarBot = Color(32, 32, 96, 255);
+
+                auto& score = window.label("Score : 0", "sans-bold").withId("SCORE");
+                auto& dash = window.label("Dash : Available", "sans-bold").withId("DASH");
+									
+                //auto& tools = window.widget().boxlayout(Orientation::Horizontal, Alignment::Middle, 0, 6);
+
+                //tools.toolbutton(ENTYPO_ICON_CLOUD, "", 64, 64, Button::Flags::NormalButton)._and()
+                //    .toolbutton(ENTYPO_ICON_FF, "", 64, 64, Button::Flags::NormalButton)._and()
+                //    .toolbutton(ENTYPO_ICON_COMPASS, "", 64, 64, Button::Flags::NormalButton)._and()
+                //    .toolbutton(ENTYPO_ICON_INSTALL, "", 64, 64, Button::Flags::NormalButton);
+
 					
                 }
 			}
@@ -449,12 +462,36 @@ namespace GUI
 	    	
         	pfps->setCaption(std::to_string(frameRate));
         }
-        if (auto* pbar = gfind<ProgressBar>("progressbar"))
+
+	    const auto playerView = registry.view<Player, Hierarchy, Position, Health, Dash>();
+		auto &&[player, hierarchy, health, pos, dash] = registry.get<Player, Hierarchy, Health, Position, Dash>(*playerView.begin());
+
+        if (auto* pbar = gfind<ProgressBar>("HP"))
         {
-            pbar->setValue(pbar->value() + 0.001f);
-            if (pbar->value() >= 1.f)
-                pbar->setValue(0.f);
+            pbar->setValue(static_cast<float>(health.health) / 3.0f);
         }
+
+		
+        if (auto* plabel = gfind<Label>("SCORE"))
+        {
+            plabel->setCaption("Score :" + std::to_string(player.score));
+        }
+
+        if (auto* plabel = gfind<Label>("DASH"))
+        {
+        	if(dash.canDashing)
+        	{
+				plabel->setCaption("Dash Available");
+        		plabel->setColor(Color(0, 192, 0, 255));
+            }
+        	else
+            {
+                plabel->setCaption("Dash NO");
+        		plabel->setColor(Color(192, 0, 0, 255));
+            }
+        }
+
+		
         Screen::draw(renderer);
     }
 

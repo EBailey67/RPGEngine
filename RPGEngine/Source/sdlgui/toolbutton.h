@@ -18,12 +18,11 @@ namespace GUI
     class ToolButton : public Button
     {
     public:
-        ToolButton(Widget* parent, int icon,
-            const std::string& caption = "")
+        ToolButton(Widget* parent, const int icon, const std::string& caption = "", const int w = 25, const int h = 25, const int flags = Flags::RadioButton | Flags::ToggleButton)
             : Button(parent, caption, icon)
         {
-            setFlags(Flags::RadioButton | Flags::ToggleButton);
-            setFixedSize(Vector2i(25, 25));
+            setFlags(flags);
+            setFixedSize(Vector2i(w, h));
         }
     };
 

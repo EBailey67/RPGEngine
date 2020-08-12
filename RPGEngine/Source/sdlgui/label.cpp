@@ -41,7 +41,7 @@ namespace GUI
 
     Vector2i Label::preferredSize(SDL_Renderer* ctx) const
     {
-        if (mCaption == "")
+        if (mCaption.empty())
             return Vector2i::Zero();
 
         if (mFixedSize.x > 0)

@@ -23,6 +23,5 @@ namespace RPGEngine
 		float m_timeScale;
 
 		Timer();
-		~Timer() = default;
 	};
 }

@@ -257,6 +257,7 @@
     <ClInclude Include="Source\sdlgui\vscrollpanel.h" />
     <ClInclude Include="Source\sdlgui\widget.h" />
     <ClInclude Include="Source\sdlgui\window.h" />
+    <ClInclude Include="Source\Utility\Instrumentor.h" />
     <ClInclude Include="Source\Utility\Ray.h" />
     <ClInclude Include="Source\Utility\Vector2D.h" />
     <ClInclude Include="Source\config.hpp" />

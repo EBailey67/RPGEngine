@@ -2,8 +2,13 @@
 
 #include "game_scene.hpp"
 
+#define PROFILING 1
+#include "Utility/Instrumentor.h"
+
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
+    Instrumentor::Get().BeginSession("Game Engine Profile");
+
 	auto* game = Instances::CreateGame();
     try
     {
@@ -19,7 +24,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
         scoreTable.Save("score.txt");
         Instances::DestroyGame();
 
-        return 0;
+		Instrumentor::Get().EndSession();
+	    return 0;
     }
     catch (std::exception& e)
     {
@@ -27,6 +33,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
         fontCache.reset();
         Instances::DestroyGame();
-        return 1;
+		Instrumentor::Get().EndSession();
+	    return 1;
     }
 }

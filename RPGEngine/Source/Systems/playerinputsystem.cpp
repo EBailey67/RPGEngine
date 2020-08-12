@@ -79,9 +79,6 @@ void PlayerMovement(const float dt)
         {
             dash.canDashing = false;
             dash.dt = 0;
-            auto label_view = registry.view<Label, entt::tag<"dash"_hs>>();
-            auto &label = label_view.get<Label>(*label_view.begin());
-            label.AssignTexture(textureCache.resource("dash_no"));
         }
         if (!dash.canDashing)
         {
@@ -94,9 +91,6 @@ void PlayerMovement(const float dt)
             if (dash.dt >= dash.cd)
             {
                 dash.canDashing = true;
-                auto label_view = registry.view<Label, entt::tag<"dash"_hs>>();
-                auto &label = label_view.get<Label>(*label_view.begin());
-                label.AssignTexture(textureCache.resource("dash_ok"));
             }
         }
     }
@@ -203,8 +197,6 @@ void ActiveGame()
     health.health = 3;
     player.score = 0;
     pos.position = {550, 746};
-    SetPlayerScore(0);
-    SetPlayerHealth(3);
 
     auto score = registry.view<entt::tag<"score"_hs>>();
     registry.emplace<Active>(*score.begin());
@@ -224,7 +216,7 @@ void ActiveGame()
 void CloseGame()
 {
     auto enemyView = registry.view<Enemy, Hierarchy, Health>();
-    for (auto &entt : enemyView)
+    for (const auto& entt : enemyView)
     {
         registry.remove<Active>(entt);
         auto &hierarchy = enemyView.get<Hierarchy>(entt);

@@ -54,7 +54,7 @@ namespace GUI
         void draw(SDL_Renderer* renderer) override;
         void drawContents() override  {}
     private:
-        // std::vector<SDL_Texture*> m_images_data;
-        // int m_current_image;
+        std::vector<SDL_Texture*> m_images_data;
+        int m_current_image;
     };
 }
