@@ -19,13 +19,13 @@ public:
         this->tileSet = tileset;
 
         auto map = xml_doc.child("map");
-        auto next_id = static_cast<id_type>(std::stoi(map.attribute("nextlayerid").value()));
+        const auto next_id = static_cast<id_type>(std::stoi(map.attribute("nextlayerid").value()));
         SSECS_ASSERT(layer < next_id && layer > 0);
         this->layer = static_cast<Layer>(layer);
 
         {
-            auto width = std::stoi(map.attribute("width").value());
-            auto height = std::stoi(map.attribute("height").value());
+	        const auto width = std::stoi(map.attribute("width").value());
+	        const auto height = std::stoi(map.attribute("height").value());
 
             cell.resize(height);
             for (auto &row : cell)
@@ -34,8 +34,7 @@ public:
             }
         }
         {
-
-            auto finded = map.find_child_by_attribute("layer", "id", std::to_string(layer).c_str());
+	        const auto finded = map.find_child_by_attribute("layer", "id", std::to_string(layer).c_str());
 
             std::string data = finded.child("data").text().get();
 
@@ -43,7 +42,7 @@ public:
             {
                 for (auto &col : row)
                 {
-	                const auto pos = data.find_first_of(",");
+	                const auto pos = data.find_first_of(',');
                     col = std::stoi(data.substr(0, pos));
 
                     data = data.substr(pos + 1);

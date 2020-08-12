@@ -52,8 +52,7 @@ public:
     {
         SDL_GetWindowSize(window, &m_windowWidth, &m_windowHeight);
 
-        viewRadius.x = 16.0f * 16.0f;
-        viewRadius.y = 16.0f * 16.0f / (static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
+        viewRadius.y = viewRadius.x / (static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
 
     }
 

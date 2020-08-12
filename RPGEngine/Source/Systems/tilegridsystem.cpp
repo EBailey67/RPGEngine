@@ -7,9 +7,9 @@ void GridRender()
     auto gridView = registry.view<TileGrid, Position>();
     const auto cameraView = registry.view<Camera>();
     auto &activeCamera = cameraView.get(*cameraView.begin());
-
     activeCamera.UpdateWindowSize(Graphics::Window());
-    for (const auto& tile : gridView)
+
+	for (const auto& tile : gridView)
     {
         const auto& grid = gridView.get<TileGrid>(tile);
         const auto& position = gridView.get<Position>(tile);
@@ -35,9 +35,29 @@ void GridRender()
                                                      &screenRect);
                         if (TileGrid::hasDebugDraw)
                         {
-                            Graphics::SetDrawColor(0, 0, 255, 255);
-                            Graphics::DrawRectToLayer(Layer::Debug, &screenRect);
-                            Graphics::ResetDrawColor();
+                        	bool fDraw = true;
+                        	
+                        	switch(grid.layer)
+                        	{
+                            case Layer::Walls:
+	                            Graphics::SetDrawColor(255, 0, 0, 255);
+                        		break;
+                            case Layer::Floor:
+                        		fDraw = false;
+								Graphics::SetDrawColor(0, 0, 255, 255);
+                        		break;
+                            case Layer::Objects:
+	                            Graphics::SetDrawColor(0, 255, 0, 255);
+                        		break;
+                            default:
+	                            Graphics::SetDrawColor(255, 255, 255, 255);
+								break;                        		
+                        	}
+                        	if (fDraw)
+                        	{
+	                            Graphics::DrawRectToLayer(Layer::Debug, &screenRect);
+	                            Graphics::ResetDrawColor();
+                            }
                         }
                     }
                 }

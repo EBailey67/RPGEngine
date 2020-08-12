@@ -34,7 +34,7 @@ void CameraUpdateDebug()
     {
         auto cameraView = registry.view<Camera>();
         auto &activeCamera = cameraView.get(*cameraView.begin());
-        auto event = Events::Event();
+        const auto& event = Events::Event();
 
         if (event.key.type == SDL_KEYDOWN)
         {
@@ -64,6 +64,8 @@ void CameraUpdateDebug()
                 activeCamera.viewRadius.Set(activeCamera.viewRadius.x - activeCamera.viewRadius.x / 10,
                                             activeCamera.viewRadius.y - activeCamera.viewRadius.y / 10);
                 break;
+            default:
+            	break;
             }
         }
     }
@@ -100,8 +102,8 @@ void DebugMode()
 	const auto* const state = Events::KeyboardState();
     if (state[SDL_SCANCODE_F5])
     {
-        RectCollider::hasDebugDraw = !RectCollider::hasDebugDraw;
-        Position::hasDebugDraw = !Position::hasDebugDraw;
+//        RectCollider::hasDebugDraw = !RectCollider::hasDebugDraw;
+//        Position::hasDebugDraw = !Position::hasDebugDraw;
         TileGrid::hasDebugDraw = !TileGrid::hasDebugDraw;
         CameraData::isFollowing = !CameraData::isFollowing;
     }
