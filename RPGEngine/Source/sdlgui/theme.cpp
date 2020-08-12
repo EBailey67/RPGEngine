@@ -98,6 +98,18 @@ namespace GUI
                 rw = SDL_RWFromMem(roboto_bold_ttf, roboto_bold_ttf_size);
             else if (tmpFontname == "icons")
                 rw = SDL_RWFromMem(entypo_ttf, entypo_ttf_size);
+            else
+            {
+	            TTF_Font* newFont = TTF_OpenFont(fontname, ptsize);
+            	if (newFont != nullptr)
+            	{
+		            internal::fonts[fullFontName] = newFont;
+		            font = newFont;
+            		return font;
+                }
+				// If we fail to load the specified font, drop back to default 'sans'
+            	rw = SDL_RWFromMem(roboto_regular_ttf, roboto_regular_ttf_size);
+            }
 
             TTF_Font* newFont = TTF_OpenFontRW(rw, false, ptsize);
             internal::fonts[fullFontName] = newFont;

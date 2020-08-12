@@ -111,7 +111,7 @@ namespace GUI
 				//manaBar.theme()->mProgressBarTop = Color(96, 96, 255, 255);
 				//manaBar.theme()->mProgressBarBot = Color(32, 32, 96, 255);
 
-                auto& score = window.label("Score : 0", "sans-bold").withId("SCORE");
+                auto& score = window.label("Score : 0", "nimbusmono-oblique.otf", 16).withId("SCORE");
                 auto& dash = window.label("Dash : Available", "sans-bold").withId("DASH");
 									
                 //auto& tools = window.widget().boxlayout(Orientation::Horizontal, Alignment::Middle, 0, 6);
