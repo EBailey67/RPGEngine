@@ -83,6 +83,8 @@ namespace GUI
                 nvgRestore(ctx);
 
                 /* Draw header */
+            	if (!ptr->mTitle.empty())
+            	{
                 NVGpaint headerPaint = nvgLinearGradient(
                     ctx, mPos.x, mPos.y, mPos.x,
                     mPos.y + headerH,
@@ -109,7 +111,7 @@ namespace GUI
                 nvgLineTo(ctx, mPos.x + ww - 0.5f, mPos.y + headerH - 1.5);
                 nvgStrokeColor(ctx, mTheme->mWindowHeaderSepBot.toNvgColor());
                 nvgStroke(ctx);
-
+                }
                 nvgEndFrame(ctx);
 
                 self->tex.rrect = { 0, 0, realw, realh };
@@ -225,6 +227,8 @@ namespace GUI
         SDL_SetRenderDrawColor(renderer, bd.r, bd.g, bd.b, bd.a);
         SDL_RenderDrawRect(renderer, &wndBdRect);
 
+    	if (!mTitle.empty())
+    	{
         SDL_Color headerColor = mTheme->mWindowHeaderGradientTop.toSdlColor();
         SDL_Rect headerRect{ ap.x, ap.y, mSize.x, hh };
 
@@ -234,6 +238,7 @@ namespace GUI
         SDL_Color headerBotColor = mTheme->mWindowHeaderSepBot.toSdlColor();
         SDL_SetRenderDrawColor(renderer, headerBotColor.r, headerBotColor.g, headerBotColor.b, headerBotColor.a);
         SDL_RenderDrawLine(renderer, ap.x + 0.5f, ap.y + hh - 1.5f, ap.x + width() - 0.5f, ap.y + hh - 1.5);
+        }
     }
 
     void Window::drawBody(SDL_Renderer* renderer)

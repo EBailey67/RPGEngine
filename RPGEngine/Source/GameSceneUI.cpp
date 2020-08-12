@@ -72,9 +72,9 @@ namespace GUI
 
 				{
 				// Create the window
-//				auto& window = wdg<Window>("Player Status").withLayout<GroupLayout>();
-				auto& window = wdg<Widget>().withLayout<GroupLayout>();
-				window.withPosition({rwidth / 2 - 150, 0});
+				auto& window = wdg<Window>("Status").withLayout<GroupLayout>();
+//				auto& window = wdg<Widget>().withLayout<GroupLayout>();
+				window.withPosition({rwidth - 150, 0});
 				
 
 				// Health Bar
