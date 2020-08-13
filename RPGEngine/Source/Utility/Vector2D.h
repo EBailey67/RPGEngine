@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <SDL_rect.h>
 #include <string>
 
 
@@ -201,5 +202,14 @@ public:
     static Vector2D Lerp(const Vector2D &a, const Vector2D &b, const float t)
     {
         return b * t + a * (1 - t);
+    }
+
+	bool InRect(SDL_Rect rect) const
+	{
+	    if (x >= rect.x && x <= rect.x + rect.w &&
+            y >= rect.y && y <= rect.y + rect.h)
+        return true;
+
+    	return false;
     }
 };

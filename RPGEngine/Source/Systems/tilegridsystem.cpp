@@ -297,27 +297,36 @@ void GridRender()
 					Graphics::DrawFillCircleToLayer(Layer::Debug, p1.x, p1.y, 4);
 					Graphics::DrawFillCircleToLayer(Layer::Debug, p2.x, p2.y, 4);
 					Graphics::ResetDrawColor();
-					
 				}
 			}
 
 			Graphics::SetDrawColor(0, 255, 0, 64);
 
-			for (auto i = 0; i < grid.vecVisibilityPolygon.size() - 1; i++)
+			std::vector<Vector2D> screenPolygon(grid.vecVisibilityPolygon.size());
+			for (auto i = 0; i < grid.vecVisibilityPolygon.size(); i++)
 			{
-				auto p1 = activeCamera.FromWorldToScreenView(grid.visibilityPos);
-				auto p2 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i]);
-				auto p3 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i + 1]);
-
-				Graphics::DrawFillTriangleToLayer(Layer::Debug, p1, p2, p3);
+				screenPolygon[i] = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i]);
 			}
 
-			auto p1 = activeCamera.FromWorldToScreenView(grid.visibilityPos);
-			auto p2 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[grid.vecVisibilityPolygon.size() - 1]);
-			auto p3 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[0]);
+			Graphics::DrawFillPolygonToLayer(Layer::Debug, screenPolygon);
+			Graphics::SetDrawColor(0, 255, 255, 255);
+			Graphics::DrawPolygonToLayer(Layer::Debug, screenPolygon);
+			
+			//for (auto i = 0; i < grid.vecVisibilityPolygon.size() - 1; i++)
+			//{
+			//	auto p1 = activeCamera.FromWorldToScreenView(grid.visibilityPos);
+			//	auto p2 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i]);
+			//	auto p3 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i + 1]);
 
-			// Fan will have one open edge, so draw last point of fan to first
-			Graphics::DrawFillTriangleToLayer(Layer::Debug, p1, p2, p3);
+			//	Graphics::DrawFillTriangleToLayer(Layer::Debug, p1, p2, p3);
+			//}
+
+			//auto p1 = activeCamera.FromWorldToScreenView(grid.visibilityPos);
+			//auto p2 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[grid.vecVisibilityPolygon.size() - 1]);
+			//auto p3 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[0]);
+
+			//// Fan will have one open edge, so draw last point of fan to first
+			//Graphics::DrawFillTriangleToLayer(Layer::Debug, p1, p2, p3);
 			Graphics::ResetDrawColor();
 		}
 		

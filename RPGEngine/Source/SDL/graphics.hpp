@@ -2,11 +2,13 @@
 
 #include <array>
 #include <utility>
-
+#include <vector>
 #include <SDL_render.h>
 
 #include "config.hpp"
 #include "fwd.hpp"
+#include "../Utility/Primitives.h"
+#include "../Utility/Rectangle.h"
 #include "../Utility/Vector2D.h"
 
 enum class Layer
@@ -27,7 +29,386 @@ class Graphics
     static constexpr const auto reset_layer = Layer::None;
 
 private:
-    Graphics() = default;
+	struct Edge
+	{
+      int yUpper;
+      float xIntersect;
+      float dxPerScan;
+      Edge *next;
+    };
+
+	static const int yNext(const int k, const int cnt, const std::vector<Vector2D> pts)
+	{
+		int j;
+
+		if ((k + 1) > (cnt - 1))
+			j = 0;
+
+		else
+			j = (k + 1);
+
+		while (pts[k].y == pts[j].y)
+		{
+			if ((j + 1) > (cnt - 1))
+				j = 0;
+
+			else
+				j++;
+		}
+
+		return (pts[j].y);
+	}
+
+	static void insertEdge(Edge* list, Edge* edge)
+	{
+		Edge* p;
+		Edge* q = list;
+
+		p = q->next;
+
+		while (p != nullptr)
+		{
+			if (edge->xIntersect < p->xIntersect)
+				p = nullptr;
+
+			else
+			{
+				q = p;
+				p = p->next;
+			}
+		}
+
+		edge->next = q->next;
+		q->next = edge;
+	}
+
+	static void makeEdgeRec(const Vector2D& lower, const Vector2D& upper,
+		const int yComp, Edge* edge, Edge* edges[])
+	{
+		edge->dxPerScan = ((upper.x - lower.x) / (upper.y - lower.y));
+		edge->xIntersect = lower.x;
+
+		if (upper.y < yComp)
+			edge->yUpper = (upper.y - 1);
+		else
+			edge->yUpper = upper.y;
+
+		insertEdge(edges[static_cast<int>(lower.y)], edge);
+	}
+
+	static void buildEdgeList(const int cnt, const std::vector<Vector2D>& pts, Edge* edges[])
+	{
+		Vector2D v1;
+
+		int yPrev = (pts[cnt - 2].y);
+
+		v1.x = pts[cnt - 1].x;
+		v1.y = pts[cnt - 1].y;
+
+		for (int count = 0; count < cnt; count++)
+		{
+			Vector2D v2 = pts[count];
+
+			if (v1.y != v2.y)
+			{
+				Edge* edge = new Edge;
+
+				if (v1.y < v2.y)
+					makeEdgeRec(v1, v2, yNext(count, cnt, pts), edge, edges);
+				else
+					makeEdgeRec(v2, v1, yPrev, edge, edges);
+			}
+
+			yPrev = v1.y;
+			v1 = v2;
+		}
+	}
+
+	static void buildActiveList(const int row, Edge* active, Edge* edges[])
+	{
+		Edge* p;
+		Edge* q;
+
+		p = edges[row]->next;
+
+		while (p)
+		{
+			q = p->next;
+			insertEdge(active, p);
+			p = q;
+		}
+	}
+
+	static void fillScan(const int row, const Edge* active)
+	{
+		Edge* p1;
+		Edge* p2;
+
+		p1 = active->next;
+
+		while (p1)
+		{
+			p2 = p1->next;
+			if (p2 != nullptr)
+			{
+				DrawLineToLayer(m_currentLayer, p1->xIntersect, row, p2->xIntersect, row);
+				p1 = p2->next;
+			}
+			else
+			{
+				p1 = nullptr;
+			}
+		}
+	}
+
+	static void deleteAfter(Edge* q)
+	{
+		Edge* p = q->next;
+		q->next = p->next;
+		delete p;
+	}
+
+	static void updateActiveList(const int scan, Edge* active)
+	{
+		Edge* q = active;
+		Edge* p = active->next;
+
+		while (p)
+		{
+			if (scan >= p->yUpper)
+			{
+				p = p->next;
+
+				deleteAfter(q);
+			}
+
+			else
+			{
+				p->xIntersect = (p->xIntersect + p->dxPerScan);
+				q = p;
+				p = p->next;
+			}
+		}
+	}
+
+	static void resortActiveList(Edge* active)
+	{
+		Edge* q;
+		Edge* p = active->next;
+
+		active->next = nullptr;
+
+		while (p)
+		{
+			q = p->next;
+
+			insertEdge(active, p);
+
+			p = q;
+		}
+	}
+
+	static bool linelineIntersection(RPGEngine::LineSegment& L1, RPGEngine::LineSegment& L2, Vector2D& intersectionPoint)
+	{
+		// Line AB represented as a1x + b1y = c1 
+		auto a1 = L1.b.y - L1.a.y;
+		auto b1 = L1.a.x - L1.b.x;
+		auto c1 = a1 * L1.a.x + b1 * L1.a.y;
+
+		// Line CD represented as a2x + b2y = c2 
+		auto a2 = L2.b.y - L2.a.y;
+		auto b2 = L2.a.x - L2.b.x;
+		auto c2 = a2 * (L2.a.x) + b2 * (L2.a.y);
+
+		auto determinant = a1 * b2 - a2 * b1;
+
+		if (determinant == 0)
+		{
+			// The lines are parallel. This is simplified 
+			// by returning a pair of FLT_MAX
+			intersectionPoint.x = FLT_MAX;
+			intersectionPoint.y = FLT_MAX;
+			return false;
+		}
+		else
+		{
+			intersectionPoint.x = floorf( (b2 * c1 - b1 * c2) / determinant);
+			intersectionPoint.y = floorf((a1 * c2 - a2 * c1) / determinant);
+			return true;
+		}
+	}
+
+	static bool isInsideClipWindow(const Vector2D p, const int edge_id, RPGEngine::LineSegment& edge)
+    {
+		switch(edge_id)
+		{
+		case 0:	// TOPEDGE
+           return (p.y >= edge.a.y);
+ 		case 1: // RIGHTEDGE
+           return (p.x <= edge.b.x);
+ 		case 2: // BOTTOMEDGE
+           return (p.y <= edge.b.y);
+ 		case 3: // LEFTEDGE
+           return (p.x >= edge.a.x);
+ 		default:
+			return false;
+		}
+    }
+	
+	static std::vector<Vector2D> PolygonClipToRect(SDL_Rect& rClip, std::vector<Vector2D> coordinates)
+	{
+		std::vector<Vector2D> clippedPolygon;
+		std::vector<Vector2D> polygon;
+
+		if(coordinates.size() < 3)
+			return polygon;
+
+		// Clean up the coordinates
+		for (auto& point : coordinates)
+		{
+			point.x = floorf(point.x);
+			point.y = floorf(point.y);
+			polygon.emplace_back(point);
+		}
+		// std::copy(coordinates.begin(), coordinates.end(), std::back_inserter(polygon));
+
+		enum
+		{
+			TOPEDGE  = 0,
+			RIGHTEDGE = 1,
+			BOTTOMEDGE = 2,
+			LEFTEDGE = 3,
+		};
+		
+		std::vector<RPGEngine::LineSegment> edges(4);
+		edges[TOPEDGE] = RPGEngine::LineSegment(Vector2D(rClip.x, rClip.y), Vector2D(rClip.x + rClip.w, rClip.y));
+		edges[RIGHTEDGE] = RPGEngine::LineSegment(Vector2D(rClip.x + rClip.w, rClip.y), Vector2D(rClip.x + rClip.w, rClip.y + rClip.h));
+		edges[BOTTOMEDGE] = RPGEngine::LineSegment(Vector2D(rClip.x, rClip.y + rClip.h), Vector2D(rClip.x + rClip.w, rClip.y + rClip.h));
+		edges[LEFTEDGE] = RPGEngine::LineSegment(Vector2D(rClip.x, rClip.y), Vector2D(rClip.x, rClip.y + rClip.h));
+		
+		// Do this for each edge
+		for (auto j = 0; j < 4; j++)
+		{
+			clippedPolygon.clear();
+			for(auto i = 0; i < static_cast<int>(polygon.size()) - 1; i++)
+			{
+				auto Pi = polygon[i];
+				auto Pi1 = polygon[i+1];
+				if (isInsideClipWindow(Pi, j, edges[j]))
+				{
+	               if (isInsideClipWindow(Pi1, j, edges[j]))
+	               {
+	                    clippedPolygon.emplace_back(Pi1);
+				   }
+	               else
+	               {
+	               		Vector2D ptInter;
+						RPGEngine::LineSegment ls(Pi, Pi1);
+	               		if (linelineIntersection(ls, edges[j], ptInter))
+							clippedPolygon.emplace_back(ptInter);
+				   }
+				}
+				else
+				{
+	               if (isInsideClipWindow(Pi1, j, edges[j]))
+	               {
+	               		Vector2D ptInter;
+						RPGEngine::LineSegment ls(Pi, Pi1);
+	               		if (linelineIntersection(ls, edges[j], ptInter))
+	               		{
+		                    clippedPolygon.emplace_back(ptInter);
+						}
+	                    clippedPolygon.emplace_back(Pi1);
+				   }
+				}
+			}
+
+			if (clippedPolygon.size() < 3)
+			{
+				polygon.clear();
+				return polygon;
+			}
+			
+			if(clippedPolygon[0] != clippedPolygon[clippedPolygon.size() - 1])
+				clippedPolygon.emplace_back(clippedPolygon[0]);
+			std::swap(clippedPolygon, polygon);
+		}
+		for(auto& point : polygon)
+		{
+			assert(point.InRect(rClip) == true);
+		}
+
+		return polygon;
+	}
+	
+    static void Polygon(std::vector<Vector2D> coordinates)
+	{
+		if (coordinates.size() >= 2)
+		{
+			DrawLineToLayer(m_currentLayer, coordinates[0].x, coordinates[0].y,
+				coordinates[coordinates.size() - 1].x, coordinates[coordinates.size() - 1].y);
+
+			for (auto count = 0; count < coordinates.size() - 1; count++)
+				DrawLineToLayer(m_currentLayer, coordinates[count].x, coordinates[count].y,
+					coordinates[count + 1].x,	coordinates[count + 1].y);
+		}
+	}
+
+	// https://www.codepoc.io/blog/cpp/2830/program-to-fill-a-polygon-using-scan-line-polygon-fill-algorithm
+	static void FillPolygon(const std::vector<Vector2D>& pointsIn)
+	{
+		// Make sure we're given a valid polygon
+		if (pointsIn.size() < 3)
+			return;
+		
+		Edge* edges[2000];
+
+		SDL_Rect clipRegion;
+		clipRegion.x = 0;
+		clipRegion.y = 0;
+		clipRegion.w = 3000;
+		clipRegion.h = 1600;
+		std::vector<Vector2D> points = PolygonClipToRect(clipRegion, pointsIn);
+
+		if (points.size() < 3)
+			return;
+		
+		for(auto& point : points)
+		{
+			assert(point.InRect(clipRegion) == true);
+		}
+
+		
+		std::vector<Vector2D> pts;
+		std::copy(points.begin(), points.end(), std::back_inserter(pts));
+
+		// Initialize the edges
+		for (auto& edge : edges)
+		{
+			edge = new Edge{0, 0, 0, nullptr};
+		}
+
+		buildEdgeList(points.size(), pts, edges);
+
+		auto* const active = new Edge{0, 0, 0, nullptr};
+
+		for (auto row = 0; row < 1600; row++)
+		{
+			buildActiveList(row, active, edges);
+
+			if (active->next)
+			{
+				fillScan(row, active);
+				updateActiveList(row, active);
+				resortActiveList(active);
+			}
+		}
+
+		Polygon(points);
+	}
+
+
+	Graphics() = default;
 
     ~Graphics() = default;
 
@@ -369,6 +750,26 @@ public:
 	    return status;
 	}
 
+    static void DrawPolygonToLayer(const Layer layer, std::vector<Vector2D>& vertices)
+    {
+	    if (layer != m_currentLayer)
+        {
+            RenderTarget(layer);
+        }
+
+    	Polygon(vertices);
+    }
+
+    static void DrawFillPolygonToLayer(const Layer layer, std::vector<Vector2D>& vertices)
+    {
+	    if (layer != m_currentLayer)
+        {
+            RenderTarget(layer);
+        }
+
+	    FillPolygon(vertices);
+    }
+	
 	static void DrawTriangleToLayer(const Layer layer, Vector2D& pos1, Vector2D& pos2, Vector2D& pos3)
 	{
 		DrawTriangleToLayer(layer, 

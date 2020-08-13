@@ -267,6 +267,10 @@ namespace RPGEngine
                 *top++ = *it;
         }
         vertices.erase(top, vertices.end());
+        // if we have a polygon, then make sure the last point is the same
+    	// as the first to close it properly.
+    	if (vertices.size() > 2)
+    		vertices.emplace_back(vertices[0]);
         return vertices;
     }
 }
