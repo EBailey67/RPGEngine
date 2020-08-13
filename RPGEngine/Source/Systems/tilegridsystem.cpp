@@ -27,8 +27,8 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 		}
 
 	// Iterate through region from top left to bottom right
-	for (auto x = 1; x < w - 1; x++)
-		for (auto y = 1; y < h - 1; y++)
+	for (auto x = 0; x < w; x++)
+		for (auto y = 0; y < h; y++)
 		{
 			// Create some convenient indices
 			auto i = (y + sy) * pitch + (x + sx);		// This
@@ -41,11 +41,11 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 			if (world[i].exist)
 			{
 				// If this cell has no western neighbour, it needs a western edge
-				if (!world[w].exist)
+				if (x == 0 || !world[w].exist)
 				{
 					// It can either extend it from its northern neighbour if they have
 					// one, or It can start a new one.
-					if (world[n].edge_exist[West])
+					if (y != 0 && world[n].edge_exist[West])
 					{
 						// Northern neighbour has a western edge, so grow it downwards
 						tileGrid.vecEdges[world[n].edge_id[West]].b.y += fBlockWidth;
@@ -70,11 +70,11 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 				}
 
 				// If this cell dont have an eastern neignbour, It needs a eastern edge
-				if (!world[e].exist)
+				if (x == w - 1 || !world[e].exist)
 				{
 					// It can either extend it from its northern neighbour if they have
 					// one, or It can start a new one.
-					if (world[n].edge_exist[East])
+					if (y != 0 && world[n].edge_exist[East])
 					{
 						// Northern neighbour has one, so grow it downwards
 						tileGrid.vecEdges[world[n].edge_id[East]].b.y += fBlockWidth;
@@ -99,11 +99,11 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 				}
 
 				// If this cell doesnt have a northern neignbour, It needs a northern edge
-				if (!world[n].exist)
+				if (y == 0 || !world[n].exist)
 				{
 					// It can either extend it from its western neighbour if they have
 					// one, or It can start a new one.
-					if (world[w].edge_exist[North])
+					if (x != 0 && world[w].edge_exist[North])
 					{
 						// Western neighbour has one, so grow it eastwards
 						tileGrid.vecEdges[world[w].edge_id[North]].b.x += fBlockWidth;
@@ -128,11 +128,11 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 				}
 
 				// If this cell doesnt have a southern neignbour, It needs a southern edge
-				if (!world[s].exist)
+				if (y == h - 1 || !world[s].exist)
 				{
 					// It can either extend it from its western neighbour if they have
 					// one, or It can start a new one.
-					if (world[w].edge_exist[South])
+					if (x != 0 && world[w].edge_exist[South])
 					{
 						// Western neighbour has one, so grow it eastwards
 						tileGrid.vecEdges[world[w].edge_id[South]].b.x += fBlockWidth;
@@ -160,7 +160,7 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 
 		}
 
-	std::cout << "Edges :" << tileGrid.vecEdges.size() << std::endl;
+	// std::cout << "Edges :" << tileGrid.vecEdges.size() << std::endl;
 }
 
 void CalculateVisibilityPolygon(TileGrid& tileGrid, const float ox, const float oy, float radius)
