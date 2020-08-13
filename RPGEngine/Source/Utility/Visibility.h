@@ -236,8 +236,10 @@ namespace RPGEngine
                 Ray<Vector> ray{ point, event.point() - point };
                 auto nearest_segment = *state.begin();
                 auto intersects = ray.Intersects(nearest_segment, intersection);
-                assert(intersects &&
-                    "Ray intersects line segment L iff L is in the state");
+            	if (!intersects)
+            	{
+					assert(intersects && "Ray intersects line segment L iff L is in the state");
+                }
 
                 if (event.type == event_type::start_vertex)
                 {

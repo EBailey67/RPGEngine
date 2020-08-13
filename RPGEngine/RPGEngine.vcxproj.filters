@@ -531,6 +531,12 @@
     <Font Include="entypo.ttf" />
     <Font Include="Roboto-Bold.ttf" />
     <Font Include="Roboto-Regular.ttf" />
+    <Font Include="kongtext.ttf" />
+    <Font Include="ProFontWindows.ttf" />
+    <Font Include="nimbusmono-bold.otf" />
+    <Font Include="nimbusmono-boldoblique.otf" />
+    <Font Include="nimbusmono-oblique.otf" />
+    <Font Include="nimbusmono-regular.otf" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="resources\mix\main.mp3" />

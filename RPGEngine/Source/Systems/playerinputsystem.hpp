@@ -1,5 +1,4 @@
-#ifndef PLAYERINPUTSYSTEM_HPP
-#define PLAYERINPUTSYSTEM_HPP
+#pragma once
 
 void PlayerMovement(const float dt);
 void PlayerAttack(const float dt);
@@ -7,4 +6,3 @@ void ActiveGame();
 void CloseGame();
 void OpenGame();
 
-#endif // PLAYERINPUTSYSTEM_HPP

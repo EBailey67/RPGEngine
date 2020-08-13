@@ -66,6 +66,7 @@ public:
 
 	std::vector<RPGEngine::LineSegment> vecEdges;
 	std::vector<Vector2D> vecVisibilityPolygon;
+	Vector2D visibilityPos;
 	std::vector<RPGEngine::Light> vecLights;
 	std::vector<Vector2D> vecLightsPolygon;
 };

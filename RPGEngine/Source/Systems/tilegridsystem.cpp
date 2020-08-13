@@ -13,13 +13,13 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 {
 	PROFILE_FUNCTION();
 	
-	// Clear "PolyMap"
+	// Clear our edges array
 	tileGrid.vecEdges.clear();
 
-	for (int x = 0; x < w; x++)
-		for (int y = 0; y < h; y++)
+	for (auto x = 0; x < w; x++)
+		for (auto y = 0; y < h; y++)
 		{
-			for (int j = 0; j < 4; j++)
+			for (auto j = 0; j < 4; j++)
 			{
 				world[(y + sy) * pitch + (x + sx)].edge_exist[j] = false;
 				world[(y + sy) * pitch + (x + sx)].edge_id[j] = 0;
@@ -27,15 +27,15 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 		}
 
 	// Iterate through region from top left to bottom right
-	for (int x = 1; x < w - 1; x++)
-		for (int y = 1; y < h - 1; y++)
+	for (auto x = 1; x < w - 1; x++)
+		for (auto y = 1; y < h - 1; y++)
 		{
 			// Create some convenient indices
-			int i = (y + sy) * pitch + (x + sx);		// This
-			int n = (y + sy - 1) * pitch + (x + sx);	// Northern Neighbour
-			int s = (y + sy + 1) * pitch + (x + sx);	// Southern Neighbour
-			int w = (y + sy) * pitch + (x + sx - 1);	// Western Neighbour
-			int e = (y + sy) * pitch + (x + sx + 1);	// Eastern Neighbour
+			auto i = (y + sy) * pitch + (x + sx);		// This
+			auto n = (y + sy - 1) * pitch + (x + sx);	// Northern Neighbour
+			auto s = (y + sy + 1) * pitch + (x + sx);	// Southern Neighbour
+			auto w = (y + sy) * pitch + (x + sx - 1);	// Western Neighbour
+			auto e = (y + sy) * pitch + (x + sx + 1);	// Eastern Neighbour
 
 			// If this cell exists, check if it needs edges
 			if (world[i].exist)
@@ -163,13 +163,32 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 	std::cout << "Edges :" << tileGrid.vecEdges.size() << std::endl;
 }
 
-void CalculateVisibilityPolygon(TileGrid& tileGrid, float ox, float oy, float radius)
+void CalculateVisibilityPolygon(TileGrid& tileGrid, const float ox, const float oy, float radius)
 {
 	// Get rid of existing polygon
 	tileGrid.vecVisibilityPolygon.clear();
 	tileGrid.vecVisibilityPolygon = RPGEngine::visibility_polygon(Vector2D(ox, oy), tileGrid.vecEdges.begin(), tileGrid.vecEdges.end());
 }
 
+void UpdateVisibility()
+{
+	const auto playerView = registry.view<Player, Hierarchy, Position, Health, Dash>();
+	auto &&[player, hierarchy, health, pos, dash] = registry.get<Player, Hierarchy, Health, Position, Dash>(*playerView.begin());
+
+    auto gridView = registry.view<TileGrid, Position>();
+
+	for (const auto& tile : gridView)
+    {
+        auto& grid = gridView.get<TileGrid>(tile);
+		if (grid.layer == Layer::Walls)
+		{
+			grid.visibilityPos.x = roundf(pos.position.x);
+			grid.visibilityPos.y = roundf(pos.position.y);
+			CalculateVisibilityPolygon(grid, grid.visibilityPos.x, grid.visibilityPos.y, 1000.0f);
+			std::cout << "VisibilityPolygonSize :" << grid.vecVisibilityPolygon.size() << std::endl;
+		}
+	}
+}
 
 void GridCalculateVisibility()
 {
@@ -179,7 +198,6 @@ void GridCalculateVisibility()
     {
         auto& grid = gridView.get<TileGrid>(tile);
 		auto* const world = new RPGEngine::Cell[grid.mapWidth * grid.mapHeight];
-        const auto& position = gridView.get<Position>(tile);
 
         auto j = grid.cell.size() - 1;
 		
@@ -265,6 +283,44 @@ void GridRender()
             }
             j--;
         }
+		if (grid.layer == Layer::Walls)
+		{
+			if (!grid.vecEdges.empty())
+			{
+				for (auto& e : grid.vecEdges)
+				{
+					auto p1 = activeCamera.FromWorldToScreenView(e.a);
+					auto p2 = activeCamera.FromWorldToScreenView(e.b);
+					Graphics::SetDrawColor(0, 255, 0, 255);
+					Graphics::DrawLineToLayer(Layer::Debug, p1.x, p1.y, p2.x, p2.y);
+					Graphics::SetDrawColor(255, 0, 0);
+					Graphics::DrawFillCircleToLayer(Layer::Debug, p1.x, p1.y, 4);
+					Graphics::DrawFillCircleToLayer(Layer::Debug, p2.x, p2.y, 4);
+					Graphics::ResetDrawColor();
+					
+				}
+			}
+
+			Graphics::SetDrawColor(0, 255, 0, 64);
+
+			for (auto i = 0; i < grid.vecVisibilityPolygon.size() - 1; i++)
+			{
+				auto p1 = activeCamera.FromWorldToScreenView(grid.visibilityPos);
+				auto p2 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i]);
+				auto p3 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i + 1]);
+
+				Graphics::DrawFillTriangleToLayer(Layer::Debug, p1, p2, p3);
+			}
+
+			auto p1 = activeCamera.FromWorldToScreenView(grid.visibilityPos);
+			auto p2 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[grid.vecVisibilityPolygon.size() - 1]);
+			auto p3 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[0]);
+
+			// Fan will have one open edge, so draw last point of fan to first
+			Graphics::DrawFillTriangleToLayer(Layer::Debug, p1, p2, p3);
+			Graphics::ResetDrawColor();
+		}
+		
     }
 }
 

@@ -358,6 +358,12 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="entypo.ttf" />
+    <Font Include="kongtext.ttf" />
+    <Font Include="nimbusmono-bold.otf" />
+    <Font Include="nimbusmono-boldoblique.otf" />
+    <Font Include="nimbusmono-oblique.otf" />
+    <Font Include="nimbusmono-regular.otf" />
+    <Font Include="ProFontWindows.ttf" />
     <Font Include="resources\fonts\dpcomic.ttf" />
     <Font Include="Roboto-Bold.ttf" />
     <Font Include="Roboto-Regular.ttf" />

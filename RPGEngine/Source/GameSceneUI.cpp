@@ -66,7 +66,9 @@ namespace GUI
 				auto& label = window.wdg<Label>("FPS");
 				label.withId("FPS");
 
-				window.add<Button>("Debug Overlay");
+				window.add<Label>("Location :", "sans-bold");
+				auto& locLabel = window.wdg<Label>("0, 0");
+				locLabel.withId("LOCATION");
                 }
 			}
 
@@ -477,6 +479,14 @@ namespace GUI
             plabel->setCaption("Score :" + std::to_string(player.score));
         }
 
+        if (auto* plabel = gfind<Label>("LOCATION"))
+        {
+        	int x = static_cast<int>(pos.position.x) / 32;
+        	int y = static_cast<int>(pos.position.y) / 32;
+            plabel->setCaption(std::to_string(x) + ", " + std::to_string(y));
+        }
+
+		
         if (auto* plabel = gfind<Label>("DASH"))
         {
         	if(dash.canDashing)

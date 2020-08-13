@@ -1,6 +1,8 @@
-#ifndef TILEGRIDSYSTEM_HPP
-#define TILEGRIDSYSTEM_HPP
+#pragma once
+
+class TileGrid;
 
 void GridCreate();
 void GridRender();
-#endif
+void UpdateVisibility();
+

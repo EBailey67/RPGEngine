@@ -7,7 +7,7 @@
 void PlayerMovement(const float dt)
 {
 	const auto* const state = Events::KeyboardState();
-    auto view = registry.view<Player, Velocity, MovementSpeed, AnimationPool, Sprite, Dash, Active>();
+	const auto view = registry.view<Player, Velocity, MovementSpeed, AnimationPool, Sprite, Dash, Active>();
     if (view.begin() != view.end())
     {
         auto &&[vel, speed, animation, sprite, dash] =
@@ -198,12 +198,12 @@ void ActiveGame()
     player.score = 0;
     pos.position = {550, 746};
 
-    auto score = registry.view<entt::tag<"score"_hs>>();
-    registry.emplace<Active>(*score.begin());
-    auto hp = registry.view<entt::tag<"hp"_hs>>();
-    registry.emplace<Active>(*hp.begin());
-    auto dash = registry.view<entt::tag<"dash"_hs>>();
-    registry.emplace<Active>(*dash.begin());
+    //auto score = registry.view<entt::tag<"score"_hs>>();
+    //registry.emplace<Active>(*score.begin());
+    //auto hp = registry.view<entt::tag<"hp"_hs>>();
+    //registry.emplace<Active>(*hp.begin());
+    //auto dash = registry.view<entt::tag<"dash"_hs>>();
+    //registry.emplace<Active>(*dash.begin());
 
     auto table_view = registry.view<entt::tag<"table"_hs>>();
     for (auto &entt : table_view)
@@ -227,7 +227,8 @@ void CloseGame()
         auto &health = enemyView.get<Health>(entt);
         health.health = 0;
     }
-    auto playerView = registry.view<Player, Hierarchy>();
+
+	auto playerView = registry.view<Player, Hierarchy>();
     auto &&[player, hierarchy] = registry.get<Player, Hierarchy>(*playerView.begin());
     registry.remove<Active>(*playerView.begin());
     if (hierarchy.child != entt::null)
@@ -235,12 +236,12 @@ void CloseGame()
         registry.remove<Active>(hierarchy.child);
     }
 
-    auto score = registry.view<entt::tag<"score"_hs>>();
-    registry.remove<Active>(*score.begin());
-    auto hp = registry.view<entt::tag<"hp"_hs>>();
-    registry.remove<Active>(*hp.begin());
-    auto dash = registry.view<entt::tag<"dash"_hs>>();
-    registry.remove<Active>(*dash.begin());
+    //auto score = registry.view<entt::tag<"score"_hs>>();
+    //registry.remove<Active>(*score.begin());
+    //auto hp = registry.view<entt::tag<"hp"_hs>>();
+    //registry.remove<Active>(*hp.begin());
+    //auto dash = registry.view<entt::tag<"dash"_hs>>();
+    //registry.remove<Active>(*dash.begin());
 
     for (auto &row : scoreTable.table)
     {
@@ -289,7 +290,8 @@ void OpenGame()
                 }
             }
         }
-        if (state[SDL_SCANCODE_RETURN])
+
+    	if (state[SDL_SCANCODE_RETURN])
         {
             isMenu = false;
             ActiveGame();
