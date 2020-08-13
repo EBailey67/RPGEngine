@@ -413,6 +413,9 @@
     <ClInclude Include="Source\Utility\Instrumentor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utility\Visibility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\fonts\license.txt" />

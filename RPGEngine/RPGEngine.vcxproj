@@ -291,6 +291,7 @@
     <ClInclude Include="Source\Utility\Primitives.h" />
     <ClInclude Include="Source\Utility\Rectangle.h" />
     <ClInclude Include="Source\Utility\Timer.h" />
+    <ClInclude Include="Source\Utility\Visibility.h" />
     <ClInclude Include="Source\XML\pugiconfig.hpp" />
     <ClInclude Include="Source\XML\pugixml.hpp" />
   </ItemGroup>

@@ -7,7 +7,7 @@
 
 namespace RPGEngine
 {
-    enum class Orientation
+    enum Orientation
     {
         left_turn = 1,
         right_turn = -1,
@@ -30,6 +30,21 @@ namespace RPGEngine
             );
     }
 
+    struct Light
+    {
+	    Vector2D position;
+    	SDL_Color color;
+    	float energy;
+    	float radius;
+    };
+
+	struct Cell
+	{
+		int edge_id[4];
+		bool edge_exist[4];
+		bool exist = false;
+	};
+	
     struct LineSegment
     {
         Vector2D a, b;
@@ -87,8 +102,8 @@ namespace RPGEngine
                 StrictlyLess(1.f, u))
                 return false;
 
-            auto t = -Vector2D::Cross(ab, ao) / det;
-            out_point = origin + t * direction;
+            float t = -Vector2D::Cross(ab, ao) / det;
+            out_point = origin + direction * t;
             return ApproxEqual(t, 0.f) || t > 0;
         }
     };

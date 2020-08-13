@@ -15,13 +15,13 @@ namespace RPGEngine
         return (b - a) > std::max(std::abs(a), std::abs(b)) * epsilon;
     }
 
-    bool ApproxEqual(const Vector2D a, const Vector2D b, const float epsilon)
+    bool ApproxEqual(const Vector2D& a, const Vector2D& b, const float epsilon)
     {
         return ApproxEqual(a.x, b.x, epsilon) &&
             ApproxEqual(a.y, b.y, epsilon);
     }
 
-    bool StrictlyLess(Vector2D& a, const Vector2D b, const float epsilon)
+    bool StrictlyLess(Vector2D& a, const Vector2D& b, const float epsilon)
     {
         return StrictlyLess(a.x, b.x, epsilon) &&
             StrictlyLess(a.y, b.y, epsilon);

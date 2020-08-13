@@ -124,7 +124,15 @@ public:
 	    const auto yd = rhs.y - lhs.y;
         return sqrtf(xd * xd + yd * yd);
     }
-	
+
+	/*! @brief returns the squared distance between two vectors */
+    static float DistanceSquared(const Vector2D& lhs, const Vector2D& rhs)
+    {
+	    const auto xd = rhs.x - lhs.x;
+	    const auto yd = rhs.y - lhs.y;
+        return xd * xd + yd * yd;
+    }
+
     /*! @brief Returns formatted coordinates in string. */
     [[nodiscard]] std::string ToString() const noexcept
     {

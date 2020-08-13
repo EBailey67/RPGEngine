@@ -6,6 +6,7 @@
 #include "../config.hpp"
 #include "tileset.hpp"
 #include "../Utility/Vector2D.h"
+#include "../Utility/Primitives.h"
 
 class TileGrid
 {
@@ -27,6 +28,9 @@ public:
 	        const auto width = std::stoi(map.attribute("width").value());
 	        const auto height = std::stoi(map.attribute("height").value());
 
+        	mapWidth = width;
+        	mapHeight = height;
+        	
             cell.resize(height);
             for (auto &row : cell)
             {
@@ -51,9 +55,17 @@ public:
         }
     }
 
-    Layer layer;
+
+    int mapWidth;
+	int mapHeight;
+	Layer layer;
     TileSet *tileSet;
     std::vector<std::vector<id_type>> cell;
     Vector2D scale;
     inline static bool hasDebugDraw = false;
+
+	std::vector<RPGEngine::LineSegment> vecEdges;
+	std::vector<Vector2D> vecVisibilityPolygon;
+	std::vector<RPGEngine::Light> vecLights;
+	std::vector<Vector2D> vecLightsPolygon;
 };

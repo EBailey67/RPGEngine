@@ -16,6 +16,8 @@
 #include "Resource/cache.hpp"
 #include "SDL/sdl.hpp"
 #include "Utility/Debug.h"
+#define PROFILING 1
+#include "Utility/Instrumentor.h"
 
 
 inline entt::registry registry{};
