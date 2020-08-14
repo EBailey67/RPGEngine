@@ -7,8 +7,10 @@
 
 #include "config.hpp"
 #include "fwd.hpp"
+
+#define PROFILING 1  // NOLINT(cppcoreguidelines-macro-usage)
+#include "../Utility/Instrumentor.h"
 #include "../Utility/Primitives.h"
-#include "../Utility/Rectangle.h"
 #include "../Utility/Vector2D.h"
 
 enum class Layer
@@ -22,7 +24,7 @@ enum class Layer
     UI = 6,
 };
 
-class Graphics
+class Graphics  // NOLINT(cppcoreguidelines-special-member-functions)
 {
     friend Game;
 
@@ -37,40 +39,41 @@ private:
       Edge *next;
     };
 
-	static const int yNext(const int k, const int cnt, const std::vector<Vector2D> pts)
-	{
-		int j;
+	static int yNext(const int k, const int cnt, const std::vector<Vector2D>& pts)
+    {
+	    int j;
 
-		if ((k + 1) > (cnt - 1))
-			j = 0;
-
-		else
-			j = (k + 1);
-
-		while (pts[k].y == pts[j].y)
-		{
-			if ((j + 1) > (cnt - 1))
-				j = 0;
-
-			else
-				j++;
+	    if ((k + 1) > (cnt - 1))
+	    {
+		    j = 0;
+		}
+	    else
+	    {
+		    j = (k + 1);
 		}
 
-		return (pts[j].y);
-	}
+	    while (pts[k].y == pts[j].y)
+	    {
+		    if ((j + 1) > (cnt - 1))
+			    j = 0;
+		    else
+			    j++;
+	    }
+
+	    return static_cast<int>(pts[j].y);
+    }
 
 	static void insertEdge(Edge* list, Edge* edge)
 	{
-		Edge* p;
-		Edge* q = list;
-
-		p = q->next;
+		auto* q = list;
+		auto* p = q->next;
 
 		while (p != nullptr)
 		{
 			if (edge->xIntersect < p->xIntersect)
+			{
 				p = nullptr;
-
+			}
 			else
 			{
 				q = p;
@@ -88,10 +91,10 @@ private:
 		edge->dxPerScan = ((upper.x - lower.x) / (upper.y - lower.y));
 		edge->xIntersect = lower.x;
 
-		if (upper.y < yComp)
-			edge->yUpper = (upper.y - 1);
+		if (static_cast<int>(upper.y) < yComp)
+			edge->yUpper = static_cast<int>(upper.y - 1);
 		else
-			edge->yUpper = upper.y;
+			edge->yUpper = static_cast<int>(upper.y);
 
 		insertEdge(edges[static_cast<int>(lower.y)], edge);
 	}
@@ -100,18 +103,18 @@ private:
 	{
 		Vector2D v1;
 
-		int yPrev = (pts[cnt - 2].y);
+		auto yPrev = static_cast<int>(pts[static_cast<size_t>(cnt) - 2].y);
 
-		v1.x = pts[cnt - 1].x;
-		v1.y = pts[cnt - 1].y;
+		v1.x = pts[static_cast<size_t>(cnt) - 1].x;
+		v1.y = pts[static_cast<size_t>(cnt) - 1].y;
 
-		for (int count = 0; count < cnt; count++)
+		for (auto count = 0; count < cnt; count++)
 		{
-			Vector2D v2 = pts[count];
+			auto v2 = pts[count];
 
 			if (v1.y != v2.y)
 			{
-				Edge* edge = new Edge;
+				auto* const edge = new Edge;
 
 				if (v1.y < v2.y)
 					makeEdgeRec(v1, v2, yNext(count, cnt, pts), edge, edges);
@@ -119,21 +122,18 @@ private:
 					makeEdgeRec(v2, v1, yPrev, edge, edges);
 			}
 
-			yPrev = v1.y;
+			yPrev = static_cast<int>(v1.y);
 			v1 = v2;
 		}
 	}
 
 	static void buildActiveList(const int row, Edge* active, Edge* edges[])
 	{
-		Edge* p;
-		Edge* q;
-
-		p = edges[row]->next;
+		auto* p = edges[row]->next;
 
 		while (p)
 		{
-			q = p->next;
+			auto* q = p->next;
 			insertEdge(active, p);
 			p = q;
 		}
@@ -141,17 +141,14 @@ private:
 
 	static void fillScan(const int row, const Edge* active)
 	{
-		Edge* p1;
-		Edge* p2;
-
-		p1 = active->next;
+		auto* p1 = active->next;
 
 		while (p1)
 		{
-			p2 = p1->next;
+			auto* p2 = p1->next;
 			if (p2 != nullptr)
 			{
-				DrawLineToLayer(m_currentLayer, p1->xIntersect, row, p2->xIntersect, row);
+				DrawLineToLayer(m_currentLayer, static_cast<int>(p1->xIntersect), row, static_cast<int>(p2->xIntersect), row);
 				p1 = p2->next;
 			}
 			else
@@ -163,25 +160,23 @@ private:
 
 	static void deleteAfter(Edge* q)
 	{
-		Edge* p = q->next;
+		auto* const p = q->next;
 		q->next = p->next;
 		delete p;
 	}
 
 	static void updateActiveList(const int scan, Edge* active)
 	{
-		Edge* q = active;
-		Edge* p = active->next;
+		auto* q = active;
+		auto* p = active->next;
 
 		while (p)
 		{
 			if (scan >= p->yUpper)
 			{
 				p = p->next;
-
 				deleteAfter(q);
 			}
-
 			else
 			{
 				p->xIntersect = (p->xIntersect + p->dxPerScan);
@@ -193,34 +188,32 @@ private:
 
 	static void resortActiveList(Edge* active)
 	{
-		Edge* q;
-		Edge* p = active->next;
+		auto* p = active->next;
 
 		active->next = nullptr;
 
 		while (p)
 		{
-			q = p->next;
-
+			auto* const q = p->next;
 			insertEdge(active, p);
-
 			p = q;
 		}
 	}
 
-	static bool linelineIntersection(RPGEngine::LineSegment& L1, RPGEngine::LineSegment& L2, Vector2D& intersectionPoint)
+	// https://www.geeksforgeeks.org/program-for-point-of-intersection-of-two-lines/
+	static bool linelineIntersection(RPGEngine::LineSegment& l1, RPGEngine::LineSegment& l2, Vector2D& intersectionPoint)
 	{
 		// Line AB represented as a1x + b1y = c1 
-		auto a1 = L1.b.y - L1.a.y;
-		auto b1 = L1.a.x - L1.b.x;
-		auto c1 = a1 * L1.a.x + b1 * L1.a.y;
+		const auto a1 = l1.b.y - l1.a.y;
+		const auto b1 = l1.a.x - l1.b.x;
+		const auto c1 = a1 * l1.a.x + b1 * l1.a.y;
 
 		// Line CD represented as a2x + b2y = c2 
-		auto a2 = L2.b.y - L2.a.y;
-		auto b2 = L2.a.x - L2.b.x;
-		auto c2 = a2 * (L2.a.x) + b2 * (L2.a.y);
+		const auto a2 = l2.b.y - l2.a.y;
+		const auto b2 = l2.a.x - l2.b.x;
+		const auto c2 = a2 * (l2.a.x) + b2 * (l2.a.y);
 
-		auto determinant = a1 * b2 - a2 * b1;
+		const auto determinant = a1 * b2 - a2 * b1;
 
 		if (determinant == 0)
 		{
@@ -254,7 +247,8 @@ private:
 			return false;
 		}
     }
-	
+
+	// http://www.sunshine2k.de/coding/java/SutherlandHodgman/SutherlandHodgman.html
 	static std::vector<Vector2D> PolygonClipToRect(SDL_Rect& rClip, std::vector<Vector2D> coordinates)
 	{
 		std::vector<Vector2D> clippedPolygon;
@@ -270,7 +264,6 @@ private:
 			point.y = floorf(point.y);
 			polygon.emplace_back(point);
 		}
-		// std::copy(coordinates.begin(), coordinates.end(), std::back_inserter(polygon));
 
 		enum
 		{
@@ -292,33 +285,33 @@ private:
 			clippedPolygon.clear();
 			for(auto i = 0; i < static_cast<int>(polygon.size()) - 1; i++)
 			{
-				auto Pi = polygon[i];
-				auto Pi1 = polygon[i+1];
-				if (isInsideClipWindow(Pi, j, edges[j]))
+				const auto pi = polygon[i];
+				const auto pi1 = polygon[static_cast<size_t>(i) + 1];
+				if (isInsideClipWindow(pi, j, edges[j]))
 				{
-	               if (isInsideClipWindow(Pi1, j, edges[j]))
+	               if (isInsideClipWindow(pi1, j, edges[j]))
 	               {
-	                    clippedPolygon.emplace_back(Pi1);
+	                    clippedPolygon.emplace_back(pi1);
 				   }
 	               else
 	               {
 	               		Vector2D ptInter;
-						RPGEngine::LineSegment ls(Pi, Pi1);
+						RPGEngine::LineSegment ls(pi, pi1);
 	               		if (linelineIntersection(ls, edges[j], ptInter))
 							clippedPolygon.emplace_back(ptInter);
 				   }
 				}
 				else
 				{
-	               if (isInsideClipWindow(Pi1, j, edges[j]))
+	               if (isInsideClipWindow(pi1, j, edges[j]))
 	               {
 	               		Vector2D ptInter;
-						RPGEngine::LineSegment ls(Pi, Pi1);
+						RPGEngine::LineSegment ls(pi, pi1);
 	               		if (linelineIntersection(ls, edges[j], ptInter))
 	               		{
 		                    clippedPolygon.emplace_back(ptInter);
 						}
-	                    clippedPolygon.emplace_back(Pi1);
+	                    clippedPolygon.emplace_back(pi1);
 				   }
 				}
 			}
@@ -333,11 +326,12 @@ private:
 				clippedPolygon.emplace_back(clippedPolygon[0]);
 			std::swap(clippedPolygon, polygon);
 		}
+
 		for(auto& point : polygon)
 		{
 			assert(point.InRect(rClip) == true);
 		}
-
+		
 		return polygon;
 	}
 	
@@ -345,22 +339,25 @@ private:
 	{
 		if (coordinates.size() >= 2)
 		{
-			DrawLineToLayer(m_currentLayer, coordinates[0].x, coordinates[0].y,
-				coordinates[coordinates.size() - 1].x, coordinates[coordinates.size() - 1].y);
+			DrawLineToLayer(m_currentLayer, static_cast<int>(coordinates[0].x), static_cast<int>(coordinates[0].y),
+				static_cast<int>(coordinates[coordinates.size() - 1].x), static_cast<int>(coordinates[coordinates.size() - 1].y));
 
 			for (auto count = 0; count < coordinates.size() - 1; count++)
-				DrawLineToLayer(m_currentLayer, coordinates[count].x, coordinates[count].y,
-					coordinates[count + 1].x,	coordinates[count + 1].y);
+				DrawLineToLayer(m_currentLayer, static_cast<int>(coordinates[count].x), static_cast<int>(coordinates[count].y),
+					static_cast<int>(coordinates[count + 1].x),	static_cast<int>(coordinates[count + 1].y));
 		}
 	}
 
 	// https://www.codepoc.io/blog/cpp/2830/program-to-fill-a-polygon-using-scan-line-polygon-fill-algorithm
+	// 
+	
 	static void FillPolygon(const std::vector<Vector2D>& pointsIn)
 	{
 		// Make sure we're given a valid polygon
 		if (pointsIn.size() < 3)
 			return;
-		
+
+		PROFILE_FUNCTION();
 		Edge* edges[2000];
 
 		SDL_Rect clipRegion;
@@ -388,7 +385,7 @@ private:
 			edge = new Edge{0, 0, 0, nullptr};
 		}
 
-		buildEdgeList(points.size(), pts, edges);
+		buildEdgeList(static_cast<int>(points.size()), pts, edges);
 
 		auto* const active = new Edge{0, 0, 0, nullptr};
 
@@ -794,143 +791,200 @@ public:
 	}
 
 	// https://www.avrfreaks.net/sites/default/files/triangles.c
+	// http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
 	static void DrawFillTriangleToLayer(const Layer layer, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3)
 	{
-		auto drawline = [&](const int sx, const int ex, const int ny) { DrawLineToLayer(layer, sx, ny, ex ,ny); };
+		auto drawline = [&](const int sx, const int ex, const int ny) { DrawLineToLayer(layer, sx, ny, ex, ny); };
 
-		int t1x, t2x, y, minx, maxx, t1xp, t2xp;
-		bool changed1 = false;
-		bool changed2 = false;
+		int t1_x, t2_x, y, minx, maxx, t1xp, t2xp;
+		auto changed1 = false;
+		auto changed2 = false;
 		int signx1, signx2, dx1, dy1, dx2, dy2;
 		int e1, e2;
-    	
+
 		// Sort vertices
 		if (y1 > y2) { std::swap(y1, y2); std::swap(x1, x2); }
 		if (y1 > y3) { std::swap(y1, y3); std::swap(x1, x3); }
 		if (y2 > y3) { std::swap(y2, y3); std::swap(x2, x3); }
 
-		t1x = t2x = x1; y = y1;   // Starting points
-		dx1 = (int)(x2 - x1);
-		if (dx1 < 0) { dx1 = -dx1; signx1 = -1; }
-		else signx1 = 1;
-		dy1 = (int)(y2 - y1);
+		t1_x = t2_x = x1; y = y1;   // Starting points
+		dx1 = static_cast<int>(x2 - x1);
+		if (dx1 < 0)
+		{
+			dx1 = -dx1;
+			signx1 = -1;
+		}
+		else
+		{
+			signx1 = 1;
+		}
+    	
+		dy1 = static_cast<int>(y2 - y1);
 
-		dx2 = (int)(x3 - x1);
+		dx2 = static_cast<int>(x3 - x1);
 		if (dx2 < 0) { dx2 = -dx2; signx2 = -1; }
 		else signx2 = 1;
-		dy2 = (int)(y3 - y1);
+		dy2 = static_cast<int>(y3 - y1);
 
 		if (dy1 > dx1) { std::swap(dx1, dy1); changed1 = true; }
 		if (dy2 > dx2) { std::swap(dy2, dx2); changed2 = true; }
 
-		e2 = (int)(dx2 >> 1);
+		e2 = static_cast<int>(dx2 >> 1);
 		// Flat top, just process the second half
-		if (y1 == y2) goto next;
-		e1 = (int)(dx1 >> 1);
+		if (y1 == y2) 
+			goto next;  // NOLINT(cppcoreguidelines-avoid-goto)
+		e1 = static_cast<int>(dx1 >> 1);
 
-		for (int i = 0; i < dx1;) {
+		for (auto i = 0; i < dx1;) 
+		{
 			t1xp = 0; t2xp = 0;
-			if (t1x < t2x) { minx = t1x; maxx = t2x; }
-			else { minx = t2x; maxx = t1x; }
+			if (t1_x < t2_x)
+			{
+				minx = t1_x;
+				maxx = t2_x;
+			}
+			else
+			{
+				minx = t2_x;
+				maxx = t1_x;
+			}
+			
 			// process first line until y value is about to change
-			while (i < dx1) {
+			while (i < dx1) 
+			{
 				i++;
 				e1 += dy1;
-				while (e1 >= dx1) {
+				while (e1 >= dx1) 
+				{
 					e1 -= dx1;
-					if (changed1) t1xp = signx1;//t1x += signx1;
-					else          goto next1;
+					if (changed1) 
+						t1xp = signx1;//t1x += signx1;
+					else          
+						goto next1;
 				}
 				if (changed1) break;
-				else t1x += signx1;
+				t1_x += signx1;
 			}
 			// Move line
 		next1:
 			// process second line until y value is about to change
-			while (1) {
+			while (true) 
+			{
 				e2 += dy2;
-				while (e2 >= dx2) {
+				while (e2 >= dx2) 
+				{
 					e2 -= dx2;
 					if (changed2) t2xp = signx2;//t2x += signx2;
 					else          goto next2;
 				}
 				if (changed2)     break;
-				else              t2x += signx2;
+				t2_x += signx2;
 			}
 		next2:
-			if (minx > t1x) minx = t1x;
-			if (minx > t2x) minx = t2x;
-			if (maxx < t1x) maxx = t1x;
-			if (maxx < t2x) maxx = t2x;
+			if (minx > t1_x) minx = t1_x;
+			if (minx > t2_x) minx = t2_x;
+			if (maxx < t1_x) maxx = t1_x;
+			if (maxx < t2_x) maxx = t2_x;
 			drawline(minx, maxx, y);    // Draw line from min to max points found on the y
-										// Now increase y
-			if (!changed1) t1x += signx1;
-			t1x += t1xp;
-			if (!changed2) t2x += signx2;
-			t2x += t2xp;
+
+			// Now increase y
+			if (!changed1) t1_x += signx1;
+			t1_x += t1xp;
+			if (!changed2) t2_x += signx2;
+			t2_x += t2xp;
 			y += 1;
 			if (y == y2) break;
 
 		}
 	next:
 		// Second half
-		dx1 = (int)(x3 - x2); if (dx1 < 0) { dx1 = -dx1; signx1 = -1; }
-		else signx1 = 1;
-		dy1 = (int)(y3 - y2);
-		t1x = x2;
+		dx1 = static_cast<int>(x3 - x2);
+    	if (dx1 < 0)
+    	{
+    		dx1 = -dx1; signx1 = -1;
+    	}
+		else
+		{
+			signx1 = 1;
+		}
+		dy1 = static_cast<int>(y3 - y2);
+		t1_x = x2;
 
-		if (dy1 > dx1) {   // swap values
+		if (dy1 > dx1) 
+		{   // swap values
 			std::swap(dy1, dx1);
 			changed1 = true;
 		}
 		else changed1 = false;
 
-		e1 = (int)(dx1 >> 1);
+		e1 = static_cast<int>(dx1 >> 1);
 
-		for (int i = 0; i <= dx1; i++) {
+		for (int i = 0; i <= dx1; i++) 
+		{
 			t1xp = 0; t2xp = 0;
-			if (t1x < t2x) { minx = t1x; maxx = t2x; }
-			else { minx = t2x; maxx = t1x; }
+			if (t1_x < t2_x)
+			{
+				minx = t1_x;
+				maxx = t2_x;
+			}
+			else
+			{
+				minx = t2_x;
+				maxx = t1_x;
+			}
+			
 			// process first line until y value is about to change
-			while (i < dx1) {
+			while (i < dx1) 
+			{
 				e1 += dy1;
-				while (e1 >= dx1) {
+				while (e1 >= dx1) 
+				{
 					e1 -= dx1;
-					if (changed1) { t1xp = signx1; break; }//t1x += signx1;
-					else          goto next3;
+					if (changed1)
+					{
+						t1xp = signx1;
+						break;
+					}//t1x += signx1;
+					goto next3;
 				}
-				if (changed1) break;
-				else   	   	  t1x += signx1;
-				if (i < dx1) i++;
+				if (changed1) 
+					break;
+				t1_x += signx1;
+				if (i < dx1) 
+					i++;
 			}
 		next3:
 			// process second line until y value is about to change
-			while (t2x != x3) {
+			while (t2_x != x3) 
+			{
 				e2 += dy2;
-				while (e2 >= dx2) {
+				while (e2 >= dx2) 
+				{
 					e2 -= dx2;
-					if (changed2) t2xp = signx2;
-					else          goto next4;
+					if (changed2) 
+						t2xp = signx2;
+					else
+						goto next4;
 				}
-				if (changed2)     break;
-				else              t2x += signx2;
+				if (changed2)
+					break;
+				t2_x += signx2;
 			}
 		next4:
 
-			if (minx > t1x) minx = t1x;
-			if (minx > t2x) minx = t2x;
-			if (maxx < t1x) maxx = t1x;
-			if (maxx < t2x) maxx = t2x;
+			if (minx > t1_x) minx = t1_x;
+			if (minx > t2_x) minx = t2_x;
+			if (maxx < t1_x) maxx = t1_x;
+			if (maxx < t2_x) maxx = t2_x;
 			drawline(minx, maxx, y);
-			if (!changed1) t1x += signx1;
-			t1x += t1xp;
-			if (!changed2) t2x += signx2;
-			t2x += t2xp;
+			if (!changed1) t1_x += signx1;
+			t1_x += t1xp;
+			if (!changed2) t2_x += signx2;
+			t2_x += t2xp;
 			y += 1;
 			if (y > y3) return;
 		}
 	}
-
 	
 private:
     static inline SDL_Window *m_window = nullptr;

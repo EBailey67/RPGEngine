@@ -67,7 +67,12 @@ public:
     constexpr Vector2D(const float x, const float y) : x(x), y(y)
     {
     }
-	
+
+	/*! @brief Construct vector with desired coordinates. */
+    constexpr Vector2D(const int x, const int y) : x(static_cast<float>(x)), y(static_cast<float>(y))
+    {
+    }
+
     /*! @brief Copy constructor. */
     Vector2D(const Vector2D &other) = default;
 
