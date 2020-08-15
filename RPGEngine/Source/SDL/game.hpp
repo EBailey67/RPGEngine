@@ -18,14 +18,25 @@
 
 class Game
 {
-    friend Instances;
 public:
     FramerateCounter fps_counter;
-	
-private:
+	static Game* GetInstance()
+	{
+		static Game game;
+		return &game;
+	}
 
+private:
 	Game() = default;
-    ~Game() = default;
+    ~Game()
+    {
+        Graphics::DestroyData();
+
+        Mix_Quit();
+        TTF_Quit();
+        IMG_Quit();
+        SDL_Quit();
+    };
 
     void InputUpdate()
     {
@@ -68,18 +79,6 @@ private:
         Graphics::DrawLayers();
         m_scene->RenderUI();
         Graphics::RenderPresent();
-    }
-
-    /* Destroy window and renderer.
-     * Close all subsystems. */
-    static void Destroy()
-    {
-        Graphics::DestroyData();
-
-        Mix_Quit();
-        TTF_Quit();
-        IMG_Quit();
-        SDL_Quit();
     }
 
 public:
@@ -125,7 +124,7 @@ public:
     void Run()
     {
         m_isRunning = true;
-        auto* timer = RPGEngine::Timer::Instance();
+        auto* timer = RPGEngine::Timer::GetInstance();
         const auto frameRate = 60.0f;
     	
         while (m_isRunning)

@@ -9,7 +9,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     Instrumentor::Get().BeginSession("Game Engine Profile");
 
-	auto* game = Instances::CreateGame();
+    auto* game = Game::GetInstance();
     try
     {
         game->InitializeSubsystems();
@@ -22,7 +22,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
         fontCache.reset();
         musicCache.reset();
         scoreTable.Save("score.txt");
-        Instances::DestroyGame();
 
 		Instrumentor::Get().EndSession();
 	    return 0;
@@ -32,7 +31,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
         DebugError("Exception", e.what());
 
         fontCache.reset();
-        Instances::DestroyGame();
 		Instrumentor::Get().EndSession();
 	    return 1;
     }

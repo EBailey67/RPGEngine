@@ -4,7 +4,7 @@
 
 namespace GUI
 {
-	GameSceneUI::GameSceneUI(SDL_Window* pwindow, int rwidth, int rheight) :
+	GameSceneUI::GameSceneUI(SDL_Window* pwindow, const int rwidth, const int rheight) :
 		Screen(pwindow, Vector2i(rwidth, rheight), "Game UI Test")
 	{
 
@@ -457,7 +457,7 @@ namespace GUI
     {
 	    if (auto* pfps = gfind<Label>("FPS"))
         {
-   			auto* game = Instances::GetGameInstance();
+   			const auto game = Game::GetInstance();
 			auto* gs = dynamic_cast<GameScene*>(game->Scene());
 
             const auto frameRate = static_cast<int>(floorf(game->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);

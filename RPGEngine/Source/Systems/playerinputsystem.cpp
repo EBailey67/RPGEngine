@@ -198,13 +198,6 @@ void ActiveGame()
     player.score = 0;
     pos.position = {550, 746};
 
-    //auto score = registry.view<entt::tag<"score"_hs>>();
-    //registry.emplace<Active>(*score.begin());
-    //auto hp = registry.view<entt::tag<"hp"_hs>>();
-    //registry.emplace<Active>(*hp.begin());
-    //auto dash = registry.view<entt::tag<"dash"_hs>>();
-    //registry.emplace<Active>(*dash.begin());
-
     auto table_view = registry.view<entt::tag<"table"_hs>>();
     for (auto &entt : table_view)
     {
@@ -235,13 +228,6 @@ void CloseGame()
     {
         registry.remove<Active>(hierarchy.child);
     }
-
-    //auto score = registry.view<entt::tag<"score"_hs>>();
-    //registry.remove<Active>(*score.begin());
-    //auto hp = registry.view<entt::tag<"hp"_hs>>();
-    //registry.remove<Active>(*hp.begin());
-    //auto dash = registry.view<entt::tag<"dash"_hs>>();
-    //registry.remove<Active>(*dash.begin());
 
     for (auto &row : scoreTable.table)
     {

@@ -50,10 +50,6 @@ public:
 		textureCache.load(tileid, ResourceLoader::Sprite("resources/tiled_files/GameTiles.png"));
 		textureCache.load(spriteid, ResourceLoader::Sprite("resources/sprites/spritesheet.png"));
 
-		//fontCache.load(GetUIFontName(UIFont::Debug), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
-		////	fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/consola.ttf", 18));
-		//fontCache.load(GetUIFontName(UIFont::Default), ResourceLoader::Font("resources/fonts/kongtext.ttf", 12));
-
 		scoreTable.Open("resources/score.txt");
 
 		spriteSheet.Load("resources/tiled_files/sprite.tsx", textureCache.resource(spriteid));

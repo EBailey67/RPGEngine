@@ -6,7 +6,7 @@ void CameraCreate()
 	const auto id = registry.create();
     auto &camera = registry.emplace<Camera>(id);
     camera.position = {500, 500};
-    camera.viewRadius = {16 * 16, 16 * 9};
+    camera.viewRadius = {24 * 16, 24 * 9};
     camera.UpdateWindowSize(Graphics::Window());
 }
 

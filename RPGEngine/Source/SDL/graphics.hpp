@@ -20,6 +20,7 @@ enum class Layer
     Walls = 1,
     Objects = 2,
     Mobs = 3,
+	Lights = 4,
     Debug = 5,
     UI = 6,
 };
@@ -36,7 +37,7 @@ private:
       int yUpper;
       float xIntersect;
       float dxPerScan;
-      Edge *next;
+      std::shared_ptr<Edge> next;
     };
 
 	static int yNext(const int k, const int cnt, const std::vector<Vector2D>& pts)
@@ -63,10 +64,10 @@ private:
 	    return static_cast<int>(pts[j].y);
     }
 
-	static void insertEdge(Edge* list, Edge* edge)
+	static void insertEdge(const std::shared_ptr<Edge> list, const std::shared_ptr<Edge>& edge)
 	{
-		auto* q = list;
-		auto* p = q->next;
+		auto q = list;
+		auto p = q->next;
 
 		while (p != nullptr)
 		{
@@ -86,7 +87,7 @@ private:
 	}
 
 	static void makeEdgeRec(const Vector2D& lower, const Vector2D& upper,
-		const int yComp, Edge* edge, Edge* edges[])
+		const int yComp, const std::shared_ptr<Edge>& edge, std::vector<std::shared_ptr<Edge>>& edges)
 	{
 		edge->dxPerScan = ((upper.x - lower.x) / (upper.y - lower.y));
 		edge->xIntersect = lower.x;
@@ -99,7 +100,7 @@ private:
 		insertEdge(edges[static_cast<int>(lower.y)], edge);
 	}
 
-	static void buildEdgeList(const int cnt, const std::vector<Vector2D>& pts, Edge* edges[])
+	static void buildEdgeList(const int cnt, const std::vector<Vector2D>& pts, std::vector<std::shared_ptr<Edge>>& edges)
 	{
 		Vector2D v1;
 
@@ -114,7 +115,7 @@ private:
 
 			if (v1.y != v2.y)
 			{
-				auto* const edge = new Edge;
+				auto const edge = std::make_shared<Edge>();
 
 				if (v1.y < v2.y)
 					makeEdgeRec(v1, v2, yNext(count, cnt, pts), edge, edges);
@@ -127,25 +128,25 @@ private:
 		}
 	}
 
-	static void buildActiveList(const int row, Edge* active, Edge* edges[])
+	static void buildActiveList(const int row, const std::shared_ptr<Edge>& active, const std::vector<std::shared_ptr<Edge>>& edges)
 	{
-		auto* p = edges[row]->next;
+		auto p = edges[row]->next;
 
 		while (p)
 		{
-			auto* q = p->next;
+			auto q = p->next;
 			insertEdge(active, p);
 			p = q;
 		}
 	}
 
-	static void fillScan(const int row, const Edge* active)
+	static void fillScan(const int row, const std::shared_ptr<Edge> active)
 	{
-		auto* p1 = active->next;
+		auto p1 = active->next;
 
 		while (p1)
 		{
-			auto* p2 = p1->next;
+			auto p2 = p1->next;
 			if (p2 != nullptr)
 			{
 				DrawLineToLayer(m_currentLayer, static_cast<int>(p1->xIntersect), row, static_cast<int>(p2->xIntersect), row);
@@ -158,17 +159,17 @@ private:
 		}
 	}
 
-	static void deleteAfter(Edge* q)
+	static void deleteAfter(std::shared_ptr<Edge> q)
 	{
-		auto* const p = q->next;
+		auto const p = q->next;
 		q->next = p->next;
-		delete p;
+		// delete p;
 	}
 
-	static void updateActiveList(const int scan, Edge* active)
+	static void updateActiveList(const int scan, std::shared_ptr<Edge>& active)
 	{
-		auto* q = active;
-		auto* p = active->next;
+		auto q = active;
+		auto p = active->next;
 
 		while (p)
 		{
@@ -186,15 +187,15 @@ private:
 		}
 	}
 
-	static void resortActiveList(Edge* active)
+	static void resortActiveList(std::shared_ptr<Edge>& active)
 	{
-		auto* p = active->next;
+		auto p = active->next;
 
 		active->next = nullptr;
 
 		while (p)
 		{
-			auto* const q = p->next;
+			auto const q = p->next;
 			insertEdge(active, p);
 			p = q;
 		}
@@ -358,7 +359,7 @@ private:
 			return;
 
 		PROFILE_FUNCTION();
-		Edge* edges[2000];
+		std::vector<std::shared_ptr<Edge>> edges(2000);
 
 		SDL_Rect clipRegion;
 		clipRegion.x = 0;
@@ -382,13 +383,15 @@ private:
 		// Initialize the edges
 		for (auto& edge : edges)
 		{
-			edge = new Edge{0, 0, 0, nullptr};
+			edge = std::make_shared<Edge>();
+			edge->next = nullptr;
 		}
 
 		buildEdgeList(static_cast<int>(points.size()), pts, edges);
 
-		auto* const active = new Edge{0, 0, 0, nullptr};
-
+		auto active = std::make_shared<Edge>(); 
+		active->next = nullptr;
+		
 		for (auto row = 0; row < 1600; row++)
 		{
 			buildActiveList(row, active, edges);
@@ -527,6 +530,18 @@ public:
         SDL_RenderClear(m_renderer);
     }
 
+    static void LayerClear(const Layer layer, const SDL_Color color)
+    {
+
+    	if (m_currentLayer != layer)
+    	{
+    		RenderTarget(layer);
+    	}
+    	SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+        SDL_RenderClear(m_renderer);
+    }
+		
 	static std::pair<int, int> WindowSize() noexcept
     {
         SSECS_ASSERT(m_window);

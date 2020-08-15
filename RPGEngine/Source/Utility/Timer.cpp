@@ -5,7 +5,7 @@ namespace RPGEngine
 {
 	Timer* Timer::m_instance = nullptr;
 	
-	Timer* Timer::Instance()
+	Timer* Timer::GetInstance()
 	{
 		if (m_instance == nullptr)
 			m_instance = new Timer();

@@ -7,7 +7,7 @@ namespace RPGEngine
 	class Timer
 	{
 	public:
-		static Timer* Instance();
+		static Timer* GetInstance();
 		static void Release();
 
 		void Reset();

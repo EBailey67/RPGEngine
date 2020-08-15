@@ -9,15 +9,16 @@ constexpr int South = 1;
 constexpr int East = 2;
 constexpr int West = 3;
 
-void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, float fBlockWidth, int pitch, RPGEngine::Cell* world)
+void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, const int width, const int height, const float fBlockWidth, const int pitch, RPGEngine::Cell* world)
 {
 	PROFILE_FUNCTION();
 	
 	// Clear our edges array
 	tileGrid.vecEdges.clear();
 
-	for (auto x = 0; x < w; x++)
-		for (auto y = 0; y < h; y++)
+	for (auto x = 0; x < width; x++)
+	{
+		for (auto y = 0; y < height; y++)
 		{
 			for (auto j = 0; j < 4; j++)
 			{
@@ -25,17 +26,19 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 				world[(y + sy) * pitch + (x + sx)].edge_id[j] = 0;
 			}
 		}
+	}
 
 	// Iterate through region from top left to bottom right
-	for (auto x = 0; x < w; x++)
-		for (auto y = 0; y < h; y++)
+	for (auto x = 0; x < width; x++)
+	{
+		for (auto y = 0; y < height; y++)
 		{
 			// Create some convenient indices
-			auto i = (y + sy) * pitch + (x + sx);		// This
-			auto n = (y + sy - 1) * pitch + (x + sx);	// Northern Neighbour
-			auto s = (y + sy + 1) * pitch + (x + sx);	// Southern Neighbour
-			auto w = (y + sy) * pitch + (x + sx - 1);	// Western Neighbour
-			auto e = (y + sy) * pitch + (x + sx + 1);	// Eastern Neighbour
+			const auto i = (y + sy) * pitch + (x + sx);		// This
+			const auto n = (y + sy - 1) * pitch + (x + sx);	// Northern Neighbour
+			const auto s = (y + sy + 1) * pitch + (x + sx);	// Southern Neighbour
+			const auto w = (y + sy) * pitch + (x + sx - 1);	// Western Neighbour
+			const auto e = (y + sy) * pitch + (x + sx + 1);	// Eastern Neighbour
 
 			// If this cell exists, check if it needs edges
 			if (world[i].exist)
@@ -56,11 +59,13 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 					{
 						// Northern neighbour does not have one, so create one
 						RPGEngine::LineSegment edge;
-						edge.a.x = (sx + x) * fBlockWidth; edge.a.y = (sy + y) * fBlockWidth;
-						edge.b.x = edge.a.x; edge.b.y = edge.a.y + fBlockWidth;
+						edge.a.x = static_cast<float>(sx + x) * fBlockWidth;
+						edge.a.y = static_cast<float>(sy + y) * fBlockWidth;
+						edge.b.x = edge.a.x;
+						edge.b.y = edge.a.y + fBlockWidth;
 
 						// Add edge to Polygon Pool
-						int edge_id = tileGrid.vecEdges.size();
+						const auto edge_id = static_cast<int>(tileGrid.vecEdges.size());
 						tileGrid.vecEdges.push_back(edge);
 
 						// Update tile information with edge information
@@ -70,7 +75,7 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 				}
 
 				// If this cell dont have an eastern neignbour, It needs a eastern edge
-				if (x == w - 1 || !world[e].exist)
+				if (x == width - 1 || !world[e].exist)
 				{
 					// It can either extend it from its northern neighbour if they have
 					// one, or It can start a new one.
@@ -85,11 +90,13 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 					{
 						// Northern neighbour does not have one, so create one
 						RPGEngine::LineSegment edge;
-						edge.a.x = (sx + x + 1) * fBlockWidth; edge.a.y = (sy + y) * fBlockWidth;
-						edge.b.x = edge.a.x; edge.b.y = edge.a.y + fBlockWidth;
+						edge.a.x = static_cast<float>(sx + x + 1) * fBlockWidth;
+						edge.a.y = static_cast<float>(sy + y) * fBlockWidth;
+						edge.b.x = edge.a.x;
+						edge.b.y = edge.a.y + fBlockWidth;
 
 						// Add edge to Polygon Pool
-						int edge_id = tileGrid.vecEdges.size();
+						const auto edge_id = static_cast<int>(tileGrid.vecEdges.size());
 						tileGrid.vecEdges.push_back(edge);
 
 						// Update tile information with edge information
@@ -114,11 +121,13 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 					{
 						// Western neighbour does not have one, so create one
 						RPGEngine::LineSegment edge;
-						edge.a.x = (sx + x) * fBlockWidth; edge.a.y = (sy + y) * fBlockWidth;
-						edge.b.x = edge.a.x + fBlockWidth; edge.b.y = edge.a.y;
+						edge.a.x = static_cast<float>(sx + x) * fBlockWidth;
+						edge.a.y = static_cast<float>(sy + y) * fBlockWidth;
+						edge.b.x = edge.a.x + fBlockWidth;
+						edge.b.y = edge.a.y;
 
 						// Add edge to Polygon Pool
-						int edge_id = tileGrid.vecEdges.size();
+						const auto edge_id = static_cast<int>(tileGrid.vecEdges.size());
 						tileGrid.vecEdges.push_back(edge);
 
 						// Update tile information with edge information
@@ -128,7 +137,7 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 				}
 
 				// If this cell doesnt have a southern neignbour, It needs a southern edge
-				if (y == h - 1 || !world[s].exist)
+				if (y == height - 1 || !world[s].exist)
 				{
 					// It can either extend it from its western neighbour if they have
 					// one, or It can start a new one.
@@ -141,13 +150,15 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 					}
 					else
 					{
-						// Western neighbour does not have one, so I need to create one
+						// Western neighbor does not have one, so I need to create one
 						RPGEngine::LineSegment edge;
-						edge.a.x = (sx + x) * fBlockWidth; edge.a.y = (sy + y + 1) * fBlockWidth;
-						edge.b.x = edge.a.x + fBlockWidth; edge.b.y = edge.a.y;
+						edge.a.x = static_cast<float>(sx + x) * fBlockWidth;
+						edge.a.y = static_cast<float>(sy + y + 1) * fBlockWidth;
+						edge.b.x = edge.a.x + fBlockWidth;
+						edge.b.y = edge.a.y;
 
-						// Add edge to Polygon Pool
-						int edge_id = tileGrid.vecEdges.size();
+						// Add edge to Polygon pool
+						const auto edge_id = static_cast<int>(tileGrid.vecEdges.size());
 						tileGrid.vecEdges.push_back(edge);
 
 						// Update tile information with edge information
@@ -155,12 +166,9 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, int sx, int sy, int w, int h, f
 						world[i].edge_exist[South] = true;
 					}
 				}
-
 			}
-
 		}
-
-	// std::cout << "Edges :" << tileGrid.vecEdges.size() << std::endl;
+	}
 }
 
 void CalculateVisibilityPolygon(TileGrid& tileGrid, const float ox, const float oy, float radius)
@@ -185,7 +193,6 @@ void UpdateVisibility()
 			grid.visibilityPos.x = roundf(pos.position.x);
 			grid.visibilityPos.y = roundf(pos.position.y);
 			CalculateVisibilityPolygon(grid, grid.visibilityPos.x, grid.visibilityPos.y, 1000.0f);
-			std::cout << "VisibilityPolygonSize :" << grid.vecVisibilityPolygon.size() << std::endl;
 		}
 	}
 }
@@ -232,25 +239,24 @@ void GridRender()
     {
         const auto& grid = gridView.get<TileGrid>(tile);
         const auto& position = gridView.get<Position>(tile);
-        SDL_FRect world_tile{position.position.x, position.position.y, grid.tileSet->TileWidth() * grid.scale.x,
-                             grid.tileSet->TileHeight() * grid.scale.y};
+        SDL_FRect world_tile{position.position.x, position.position.y, static_cast<float>(grid.tileSet->TileWidth()) * grid.scale.x,
+                             static_cast<float>(grid.tileSet->TileHeight()) * grid.scale.y};
         auto screenRect = activeCamera.FromWorldToScreenRect(world_tile);
-        const SDL_Rect screenPosition = {screenRect.x, screenRect.y};
+        const Vector2D screenPosition = {screenRect.x, screenRect.y};
 
-        auto j = grid.cell.size() - 1;
+        auto j = static_cast<int>(grid.cell.size()) - 1;
         for (const auto &row : grid.cell)
         {
 	        auto i = 0;
-            screenRect.y = static_cast<int>(screenPosition.y - screenRect.h * j);
+            screenRect.y = static_cast<int>(screenPosition.y) - screenRect.h * j;
             for (const auto &id : row)
             {
                 if (id)
                 {
-                    screenRect.x = static_cast<int>(screenPosition.x + screenRect.w * i);
+                    screenRect.x = static_cast<int>(screenPosition.x) + screenRect.w * i;
                     if (activeCamera.Contains(screenRect))
                     {
-                        Graphics::RenderToLayer(grid.layer, grid.tileSet->Texture(), &(*grid.tileSet)[id - 1],
-                                                     &screenRect);
+                        Graphics::RenderToLayer(grid.layer, grid.tileSet->Texture(), &(*grid.tileSet)[id - 1], &screenRect);
                         if (TileGrid::hasDebugDraw)
                         {
 	                        auto fDraw = true;
@@ -283,53 +289,45 @@ void GridRender()
             }
             j--;
         }
+		
 		if (grid.layer == Layer::Walls)
 		{
-			if (!grid.vecEdges.empty())
+			if (!grid.vecEdges.empty() && TileGrid::hasDebugDraw)
 			{
-				for (auto& e : grid.vecEdges)
+				for (const auto& e : grid.vecEdges)
 				{
-					auto p1 = activeCamera.FromWorldToScreenView(e.a);
-					auto p2 = activeCamera.FromWorldToScreenView(e.b);
+					const auto p1 = activeCamera.FromWorldToScreenView(e.a);
+					const auto p2 = activeCamera.FromWorldToScreenView(e.b);
 					Graphics::SetDrawColor(0, 255, 0, 255);
-					Graphics::DrawLineToLayer(Layer::Debug, p1.x, p1.y, p2.x, p2.y);
+					Graphics::DrawLineToLayer(Layer::Debug, static_cast<int>(p1.x), static_cast<int>(p1.y), static_cast<int>(p2.x), static_cast<int>(p2.y));
 					Graphics::SetDrawColor(255, 0, 0);
-					Graphics::DrawFillCircleToLayer(Layer::Debug, p1.x, p1.y, 4);
-					Graphics::DrawFillCircleToLayer(Layer::Debug, p2.x, p2.y, 4);
+					Graphics::DrawFillCircleToLayer(Layer::Debug, static_cast<int>(p1.x), static_cast<int>(p1.y), 4);
+					Graphics::DrawFillCircleToLayer(Layer::Debug, static_cast<int>(p2.x), static_cast<int>(p2.y), 4);
 					Graphics::ResetDrawColor();
 				}
 			}
 
-			Graphics::SetDrawColor(0, 255, 0, 64);
+			constexpr  SDL_Color background{0, 0, 0, 128};
+			Graphics::LayerClear(Layer::Lights, background );
+			Graphics::SetDrawColor(0, 0, 0, 0);
 
 			std::vector<Vector2D> screenPolygon(grid.vecVisibilityPolygon.size());
-			for (auto i = 0; i < grid.vecVisibilityPolygon.size(); i++)
+			for (auto i = 0; i < static_cast<int>(grid.vecVisibilityPolygon.size()); i++)
 			{
 				screenPolygon[i] = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i]);
 			}
+			SDL_SetRenderDrawBlendMode(Graphics::Renderer(), SDL_BLENDMODE_NONE);
+			Graphics::DrawFillPolygonToLayer(Layer::Lights, screenPolygon);
 
-			Graphics::DrawFillPolygonToLayer(Layer::Debug, screenPolygon);
-			Graphics::SetDrawColor(0, 255, 255, 255);
-			Graphics::DrawPolygonToLayer(Layer::Debug, screenPolygon);
-			
-			//for (auto i = 0; i < grid.vecVisibilityPolygon.size() - 1; i++)
-			//{
-			//	auto p1 = activeCamera.FromWorldToScreenView(grid.visibilityPos);
-			//	auto p2 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i]);
-			//	auto p3 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i + 1]);
+			SDL_SetRenderDrawBlendMode(Graphics::Renderer(), SDL_BLENDMODE_BLEND);
 
-			//	Graphics::DrawFillTriangleToLayer(Layer::Debug, p1, p2, p3);
-			//}
-
-			//auto p1 = activeCamera.FromWorldToScreenView(grid.visibilityPos);
-			//auto p2 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[grid.vecVisibilityPolygon.size() - 1]);
-			//auto p3 = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[0]);
-
-			//// Fan will have one open edge, so draw last point of fan to first
-			//Graphics::DrawFillTriangleToLayer(Layer::Debug, p1, p2, p3);
+			if (TileGrid::hasDebugDraw)
+			{
+				Graphics::SetDrawColor(0, 255, 255, 255);
+				Graphics::DrawPolygonToLayer(Layer::Lights, screenPolygon);
+			}
 			Graphics::ResetDrawColor();
 		}
-		
     }
 }
 
@@ -343,7 +341,7 @@ void GridCreate()
     }
     
     {
-        auto id = registry.create();
+        const auto id = registry.create();
         auto &tilegrid = registry.emplace<TileGrid>(id, map, &tileset, 1);
         registry.emplace<Position>(id);
         registry.emplace<TileGridCollider>(id);
@@ -354,7 +352,7 @@ void GridCreate()
     }
 
     {
-        auto id = registry.create();
+        const auto id = registry.create();
         auto &tilegrid = registry.emplace<TileGrid>(id, map, &tileset, 2);
         registry.emplace<Position>(id);
         registry.emplace<TileGridCollider>(id);
@@ -364,7 +362,7 @@ void GridCreate()
         tilegrid.layer = Layer::Walls;
     }
     {
-        auto id = registry.create();
+        const auto id = registry.create();
         auto &tilegrid = registry.emplace<TileGrid>(id, map, &tileset, 3);
         registry.emplace<Position>(id);
         registry.emplace<TileGridCollider>(id);

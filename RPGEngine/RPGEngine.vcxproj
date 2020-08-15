@@ -191,7 +191,6 @@
     <ClCompile Include="Source\sdlgui\vscrollpanel.cpp" />
     <ClCompile Include="Source\sdlgui\widget.cpp" />
     <ClCompile Include="Source\sdlgui\window.cpp" />
-    <ClCompile Include="Source\SDL\instances.cpp" />
     <ClCompile Include="Source\Systems\camerasystem.cpp" />
     <ClCompile Include="Source\Systems\collisionsystem.cpp" />
     <ClCompile Include="Source\Systems\debugsystem.cpp" />
@@ -272,7 +271,6 @@
     <ClInclude Include="Source\SDL\fwd.hpp" />
     <ClInclude Include="Source\SDL\game.hpp" />
     <ClInclude Include="Source\SDL\graphics.hpp" />
-    <ClInclude Include="Source\SDL\instances.hpp" />
     <ClInclude Include="Source\SDL\resource_loader.hpp" />
     <ClInclude Include="Source\SDL\scene.hpp" />
     <ClInclude Include="Source\SDL\sdl.hpp" />
