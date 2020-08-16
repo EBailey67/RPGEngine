@@ -4,6 +4,8 @@
 
 void SpriteRender()
 {
+	PROFILE_FUNCTION();
+
     auto view = registry.view<Sprite, Position, Active>();
     const auto cameraView = registry.view<Camera>();
     const auto& camera = cameraView.get(*cameraView.begin());

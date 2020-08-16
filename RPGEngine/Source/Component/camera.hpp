@@ -1,11 +1,16 @@
 #pragma once
 
+#include <algorithm>
 #include <cmath>
 
 #include <SDL_rect.h>
 #include <SDL_video.h>
 
 #include "../Utility/Vector2D.h"
+
+constexpr int ZOOM_LEVELS = 5;
+const float zoom_level[ZOOM_LEVELS] = {0.25f, 0.5f, 1.0f, 2.0f, 4.0f};
+constexpr int DEFAULT_ZOOM_LEVEL = 2;
 
 class Camera
 {
@@ -34,8 +39,8 @@ public:
     [[nodiscard]] Vector2D FromWorldToScreenView(const Vector2D& point) const
     {
         Vector2D screen{
-            std::round(((point.x - (position.x - viewRadius.x)) * static_cast<float>(m_windowWidth)) / (2 * viewRadius.x)),
-            -std::round(((point.y - (position.y + viewRadius.y)) * static_cast<float>(m_windowHeight)) / (2 * viewRadius.y))};
+            std::round(((point.x - (position.x - viewRadius.x)) * static_cast<float>(m_windowWidth)) / (2.0f * viewRadius.x)),
+            -std::round(((point.y - (position.y + viewRadius.y)) * static_cast<float>(m_windowHeight)) / (2.0f * viewRadius.y))};
 
     	return screen;
     }
@@ -44,16 +49,37 @@ public:
     {
 	    const auto left_up = FromWorldToScreenView({rect.x, rect.y + rect.h});
         return {static_cast<int>(std::round(left_up.x)), static_cast<int>(std::round(left_up.y)),
-                static_cast<int>(std::round(rect.w * static_cast<float>(m_windowWidth) / (2 * viewRadius.x))),
-                static_cast<int>(std::round(rect.h * static_cast<float>(m_windowHeight) / (2 * viewRadius.y)))};
+                static_cast<int>(std::round(rect.w * static_cast<float>(m_windowWidth) / (2.0f * viewRadius.x))),
+                static_cast<int>(std::round(rect.h * static_cast<float>(m_windowHeight) / (2.0f * viewRadius.y)))};
     }
 
     void UpdateWindowSize(SDL_Window *window) noexcept
     {
         SDL_GetWindowSize(window, &m_windowWidth, &m_windowHeight);
 
+    	UpdateViewRadius();
         viewRadius.y = viewRadius.x / (static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
+    }
 
+	[[nodiscard]] float GetZoom() const noexcept
+    {
+	    return zoom_level[current_zoom_level];
+    }
+
+    float ZoomIn()
+    {
+	    current_zoom_level = std::max(0, current_zoom_level - 1);
+    	UpdateViewRadius();
+    	
+	    return zoom_level[current_zoom_level];
+    }
+
+    float ZoomOut()
+    {
+	    current_zoom_level = std::min(ZOOM_LEVELS - 1, current_zoom_level + 1);
+    	UpdateViewRadius();
+    	
+	    return zoom_level[current_zoom_level];
     }
 
     [[nodiscard]] bool Contains(const Vector2D &point) const noexcept
@@ -74,12 +100,21 @@ public:
                  (rect.y > m_windowHeight));
     }
 
+	void UpdateViewRadius()
+    {
+	    viewRadius.x = 24 * 16 * zoom_level[current_zoom_level];
+    	viewRadius.y = 24 * 9 * zoom_level[current_zoom_level];
+        viewRadius.y = viewRadius.x / (static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
+    }
+
     Vector2D position{};
     Vector2D viewRadius{};
 
 private:
+	
     int m_windowWidth{};
     int m_windowHeight{};
+	int current_zoom_level = DEFAULT_ZOOM_LEVEL;
 };
 
 struct CameraData

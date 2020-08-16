@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "tilegridsystem.hpp"
 
 #include "../core.hpp"
@@ -9,7 +11,7 @@ constexpr int South = 1;
 constexpr int East = 2;
 constexpr int West = 3;
 
-void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, const int width, const int height, const float fBlockWidth, const int pitch, RPGEngine::Cell* world)
+void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, const int width, const int height, const float fBlockWidth, const int pitch, const std::shared_ptr<RPGEngine::Cell[]>& world)
 {
 	PROFILE_FUNCTION();
 	
@@ -22,8 +24,9 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 		{
 			for (auto j = 0; j < 4; j++)
 			{
-				world[(y + sy) * pitch + (x + sx)].edge_exist[j] = false;
-				world[(y + sy) * pitch + (x + sx)].edge_id[j] = 0;
+				const auto index = (static_cast<size_t>(y) + sy) * pitch + (static_cast<size_t>(x) + sx);
+				world[index].edge_exist[j] = false;
+				world[index].edge_id[j] = 0;
 			}
 		}
 	}
@@ -171,13 +174,6 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 	}
 }
 
-void CalculateVisibilityPolygon(TileGrid& tileGrid, const float ox, const float oy, float radius)
-{
-	// Get rid of existing polygon
-	tileGrid.vecVisibilityPolygon.clear();
-	tileGrid.vecVisibilityPolygon = RPGEngine::visibility_polygon(Vector2D(ox, oy), tileGrid.vecEdges.begin(), tileGrid.vecEdges.end());
-}
-
 void UpdateVisibility()
 {
 	const auto playerView = registry.view<Player, Hierarchy, Position, Health, Dash>();
@@ -192,7 +188,8 @@ void UpdateVisibility()
 		{
 			grid.visibilityPos.x = roundf(pos.position.x);
 			grid.visibilityPos.y = roundf(pos.position.y);
-			CalculateVisibilityPolygon(grid, grid.visibilityPos.x, grid.visibilityPos.y, 1000.0f);
+			grid.vecVisibilityPolygon.clear();
+			grid.vecVisibilityPolygon = RPGEngine::VisibilityPolygon(grid.visibilityPos,  grid.vecEdges.begin(), grid.vecEdges.end());
 		}
 	}
 }
@@ -204,7 +201,7 @@ void GridCalculateVisibility()
 	for (const auto& tile : gridView)
     {
         auto& grid = gridView.get<TileGrid>(tile);
-		auto* const world = new RPGEngine::Cell[grid.mapWidth * grid.mapHeight];
+		auto const world = std::make_shared<RPGEngine::Cell[]>(static_cast<size_t>(grid.mapWidth) * static_cast<size_t>(grid.mapHeight));
 
         auto j = grid.cell.size() - 1;
 		
@@ -223,13 +220,13 @@ void GridCalculateVisibility()
             j--;
         }
 		ConvertTileMapToPolyMap(grid, 0, 0, grid.mapWidth, grid.mapHeight, 32.0f, grid.mapWidth, world);
-		delete[] world;
     }
 }
 
 
 void GridRender()
 {
+	PROFILE_FUNCTION();
     auto gridView = registry.view<TileGrid, Position>();
     const auto cameraView = registry.view<Camera>();
     auto &activeCamera = cameraView.get(*cameraView.begin());
@@ -256,7 +253,10 @@ void GridRender()
                     screenRect.x = static_cast<int>(screenPosition.x) + screenRect.w * i;
                     if (activeCamera.Contains(screenRect))
                     {
-                        Graphics::RenderToLayer(grid.layer, grid.tileSet->Texture(), &(*grid.tileSet)[id - 1], &screenRect);
+						SDL_FRect testTile{world_tile.x + i * world_tile.w, world_tile.y + j * world_tile.h, world_tile.w, world_tile.h};
+                    	auto testRect = activeCamera.FromWorldToScreenRect(testTile);
+                        Graphics::RenderToLayer(grid.layer, grid.tileSet->Texture(), &(*grid.tileSet)[id - 1], &testRect);
+//                        Graphics::RenderToLayer(grid.layer, grid.tileSet->Texture(), &(*grid.tileSet)[id - 1], &screenRect);
                         if (TileGrid::hasDebugDraw)
                         {
 	                        auto fDraw = true;
@@ -279,7 +279,7 @@ void GridRender()
                         	}
                         	if (fDraw)
                         	{
-	                            Graphics::DrawRectToLayer(Layer::Debug, &screenRect);
+	                            Graphics::DrawRectToLayer(Layer::Debug, &testRect);
 	                            Graphics::ResetDrawColor();
                             }
                         }
@@ -289,6 +289,21 @@ void GridRender()
             }
             j--;
         }
+    }
+}
+
+void LightsRender()
+{
+	PROFILE_FUNCTION();
+	
+    auto gridView = registry.view<TileGrid, Position>();
+    const auto cameraView = registry.view<Camera>();
+    auto &activeCamera = cameraView.get(*cameraView.begin());
+    //activeCamera.UpdateWindowSize(Graphics::Window());
+
+	for (const auto& tile : gridView)
+    {
+        const auto& grid = gridView.get<TileGrid>(tile);
 		
 		if (grid.layer == Layer::Walls)
 		{
@@ -298,8 +313,9 @@ void GridRender()
 				{
 					const auto p1 = activeCamera.FromWorldToScreenView(e.a);
 					const auto p2 = activeCamera.FromWorldToScreenView(e.b);
+
 					Graphics::SetDrawColor(0, 255, 0, 255);
-					Graphics::DrawLineToLayer(Layer::Debug, static_cast<int>(p1.x), static_cast<int>(p1.y), static_cast<int>(p2.x), static_cast<int>(p2.y));
+					Graphics::DrawLineToLayer(Layer::Debug, static_cast<int>(roundf(p1.x)), static_cast<int>(roundf(p1.y)), static_cast<int>(roundf(p2.x)), static_cast<int>(roundf(p2.y)));
 					Graphics::SetDrawColor(255, 0, 0);
 					Graphics::DrawFillCircleToLayer(Layer::Debug, static_cast<int>(p1.x), static_cast<int>(p1.y), 4);
 					Graphics::DrawFillCircleToLayer(Layer::Debug, static_cast<int>(p2.x), static_cast<int>(p2.y), 4);
@@ -330,6 +346,7 @@ void GridRender()
 		}
     }
 }
+
 
 void GridCreate()
 {

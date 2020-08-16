@@ -44,7 +44,7 @@ public:
 		Mix_PlayMusic(music, -1);
 
 		// (FIXME) - Quiet this down for now.  This should be a user preference in a config file
-		const auto vol = Mix_VolumeMusic(1);
+		const auto vol = Mix_VolumeMusic(0);
 		std::cout << "Old Volume :" << vol << std::endl;
 
 		textureCache.load(tileid, ResourceLoader::Sprite("resources/tiled_files/GameTiles.png"));
@@ -104,10 +104,14 @@ public:
 
 	void Render() override
 	{
+		PROFILE_SCOPE("Render Pass");
+		{
 		GridRender();
 		SpriteRender();
+		LightsRender();
 		PositionDebug();
 		RectDebug();
+		}
 	}
 
 	virtual void RenderUI() override

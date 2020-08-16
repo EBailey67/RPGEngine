@@ -126,21 +126,21 @@ namespace RPGEngine
     struct VisibilityEvent
     {
         // events used in the visibility polygon algorithm
-        enum event_type
+        enum EventType
         {
             start_vertex,
             end_vertex
         };
 
-        event_type type;
+        EventType type;
         LineSegment segment;
 
         VisibilityEvent() {}
-        VisibilityEvent(event_type type, const LineSegment& segment) :
+        VisibilityEvent(EventType type, const LineSegment& segment) :
             type(type),
             segment(segment) {}
 
-        const auto& point() const { return segment.a; }
+        [[nodiscard]] const auto& point() const { return segment.a; }
     };
 
     /** Calculate visibility polygon vertices in clockwise order.
@@ -152,7 +152,7 @@ namespace RPGEngine
      * @return vector of vertices of the visibility polygon
      */
     template<typename Vector, typename InputIterator>
-    std::vector<Vector> visibility_polygon(
+    std::vector<Vector> VisibilityPolygon(
         Vector point,
         InputIterator begin,
         InputIterator end)
