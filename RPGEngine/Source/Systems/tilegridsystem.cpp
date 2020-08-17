@@ -3,6 +3,7 @@
 #include "tilegridsystem.hpp"
 
 #include "../core.hpp"
+#include "../Utility/FOVRecurse.h"
 #include "../Utility/Visibility.h"
 
 
@@ -10,6 +11,8 @@ constexpr int North = 0;
 constexpr int South = 1;
 constexpr int East = 2;
 constexpr int West = 3;
+
+std::vector<Vector2D> VisibleTiles;
 
 void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, const int width, const int height, const float fBlockWidth, const int pitch, const std::shared_ptr<RPGEngine::Cell[]>& world)
 {
@@ -188,8 +191,9 @@ void UpdateVisibility()
 		{
 			grid.visibilityPos.x = roundf(pos.position.x);
 			grid.visibilityPos.y = roundf(pos.position.y);
-			grid.vecVisibilityPolygon.clear();
-			grid.vecVisibilityPolygon = RPGEngine::VisibilityPolygon(grid.visibilityPos,  grid.vecEdges.begin(), grid.vecEdges.end());
+			//grid.vecVisibilityPolygon.clear();
+			//grid.vecVisibilityPolygon = RPGEngine::VisibilityPolygon(grid.visibilityPos,  grid.vecEdges.begin(), grid.vecEdges.end());
+			FOVCalculate();
 		}
 	}
 }
@@ -245,18 +249,19 @@ void GridRender()
         for (const auto &row : grid.cell)
         {
 	        auto i = 0;
-            screenRect.y = static_cast<int>(screenPosition.y) - screenRect.h * j;
             for (const auto &id : row)
             {
                 if (id)
                 {
-                    screenRect.x = static_cast<int>(screenPosition.x) + screenRect.w * i;
-                    if (activeCamera.Contains(screenRect))
+					SDL_FRect testTile{world_tile.x + i * world_tile.w, world_tile.y + j * world_tile.h, world_tile.w, world_tile.h};
+                   	auto testRect = activeCamera.FromWorldToScreenRect(testTile);
+                    if (activeCamera.Contains(testRect))
                     {
-						SDL_FRect testTile{world_tile.x + i * world_tile.w, world_tile.y + j * world_tile.h, world_tile.w, world_tile.h};
-                    	auto testRect = activeCamera.FromWorldToScreenRect(testTile);
+                    	if(std::find(std::begin(VisibleTiles), std::end(VisibleTiles), Vector2D(i, j)) == std::end(VisibleTiles))
+	                    	SDL_SetTextureColorMod(grid.tileSet->Texture(), 128, 128, 128);
                         Graphics::RenderToLayer(grid.layer, grid.tileSet->Texture(), &(*grid.tileSet)[id - 1], &testRect);
-//                        Graphics::RenderToLayer(grid.layer, grid.tileSet->Texture(), &(*grid.tileSet)[id - 1], &screenRect);
+                    	SDL_SetTextureColorMod(grid.tileSet->Texture(), 255, 255, 255);
+                    	
                         if (TileGrid::hasDebugDraw)
                         {
 	                        auto fDraw = true;
@@ -296,10 +301,12 @@ void LightsRender()
 {
 	PROFILE_FUNCTION();
 	
+	const auto playerView = registry.view<Player, Hierarchy, Position, Health, Dash>();
+	auto &&[player, hierarchy, health, pos, dash] = registry.get<Player, Hierarchy, Health, Position, Dash>(*playerView.begin());
+
     auto gridView = registry.view<TileGrid, Position>();
     const auto cameraView = registry.view<Camera>();
     auto &activeCamera = cameraView.get(*cameraView.begin());
-    //activeCamera.UpdateWindowSize(Graphics::Window());
 
 	for (const auto& tile : gridView)
     {
@@ -323,9 +330,9 @@ void LightsRender()
 				}
 			}
 
-			constexpr  SDL_Color background{0, 0, 0, 128};
+			// Clear the background to our 'dark' alpha
+			constexpr  SDL_Color background{0, 0, 0, 96};
 			Graphics::LayerClear(Layer::Lights, background );
-			Graphics::SetDrawColor(0, 0, 0, 0);
 
 			std::vector<Vector2D> screenPolygon(grid.vecVisibilityPolygon.size());
 			for (auto i = 0; i < static_cast<int>(grid.vecVisibilityPolygon.size()); i++)
@@ -333,16 +340,146 @@ void LightsRender()
 				screenPolygon[i] = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i]);
 			}
 			SDL_SetRenderDrawBlendMode(Graphics::Renderer(), SDL_BLENDMODE_NONE);
+			Graphics::SetDrawColor(255, 255, 255, 0);
 			Graphics::DrawFillPolygonToLayer(Layer::Lights, screenPolygon);
-
 			SDL_SetRenderDrawBlendMode(Graphics::Renderer(), SDL_BLENDMODE_BLEND);
 
+			// ** EXPERIMENT **
+#ifdef LIGHT_EXPERIMENT			
+			{
+				int width;
+				int height;
+				SDL_QueryTexture(Graphics::GetLayerTexture(Layer::Lights), nullptr, nullptr, &width, &height);
+				auto* surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA8888);
+				memset(surface->pixels, 0x00000000, width * height * sizeof(uint32_t));
+
+				const auto center = activeCamera.FromWorldToScreenView(pos.position);
+				for (auto i = 0; i < grid.vecVisibilityPolygon.size() - 1; i++)
+				{
+					Graphics::DrawFillTriangleToSurface(surface, center.x, center.y, 
+						screenPolygon[i].x, screenPolygon[i].y,
+						screenPolygon[i + 1].x, screenPolygon[i + 1].y, 0xFF00FFFF);
+				}
+
+				auto xcenter = static_cast<int>(center.x) + 16;
+				auto ycenter = static_cast<int>(center.y) - 16;
+				Vector2D m(xcenter, ycenter);
+
+				constexpr const auto radius = 256;
+
+				auto xmin = std::max(0, xcenter - radius);
+				auto xmax = std::min(width, static_cast<int>(xcenter + radius));
+				auto ymin = std::max(0, ycenter - radius);
+				auto ymax = std::min(height, static_cast<int>(ycenter + radius));
+
+
+				// https://docs.blender.org/manual/fr/2.79/render/blender_render/lighting/lights/attenuation.html
+				// http://learnwebgl.brown37.net/09_lights/lights_attenuation.html
+				constexpr auto lightEnergy = 100.0f;
+				constexpr auto constant = 1.0f;
+				constexpr auto linear = 0.05f / lightEnergy;
+				constexpr auto quadratic = 0.0f / lightEnergy;
+
+				SDL_Renderer *renderer = Graphics::Renderer();
+				SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+				for (auto x = xmin; x < xmax; x++)
+					for (auto y = ymin; y < ymax; y++)
+					{
+						const auto blr = static_cast<uint32_t *>(surface->pixels)[y * surface->w + x];
+						if (blr > 256)
+						{
+							Vector2D pt(x, y);
+
+							const auto d = Vector2D::DistanceSquared(m, pt);
+							if (d < radius * radius)
+							{
+								const auto luminosity = 1.0f / (constant + linear * d + quadratic * (d * d));
+
+								SDL_Color c;
+								c.r = static_cast<int>(255.0f * luminosity);
+								c.g = static_cast<int>(192.0f * luminosity);
+								c.b = static_cast<int>(96.0f * luminosity);
+								c.a = static_cast<int>(128 - 127 * luminosity);
+								SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+								SDL_RenderDrawPoint(renderer, x, y);
+							}
+						}
+						else
+						{
+							int a = 10;
+						}
+					}
+
+				//SDL_UpdateTexture(Graphics::GetLayerTexture(Layer::Lights), nullptr, surface->pixels, surface->pitch);
+				SDL_FreeSurface(surface);
+				SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+				
+			}
+#endif			
+			// ** END EXPERIMENT **
+
+
+			
+			Graphics::ResetDrawColor();
+			
 			if (TileGrid::hasDebugDraw)
 			{
 				Graphics::SetDrawColor(0, 255, 255, 255);
 				Graphics::DrawPolygonToLayer(Layer::Lights, screenPolygon);
 			}
 			Graphics::ResetDrawColor();
+		}
+    }
+	FOVCalculate();
+}
+
+void FOVCalculate()
+{
+	PROFILE_FUNCTION();
+	static RPGEngine::FOVRecurse fovRecurse;
+	
+	const auto playerView = registry.view<Player, Hierarchy, Position, Health, Dash>();
+	auto &&[player, hierarchy, health, pos, dash] = registry.get<Player, Hierarchy, Health, Position, Dash>(*playerView.begin());
+
+    auto gridView = registry.view<TileGrid, Position>();
+    const auto cameraView = registry.view<Camera>();
+    auto &activeCamera = cameraView.get(*cameraView.begin());
+
+	fovRecurse.ClearMap();
+	
+	for (const auto& tile : gridView)
+    {
+        auto& grid = gridView.get<TileGrid>(tile);
+		const auto& tilePos = gridView.get<Position>(tile);
+		
+        auto j = static_cast<int>(grid.cell.size()) - 1;
+        for (const auto &row : grid.cell)
+        {
+	        auto i = 0;
+            for (const auto &id : row)
+            {
+                if (id)
+                {
+					if (grid.layer == Layer::Walls)
+					{
+						fovRecurse.PointSet(i, j, 1);
+					}
+				}
+            i++;
+            }
+        j--;
+        }
+		
+		if (grid.layer == Layer::Walls)
+		{
+			const auto playerX = static_cast<int>(pos.position.x) / 32;
+			const auto playerY = static_cast<int>(pos.position.y) / 32;
+
+			fovRecurse.MovePlayer(playerX, playerY);
+			grid.visibleTiles.clear();
+			std::copy(fovRecurse.VisiblePoints.begin(), fovRecurse.VisiblePoints.end(), std::back_inserter(grid.visibleTiles));
+			VisibleTiles.clear();
+			std::copy(fovRecurse.VisiblePoints.begin(), fovRecurse.VisiblePoints.end(), std::back_inserter(VisibleTiles));
 		}
     }
 }

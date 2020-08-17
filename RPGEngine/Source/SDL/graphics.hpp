@@ -23,6 +23,7 @@ enum class Layer
 	Lights = 4,
 	Debug = 5,
 	UI = 6,
+	Work = 9,
 };
 
 class Graphics  // NOLINT(cppcoreguidelines-special-member-functions)
@@ -259,14 +260,6 @@ private:
 
 		std::copy(coordinates.begin(), coordinates.end(), std::back_inserter(polygon));
 
-		// Clean up the coordinates
-		//for (auto& point : coordinates)
-		//{
-		//	//point.x = floorf(point.x);
-		//	//point.y = floorf(point.y);
-		//	polygon.emplace_back(point);
-		//}
-
 		enum
 		{
 			TOPEDGE = 0,
@@ -344,14 +337,13 @@ private:
 			DrawLineToLayer(m_currentLayer, static_cast<int>(coordinates[0].x), static_cast<int>(coordinates[0].y),
 				static_cast<int>(coordinates[coordinates.size() - 1].x), static_cast<int>(coordinates[coordinates.size() - 1].y));
 
-			for (auto count = 0; count < coordinates.size() - 1; count++)
+			for (auto count = 0; count < static_cast<int>(coordinates.size()) - 1; count++)
 				DrawLineToLayer(m_currentLayer, static_cast<int>(coordinates[count].x), static_cast<int>(coordinates[count].y),
 					static_cast<int>(coordinates[count + 1].x), static_cast<int>(coordinates[count + 1].y));
 		}
 	}
 
 	// https://www.codepoc.io/blog/cpp/2830/program-to-fill-a-polygon-using-scan-line-polygon-fill-algorithm
-	// 
 	static void FillPolygon(const std::vector<Vector2D>& pointsIn)
 	{
 		// Make sure we're given a valid polygon
@@ -359,8 +351,7 @@ private:
 			return;
 
 		PROFILE_SCOPE("FillPolygon()");
-		Edge* edges[2000];
-		// std::vector<std::shared_ptr<Edge>> edges(2000);
+		Edge* edges[1600];
 
 		SDL_Rect clipRegion;
 		clipRegion.x = 0;
@@ -383,7 +374,6 @@ private:
 		// Initialize the edges
 		for (auto& edge : edges)
 		{
-			// edge = std::make_shared<Edge>();
 			edge = new Edge{ 0, 0, 0, nullptr };
 			edge->next = nullptr;
 		}
@@ -404,6 +394,15 @@ private:
 			}
 		}
 
+		for (auto& edge : edges)
+		{
+			if (edge != nullptr)
+			{
+				delete edge;
+				edge = nullptr;
+			}
+		}
+		
 		Polygon(points);
 	}
 
@@ -488,9 +487,12 @@ private:
 		TargetClear();
 		for (auto* layer : m_layers)
 		{
-			if (SDL_RenderCopy(m_renderer, layer, nullptr, nullptr))
+			if (layer != m_layers.at(static_cast<int>(Layer::Work)))
 			{
-				SDL_THROW();
+				if (SDL_RenderCopy(m_renderer, layer, nullptr, nullptr))
+				{
+					SDL_THROW();
+				}
 			}
 		}
 	}
@@ -662,10 +664,10 @@ public:
 
 	static int DrawCircleToLayer(const Layer layer, const int x, const int y, const int radius)
 	{
-		int offsetx = 0;
-		int offsety = radius;
-		int d = radius - 1;
-		int status = 0;
+		auto offsetx = 0;
+		auto offsety = radius;
+		auto d = radius - 1;
+		auto status = 0;
 
 		if (layer != m_currentLayer)
 		{
@@ -847,7 +849,7 @@ public:
 		e2 = static_cast<int>(dx2 >> 1);
 		// Flat top, just process the second half
 		if (y1 == y2)
-			goto next;  // NOLINT(cppcoreguidelines-avoid-goto)
+			goto next;  
 		e1 = static_cast<int>(dx1 >> 1);
 
 		for (auto i = 0; i < dx1;)
@@ -1001,6 +1003,224 @@ public:
 		}
 	}
 
+	static void DrawPixelToSurface(SDL_Surface* surface, int32_t x, int32_t y, uint32_t RGBA8888)
+	{
+		if (x >= 0 && x < surface->w && y >= 0 && y < surface->h)
+		{
+			auto* p = static_cast<uint32_t*>(surface->pixels);
+			p[y * surface->w + x] = RGBA8888;
+		}
+	}
+	
+	static void DrawFillTriangleToSurface(SDL_Surface* surface, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t RGBA8888)
+	{
+		auto drawline = [&](const int sx, const int ex, const int ny) {  for (auto i = sx; i <= ex; i++) DrawPixelToSurface(surface, i, ny, RGBA8888);  };
+
+		int t1_x, t2_x, y, minx, maxx, t1xp, t2xp;
+		auto changed1 = false;
+		auto changed2 = false;
+		int signx1, signx2, dx1, dy1, dx2, dy2;
+		int e1, e2;
+
+		// Sort vertices
+		if (y1 > y2) { std::swap(y1, y2); std::swap(x1, x2); }
+		if (y1 > y3) { std::swap(y1, y3); std::swap(x1, x3); }
+		if (y2 > y3) { std::swap(y2, y3); std::swap(x2, x3); }
+
+		t1_x = t2_x = x1; y = y1;   // Starting points
+		dx1 = static_cast<int>(x2 - x1);
+		if (dx1 < 0)
+		{
+			dx1 = -dx1;
+			signx1 = -1;
+		}
+		else
+		{
+			signx1 = 1;
+		}
+
+		dy1 = static_cast<int>(y2 - y1);
+
+		dx2 = static_cast<int>(x3 - x1);
+		if (dx2 < 0) { dx2 = -dx2; signx2 = -1; }
+		else signx2 = 1;
+		dy2 = static_cast<int>(y3 - y1);
+
+		if (dy1 > dx1) { std::swap(dx1, dy1); changed1 = true; }
+		if (dy2 > dx2) { std::swap(dy2, dx2); changed2 = true; }
+
+		e2 = static_cast<int>(dx2 >> 1);
+		// Flat top, just process the second half
+		if (y1 == y2)
+			goto next;  
+		e1 = static_cast<int>(dx1 >> 1);
+
+		for (auto i = 0; i < dx1;)
+		{
+			t1xp = 0; t2xp = 0;
+			if (t1_x < t2_x)
+			{
+				minx = t1_x;
+				maxx = t2_x;
+			}
+			else
+			{
+				minx = t2_x;
+				maxx = t1_x;
+			}
+
+			// process first line until y value is about to change
+			while (i < dx1)
+			{
+				i++;
+				e1 += dy1;
+				while (e1 >= dx1)
+				{
+					e1 -= dx1;
+					if (changed1)
+						t1xp = signx1;//t1x += signx1;
+					else
+						goto next1;
+				}
+				if (changed1) break;
+				t1_x += signx1;
+			}
+			// Move line
+		next1:
+			// process second line until y value is about to change
+			while (true)
+			{
+				e2 += dy2;
+				while (e2 >= dx2)
+				{
+					e2 -= dx2;
+					if (changed2) t2xp = signx2;//t2x += signx2;
+					else          goto next2;
+				}
+				if (changed2)     break;
+				t2_x += signx2;
+			}
+		next2:
+			if (minx > t1_x) minx = t1_x;
+			if (minx > t2_x) minx = t2_x;
+			if (maxx < t1_x) maxx = t1_x;
+			if (maxx < t2_x) maxx = t2_x;
+			drawline(minx, maxx, y);    // Draw line from min to max points found on the y
+
+			// Now increase y
+			if (!changed1) t1_x += signx1;
+			t1_x += t1xp;
+			if (!changed2) t2_x += signx2;
+			t2_x += t2xp;
+			y += 1;
+			if (y == y2) break;
+
+		}
+	next:
+		// Second half
+		dx1 = static_cast<int>(x3 - x2);
+		if (dx1 < 0)
+		{
+			dx1 = -dx1; signx1 = -1;
+		}
+		else
+		{
+			signx1 = 1;
+		}
+		dy1 = static_cast<int>(y3 - y2);
+		t1_x = x2;
+
+		if (dy1 > dx1)
+		{   // swap values
+			std::swap(dy1, dx1);
+			changed1 = true;
+		}
+		else changed1 = false;
+
+		e1 = static_cast<int>(dx1 >> 1);
+
+		for (int i = 0; i <= dx1; i++)
+		{
+			t1xp = 0; t2xp = 0;
+			if (t1_x < t2_x)
+			{
+				minx = t1_x;
+				maxx = t2_x;
+			}
+			else
+			{
+				minx = t2_x;
+				maxx = t1_x;
+			}
+
+			// process first line until y value is about to change
+			while (i < dx1)
+			{
+				e1 += dy1;
+				while (e1 >= dx1)
+				{
+					e1 -= dx1;
+					if (changed1)
+					{
+						t1xp = signx1;
+						break;
+					}//t1x += signx1;
+					goto next3;
+				}
+				if (changed1)
+					break;
+				t1_x += signx1;
+				if (i < dx1)
+					i++;
+			}
+		next3:
+			// process second line until y value is about to change
+			while (t2_x != x3)
+			{
+				e2 += dy2;
+				while (e2 >= dx2)
+				{
+					e2 -= dx2;
+					if (changed2)
+						t2xp = signx2;
+					else
+						goto next4;
+				}
+				if (changed2)
+					break;
+				t2_x += signx2;
+			}
+		next4:
+
+			if (minx > t1_x) minx = t1_x;
+			if (minx > t2_x) minx = t2_x;
+			if (maxx < t1_x) maxx = t1_x;
+			if (maxx < t2_x) maxx = t2_x;
+			drawline(minx, maxx, y);
+			if (!changed1) t1_x += signx1;
+			t1_x += t1xp;
+			if (!changed2) t2_x += signx2;
+			t2_x += t2xp;
+			y += 1;
+			if (y > y3) return;
+		}
+	}
+
+	
+	[[nodiscard]] static SDL_Texture* GetLayerTexture(const Layer layer)
+	{
+		return m_layers.at(static_cast<int>(layer));
+	}
+
+	static void SetCurrentLayer(const Layer layer)
+	{
+		if (layer != m_currentLayer)
+		{
+			m_currentLayer = layer;
+			RenderTarget(m_currentLayer);
+		}
+	}
+	
 private:
 	static inline SDL_Window* m_window = nullptr;
 	static inline SDL_Renderer* m_renderer = nullptr;

@@ -109,7 +109,7 @@ void EnemyCharging(const CollisionData &lhs, const CollisionData &rhs)
 void EnemyWalking(const float dt)
 {
     auto view = registry.view<Enemy, Velocity, MovementSpeed, Active>();
-    for (auto&entity : view)
+    for (const auto& entity : view)
     {
         auto& enemy = view.get<Enemy>(entity);
         auto& vel = view.get<Velocity>(entity);

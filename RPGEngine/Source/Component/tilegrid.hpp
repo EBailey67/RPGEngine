@@ -18,7 +18,7 @@ public:
         SSECS_ASSERT(tileset);
 
         this->tileSet = tileset;
-
+    	
         auto map = xml_doc.child("map");
         const auto next_id = static_cast<id_type>(std::stoi(map.attribute("nextlayerid").value()));
         SSECS_ASSERT(layer < next_id && layer > 0);

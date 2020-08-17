@@ -55,6 +55,8 @@ public:
 		spriteSheet.Load("resources/tiled_files/sprite.tsx", textureCache.resource(spriteid));
 		tileset.Load("resources/tiled_files/RPG Test.tsx", textureCache.resource(tileid));
 
+
+		
 		CameraCreate();
 		GridCreate();
 		PlayerCreate();
@@ -108,7 +110,7 @@ public:
 		{
 		GridRender();
 		SpriteRender();
-		LightsRender();
+		// LightsRender();
 		PositionDebug();
 		RectDebug();
 		}

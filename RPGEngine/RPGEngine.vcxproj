@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Utility\FOVRecurse.cpp" />
     <ClCompile Include="Source\GameSceneUI.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\sdlgui\button.cpp" />
@@ -208,6 +209,7 @@
     <ClCompile Include="Source\XML\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Utility\FOVRecurse.h" />
     <ClInclude Include="Source\Component\ai.hpp" />
     <ClInclude Include="Source\Component\camera.hpp" />
     <ClInclude Include="Source\Component\colliders.hpp" />
