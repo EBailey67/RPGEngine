@@ -27,7 +27,7 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 		{
 			for (auto j = 0; j < 4; j++)
 			{
-				const auto index = (static_cast<size_t>(y) + sy) * pitch + (static_cast<size_t>(x) + sx);
+				const auto index = (y + sy) * pitch + (x + sx);
 				world[index].edge_exist[j] = false;
 				world[index].edge_id[j] = 0;
 			}
@@ -57,7 +57,7 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 					if (y != 0 && world[n].edge_exist[West])
 					{
 						// Northern neighbour has a western edge, so grow it downwards
-						tileGrid.vecEdges[world[n].edge_id[West]].b.y += fBlockWidth;
+						tileGrid.vecEdges[static_cast<size_t>(world[n].edge_id[West])].b.y += fBlockWidth;
 						world[i].edge_id[West] = world[n].edge_id[West];
 						world[i].edge_exist[West] = true;
 					}
@@ -88,7 +88,7 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 					if (y != 0 && world[n].edge_exist[East])
 					{
 						// Northern neighbour has one, so grow it downwards
-						tileGrid.vecEdges[world[n].edge_id[East]].b.y += fBlockWidth;
+						tileGrid.vecEdges[static_cast<size_t>(world[n].edge_id[East])].b.y += fBlockWidth;
 						world[i].edge_id[East] = world[n].edge_id[East];
 						world[i].edge_exist[East] = true;
 					}
@@ -119,7 +119,7 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 					if (x != 0 && world[w].edge_exist[North])
 					{
 						// Western neighbour has one, so grow it eastwards
-						tileGrid.vecEdges[world[w].edge_id[North]].b.x += fBlockWidth;
+						tileGrid.vecEdges[static_cast<size_t>(world[w].edge_id[North])].b.x += fBlockWidth;
 						world[i].edge_id[North] = world[w].edge_id[North];
 						world[i].edge_exist[North] = true;
 					}
@@ -150,7 +150,7 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 					if (x != 0 && world[w].edge_exist[South])
 					{
 						// Western neighbour has one, so grow it eastwards
-						tileGrid.vecEdges[world[w].edge_id[South]].b.x += fBlockWidth;
+						tileGrid.vecEdges[static_cast<size_t>(world[w].edge_id[South])].b.x += fBlockWidth;
 						world[i].edge_id[South] = world[w].edge_id[South];
 						world[i].edge_exist[South] = true;
 					}
@@ -207,7 +207,7 @@ void GridCalculateVisibility()
         auto& grid = gridView.get<TileGrid>(tile);
 		auto const world = std::make_shared<RPGEngine::Cell[]>(static_cast<size_t>(grid.mapWidth) * static_cast<size_t>(grid.mapHeight));
 
-        auto j = grid.cell.size() - 1;
+        auto j = static_cast<int>(grid.cell.size()) - 1;
 		
         for (const auto &row : grid.cell)
         {
@@ -216,7 +216,6 @@ void GridCalculateVisibility()
             {
                 if (id && grid.layer == Layer::Walls)
                 {
-                    // std::cout << "Wall :" << i << "," << j << std::endl;
                 	world[j * grid.mapWidth + i].exist = true;
                 }
                 i++;
@@ -240,10 +239,8 @@ void GridRender()
     {
         const auto& grid = gridView.get<TileGrid>(tile);
         const auto& position = gridView.get<Position>(tile);
-        SDL_FRect world_tile{position.position.x, position.position.y, static_cast<float>(grid.tileSet->TileWidth()) * grid.scale.x,
+        const SDL_FRect world_tile{position.position.x, position.position.y, static_cast<float>(grid.tileSet->TileWidth()) * grid.scale.x,
                              static_cast<float>(grid.tileSet->TileHeight()) * grid.scale.y};
-        auto screenRect = activeCamera.FromWorldToScreenRect(world_tile);
-        const Vector2D screenPosition = {screenRect.x, screenRect.y};
 
         auto j = static_cast<int>(grid.cell.size()) - 1;
         for (const auto &row : grid.cell)
@@ -280,8 +277,9 @@ void GridRender()
                         		break;
                             default:
 	                            Graphics::SetDrawColor(255, 255, 255, 255);
-								break;                        		
-                        	}
+								break;
+                            }
+
                         	if (fDraw)
                         	{
 	                            Graphics::DrawRectToLayer(Layer::Debug, &testRect);
@@ -476,9 +474,8 @@ void FOVCalculate()
 			const auto playerY = static_cast<int>(pos.position.y) / 32;
 
 			fovRecurse.MovePlayer(playerX, playerY);
-			grid.visibleTiles.clear();
-			std::copy(fovRecurse.VisiblePoints.begin(), fovRecurse.VisiblePoints.end(), std::back_inserter(grid.visibleTiles));
 			VisibleTiles.clear();
+
 			std::copy(fovRecurse.VisiblePoints.begin(), fovRecurse.VisiblePoints.end(), std::back_inserter(VisibleTiles));
 		}
     }
@@ -526,5 +523,6 @@ void GridCreate()
         tilegrid.scale = {1, 1};
         tilegrid.layer = Layer::Objects;
     }
+	
 	GridCalculateVisibility();
 }

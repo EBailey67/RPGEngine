@@ -125,6 +125,15 @@ namespace GUI
 
 					
                 }
+
+				// Console Window for general text output
+				{
+					auto& window = wdg<Window>("DebugConsole").withLayout<GroupLayout>();
+					window.setFixedSize(Vector2i(576, 160));
+					window.label("[Debug Console] - That takes up a lot of space with an unnecessarily long statement to test\n window wrapping.\n[LINE 2]\n[LINE 3]", "ProFontWindows.ttf", 16).withId("DEBUG_CONSOLE").setFixedSize(Vector2i(512, 128));
+
+					
+				}
 			}
 		
 #if 0
@@ -450,7 +459,7 @@ namespace GUI
             }
 #endif	
             Screen::performLayout(m_sdl_renderer);
-
+            Game::GetInstance()->SetupConsole();
 	}
 
     void GameSceneUI::draw(SDL_Renderer* renderer)

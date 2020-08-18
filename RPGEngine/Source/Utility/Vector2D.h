@@ -85,7 +85,7 @@ public:
         return std::sqrt(x * x + y * y);
     }
 
-    /*! @brief Returns vector with lenght 1. */
+    /*! @brief Returns vector with length 1. */
     [[nodiscard]] Vector2D Normalized() const noexcept
     {
 	    const auto length = Magnitude();
@@ -209,7 +209,7 @@ public:
         return b * t + a * (1 - t);
     }
 
-	bool InRect(SDL_Rect rect) const
+	[[nodiscard]] bool InRect(const SDL_Rect rect) const
 	{
 	    if (x >= rect.x && x <= rect.x + rect.w &&
             y >= rect.y && y <= rect.y + rect.h)

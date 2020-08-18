@@ -36,25 +36,21 @@ namespace GUI
     {
     public:
         GameSceneUI(SDL_Window* pwindow, int rwidth, int rheight);
-        ~GameSceneUI() = default;
 
         bool keyboardEvent(const int key, const int scancode, const int action, const int modifiers) override
         {
             if (Screen::keyboardEvent(key, scancode, action, modifiers))
                 return true;
 
-            //if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-            // {
-            //    setVisible(false);
-            //    return true;
-            //}
             return false;
         }
 
         void draw(SDL_Renderer* renderer) override;
         void drawContents() override  {}
     private:
-        std::vector<SDL_Texture*> m_images_data;
+#if 0    	
+    	std::vector<SDL_Texture*> m_images_data;
         int m_current_image;
+#endif    	
     };
 }

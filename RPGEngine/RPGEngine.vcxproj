@@ -159,6 +159,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Terminal\char.cpp" />
+    <ClCompile Include="Source\Terminal\sdl_context.cpp" />
+    <ClCompile Include="Source\Terminal\staticbuffer.cpp" />
+    <ClCompile Include="Source\Terminal\string.cpp" />
+    <ClCompile Include="Source\Terminal\tty.cpp" />
     <ClCompile Include="Source\Utility\FOVRecurse.cpp" />
     <ClCompile Include="Source\GameSceneUI.cpp" />
     <ClCompile Include="Source\main.cpp" />
@@ -209,6 +214,15 @@
     <ClCompile Include="Source\XML\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Terminal\buffer.hpp" />
+    <ClInclude Include="Source\Terminal\char.hpp" />
+    <ClInclude Include="Source\Terminal\context.hpp" />
+    <ClInclude Include="Source\Terminal\sdl_context.hpp" />
+    <ClInclude Include="Source\Terminal\staticbuffer.hpp" />
+    <ClInclude Include="Source\Terminal\string.hpp" />
+    <ClInclude Include="Source\Terminal\terminate.hpp" />
+    <ClInclude Include="Source\Terminal\tty.hpp" />
+    <ClInclude Include="Source\Utility\MessageBus.h" />
     <ClInclude Include="Source\Utility\FOVRecurse.h" />
     <ClInclude Include="Source\Component\ai.hpp" />
     <ClInclude Include="Source\Component\camera.hpp" />

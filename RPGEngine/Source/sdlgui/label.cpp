@@ -13,7 +13,6 @@
 
 namespace GUI
 {
-
     Label::Label(Widget* parent, const std::string& caption, const std::string& font, int fontSize)
         : Widget(parent), mCaption(caption), mFont(font)
     {

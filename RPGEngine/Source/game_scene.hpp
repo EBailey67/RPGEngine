@@ -55,19 +55,17 @@ public:
 		spriteSheet.Load("resources/tiled_files/sprite.tsx", textureCache.resource(spriteid));
 		tileset.Load("resources/tiled_files/RPG Test.tsx", textureCache.resource(tileid));
 
-
-		
 		CameraCreate();
 		GridCreate();
 		PlayerCreate();
 
-		EnemyCreate(Enemy::spawns[0]);
-		EnemyCreate(Enemy::spawns[1]);
-		EnemyCreate(Enemy::spawns[2]);
-		EnemyCreate(Enemy::spawns[3]);
-		EnemyCreate(Enemy::spawns[4]);
-		EnemyCreate(Enemy::spawns[5]);
-		Enemy::currentSpawn = 6;
+		//EnemyCreate(Enemy::spawns[0]);
+		//EnemyCreate(Enemy::spawns[1]);
+		//EnemyCreate(Enemy::spawns[2]);
+		//EnemyCreate(Enemy::spawns[3]);
+		//EnemyCreate(Enemy::spawns[4]);
+		//EnemyCreate(Enemy::spawns[5]);
+		//Enemy::currentSpawn = 6;
 
 		int ww;
 		int wh;
@@ -118,7 +116,8 @@ public:
 
 	virtual void RenderUI() override
 	{
-		gameUI->drawAll();
+		// gameUI->drawAll();
+		Game::GetInstance()->term.Print();
 	}
 
 	virtual void ResizeEvent() override
