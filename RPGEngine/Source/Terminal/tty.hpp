@@ -19,8 +19,8 @@ namespace Term
 
 		explicit TTY(Buffer&);
 
-		bool IsSet(StateBit b) const;
-		Char Peek() const;
+		[[nodiscard]] bool IsSet(StateBit b) const;
+		[[nodiscard]] Char Peek() const;
 		TTY& Set(StateBit b, bool setTo = true);
 		TTY& Place(size_t x, size_t y);
 		TTY& ClearLine();
@@ -32,9 +32,9 @@ namespace Term
 		TTY& FgColor(Color);
 	private:
 		Buffer* buffer;
-		int         curs_x, curs_y;
-		StateBit    state;
-		Color       bg_color, fg_color;
+		int curs_x, curs_y;
+		StateBit state;
+		Color bg_color, fg_color;
 	};
 }
 
