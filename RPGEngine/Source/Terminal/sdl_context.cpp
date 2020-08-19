@@ -10,13 +10,14 @@ namespace Term
 {
 	namespace SDL
 	{
-		Context::Context(size_t width, size_t height) :
+		Context::Context(const size_t width, const size_t height) :
 			twidth(0), theight(0),
 			tilemap(nullptr),
-			tilemapSurface(nullptr),
+			tilemap_surface(nullptr),
 			buffer(width, height)
 		{
 			std::cout << "Constructing Term::SDL::Context()\n";
+			buffer_texture = SDL_CreateTexture(Graphics::Renderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width * 8, height * 8);
 		}
 
 		Context::~Context()
@@ -27,14 +28,14 @@ namespace Term
 
 		void Context::Tilemap(const std::string& path)
 		{
-			if (tilemapSurface != nullptr)
-				SDL_FreeSurface(tilemapSurface);
+			if (tilemap_surface != nullptr)
+				SDL_FreeSurface(tilemap_surface);
 			
-			tilemapSurface = IMG_Load(path.c_str());
-			if (tilemapSurface == nullptr)
+			tilemap_surface = IMG_Load(path.c_str());
+			if (tilemap_surface == nullptr)
 				throw std::runtime_error("Error opening file: " + path);
 
-			auto* const texture = SDL_CreateTextureFromSurface(Graphics::Renderer(), tilemapSurface);
+			auto* const texture = SDL_CreateTextureFromSurface(Graphics::Renderer(), tilemap_surface);
 			if (tilemap != nullptr)
 				SDL_DestroyTexture(tilemap);
 			tilemap = texture;
@@ -42,7 +43,6 @@ namespace Term
 			twidth /= 16;
 			theight /= 16;
 		}
-
 
 		SDL_Texture* Context::Tilemap() const
 		{
@@ -61,12 +61,9 @@ namespace Term
 
 		void Context::Print(const Char ch, const size_t x, const size_t y) const
 		{
-			//if (ch.ASCII() == 0)
-			//	return;
-			
 			// Convert the ASCII value to tilemap coordinates.
-			Sint16 tilex = (ch.ASCII() % 16) * TileWidth();
-			Sint16 tiley = (ch.ASCII() / 16) * TileHeight();
+			Sint16 tilex = (ch.Ascii() % 16) * TileWidth();
+			Sint16 tiley = (ch.Ascii() / 16) * TileHeight();
 			SDL_Rect tile = {
 				tilex, tiley,
 				static_cast<Uint16>(TileWidth()),
@@ -76,26 +73,42 @@ namespace Term
 				static_cast<Sint16>(y * TileHeight()),
 				TileWidth(),TileHeight() };
 
-			auto bg = toSDLColor(ch.PriColor());
-			auto fg = toSDLColor(ch.SecColor());
+			auto bg = toSDLColor(ch.BgColor());
+			auto fg = toSDLColor(ch.FgColor());
 
+			SDL_RenderFillRect(Graphics::Renderer(), &dst);
 			Graphics::SetDrawColor(bg.r, bg.g, bg.b, bg.a);
-			Graphics::DrawFillRectToLayer(Layer::UI, &dst);
+			SDL_RenderFillRect(Graphics::Renderer(), &dst);
 			SDL_SetTextureColorMod(tilemap, fg.r, fg.g, fg.b);
-			Graphics::RenderToLayer(Layer::UI, tilemap, &tile, &dst, SDL_FLIP_NONE);
+			SDL_RenderCopyEx(Graphics::Renderer(), tilemap, &tile, &dst, 0, nullptr, SDL_FLIP_NONE);
 		}
 
-		void Context::Print() const
+		void Context::Print()
 		{
 			PROFILE_FUNCTION();
 
-			//Graphics::SetDrawColor(0, 0, 0, 255);
-			//SDL_Rect r{0, 0, buffer.Width() * TileWidth(), buffer.Height() * TileHeight()};
-			//Graphics::DrawFillRectToLayer(Layer::UI, &r);
+			if (!buffer.IsDirty())
+				return;
+
+			const auto l = Graphics::GetCurrentLayer();
+			SDL_SetRenderTarget(Graphics::Renderer(), buffer_texture);
+			SDL_Texture *rt = SDL_GetRenderTarget(Graphics::Renderer());
+			Graphics::TargetClear();
 			
-			for (size_t y = 0; y < buffer.Height(); ++y)
-				for (size_t x = 0; x < buffer.Width(); ++x)
+			for (auto y = 0; y < buffer.Height(); ++y)
+				for (auto x = 0; x < buffer.Width(); ++x)
 					Print(buffer.Get(x, y), x, y);
+
+			Graphics::RenderTarget(l);
+			buffer.Clean();
+		}
+
+		void Context::Render(const int x, const int y) const
+		{
+			SDL_Rect srcRect = {0, 0, buffer.Width() * TileWidth(), buffer.Height() * TileHeight()};
+			SDL_Rect dstRect = {x, y, buffer.Width() * TileWidth(), buffer.Height() * TileHeight()};
+
+			Graphics::RenderToLayer(Layer::UI, buffer_texture, &srcRect, &dstRect, SDL_FLIP_NONE);
 		}
 		
 		Buffer& Context::Framebuffer()

@@ -10,13 +10,12 @@ namespace Term
 		component_t r, g, b;
 
 		Color() = default;
-		Color(component_t r_, component_t g_, component_t b_) :
+		Color(const component_t r_, const component_t g_, const component_t b_) :
 			r(r_), g(g_), b(b_)
 		{}
 
 		static Color Black, White;
 	};
-
 
 	class Char
 	{
@@ -27,19 +26,19 @@ namespace Term
 
 		Char(char_t, uint8_t pal_i, Color, Color);
 
-		Char(char_t, uint8_t pal_i = 0);
+		explicit Char(char_t, uint8_t pal_i = 0);
 
-		[[nodiscard]] char_t ASCII() const;
-		[[nodiscard]] Color PriColor() const;
-		[[nodiscard]] Color SecColor() const;
+		[[nodiscard]] char_t Ascii() const;
+		[[nodiscard]] Color BgColor() const;
+		[[nodiscard]] Color FgColor() const;
 
-		Char& ASCII(char_t);
-		Char& PriColor(Color);
-		Char& SecColor(Color);
+		Char& Ascii(char_t);
+		Char& BgColor(Color);
+		Char& FgColor(Color);
 	private:
 		union
 		{
-			char16_t wc;
+			char16_t wc{};
 			struct
 			{
 				char_t  c;
@@ -47,7 +46,7 @@ namespace Term
 			};
 		};
 
-		Color priColor = Color::Black;
-		Color secColor = Color::White;
+		Color bg_color = Color::Black;
+		Color fg_color = Color::White;
 	};
 }

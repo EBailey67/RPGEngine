@@ -11,20 +11,20 @@ namespace Term
 
 		static bool eq(Char a, Char b)
 		{
-			return a.ASCII() == b.ASCII();
+			return a.Ascii() == b.Ascii();
 		}
 
 		static bool lt(Char a, Char b)
 		{
-			return a.ASCII() < b.ASCII();
+			return a.Ascii() < b.Ascii();
 		}
 
 		static int compare(const Char* a, const Char* b, size_t n)
 		{
 			while (n-- != 0)
 			{
-				if (a[n].ASCII() < b[n].ASCII()) return -1;
-				if (a[n].ASCII() > b[n].ASCII()) return 1;
+				if (a[n].Ascii() < b[n].Ascii()) return -1;
+				if (a[n].Ascii() > b[n].Ascii()) return 1;
 				++a; ++b;
 			}
 			return 0;

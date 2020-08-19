@@ -508,8 +508,19 @@ private:
 	}
 
 public:
+
+	static Layer GetCurrentLayer()
+	{
+		return m_currentLayer;
+	}
+	
 	static void RenderTarget(Layer layer)
 	{
+		if (layer == Layer::None)
+		{
+			ResetRenderer();
+		}
+		else
 		if (SDL_SetRenderTarget(m_renderer, m_layers.at(static_cast<int>(layer))))
 		{
 			SDL_THROW();

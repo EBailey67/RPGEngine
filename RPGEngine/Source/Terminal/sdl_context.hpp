@@ -22,21 +22,24 @@ namespace Term
 		{
 		public:
 			Context(size_t width, size_t height);
-			virtual ~Context();
+			~Context() override;
 
 			void Tilemap(const std::string& path);
 			[[nodiscard]] SDL_Texture* Tilemap() const;
 			[[nodiscard]] PixDim TileWidth() const;
 			[[nodiscard]] PixDim TileHeight() const;
 			void Print(Char ch, size_t x, size_t y) const override;
-			void Print() const override;
+			void Print() override;
+			void Render(int x, int y) const;
+
 			Buffer& Framebuffer() override;
 
 		private:
 			PixDim twidth, theight;
 			SDL_Texture* tilemap;
-			SDL_Surface* tilemapSurface;
-			StaticBuffer    buffer;
+			SDL_Surface* tilemap_surface;
+			SDL_Texture* buffer_texture;
+			StaticBuffer buffer;
 		};
 	}
 }

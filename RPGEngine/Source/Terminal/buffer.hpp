@@ -8,15 +8,18 @@ namespace Term
 	{
 	public:
 		virtual ~Buffer() = default;
-		[[nodiscard]] virtual size_t Width() const = 0;
-		[[nodiscard]] virtual size_t Height() const = 0;
-		[[nodiscard]] virtual Char Get(size_t x, size_t y) const = 0;
+		[[nodiscard]] virtual int Width() const = 0;
+		[[nodiscard]] virtual int Height() const = 0;
+		[[nodiscard]] virtual Char Get(int x, int y) const = 0;
 		virtual void Clear() = 0;
 		virtual void ClearChar(Char) = 0;
-		virtual void Put(size_t x, size_t y, Char) = 0;
+		virtual void Put(int x, int y, Char) = 0;
 		virtual void Scroll(int rows, int cols = 0) = 0;
-		virtual void Copy(const Buffer&, int dx, int dy, int sx, int sy, size_t sw, size_t sh) = 0;
+		virtual void Copy(const Buffer&, int dx, int dy, int sx, int sy, int sw, int sh) = 0;
 		virtual void Copy(const Buffer&) = 0;
+		[[nodiscard]] virtual bool IsDirty() const = 0;
+		virtual void Clean() = 0;
+		virtual void Dirty() = 0;
 	};
 }
 

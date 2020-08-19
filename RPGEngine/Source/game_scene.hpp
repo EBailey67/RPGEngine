@@ -71,6 +71,46 @@ public:
 		int wh;
 		SDL_GetWindowSize(Graphics::Window(), &ww, &wh);
 		gameUI = new GUI::GameSceneUI(Graphics::Window(), ww, wh);
+
+
+		map_console.Tilemap( "resources/sprites/tileset.png" );
+		Term::Char clearChar('\0', 0, Term::Color::Black, Term::Color::White);
+		Term::TTY tty_map( map_console.Framebuffer() );
+		tty_map.FgColor(Term::Color::White);
+		tty_map.BgColor(Term::Color::Black);
+		map_console.Framebuffer().ClearChar(clearChar);
+		map_console.Framebuffer().Clear();
+		tty_map.Place(0, 0).Put("Map");
+
+		message_console.Tilemap( "resources/sprites/tileset.png" );
+		Term::TTY tty_message( message_console.Framebuffer() );
+		clearChar.BgColor(Term::Color(85, 85, 85));
+		clearChar.FgColor(Term::Color::White);
+		tty_message.FgColor(Term::Color::White);
+		tty_message.BgColor(Term::Color(85, 85, 85));
+		message_console.Framebuffer().ClearChar(clearChar);
+		message_console.Framebuffer().Clear();
+		tty_message.Place(0, 0).Put("Message");
+
+		stat_console.Tilemap( "resources/sprites/tileset.png" );
+		Term::TTY tty_stat( stat_console.Framebuffer() );
+		clearChar.BgColor(Term::Color(170, 85, 0));
+		clearChar.FgColor(Term::Color::White);
+		tty_stat.FgColor(Term::Color::White);
+		tty_stat.BgColor(Term::Color(170, 85, 0));
+		stat_console.Framebuffer().ClearChar(clearChar);
+		stat_console.Framebuffer().Clear();
+		tty_stat.Place(0, 0).Put("Stats");
+
+		inventory_console.Tilemap( "resources/sprites/tileset.png" );
+		Term::TTY tty_inventory( inventory_console.Framebuffer() );
+		clearChar.BgColor(Term::Color(0, 170, 170));
+		clearChar.FgColor(Term::Color::White);
+		tty_inventory.FgColor(Term::Color::White);
+		tty_inventory.BgColor(Term::Color(0, 170, 170));
+		inventory_console.Framebuffer().ClearChar(clearChar);
+		inventory_console.Framebuffer().Clear();
+		tty_inventory.Place(0, 0).Put("Inventory");
 	}
 
 	void FixedUpdate() override
@@ -80,6 +120,18 @@ public:
 		CollisionDetection();
 		UpdateVisibility();
 		HealthUpdate();
+
+		const auto frameRate = static_cast<int>(floorf(Game::GetInstance()->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
+	    Term::TTY tty(message_console.Framebuffer());	
+		tty.FgColor(Term::Color::White);
+		tty.BgColor(Term::Color(85, 85, 85));
+        tty.Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
+
+		
+		map_console.Print();
+		message_console.Print();
+		stat_console.Print();
+		inventory_console.Print();
 	}
 
 	void Update(const float dt) override
@@ -111,13 +163,18 @@ public:
 		// LightsRender();
 		PositionDebug();
 		RectDebug();
+		RenderUI();
+		
 		}
 	}
 
-	virtual void RenderUI() override
+	void RenderUI() override
 	{
-		// gameUI->drawAll();
-		Game::GetInstance()->term.Print();
+		map_console.Render(0, 88);
+		message_console.Render(0, 472);
+		stat_console.Render(640, 0);
+		inventory_console.Render(0, 0);
+		gameUI->drawAll();
 	}
 
 	virtual void ResizeEvent() override
@@ -125,6 +182,19 @@ public:
 		gameUI->resizeCallbackEvent(0, 0);
 	}
 private:
+	const int map_width = 80;
+	const int map_height = 48;
+	Term::SDL::Context map_console = Term::SDL::Context( map_width, map_height );
+
+	const int message_width = 80;
+	const int message_height = 11;
+	Term::SDL::Context message_console = Term::SDL::Context( message_width, message_height );
+
+	const int stat_width = 20;
+	const int stat_height = 70;
+	Term::SDL::Context stat_console = Term::SDL::Context( stat_width, stat_height );
+	
+	const int inventory_width = 80;
+	const int inventory_height = 11;
+	Term::SDL::Context inventory_console = Term::SDL::Context( inventory_width, inventory_height );
 };
-
-

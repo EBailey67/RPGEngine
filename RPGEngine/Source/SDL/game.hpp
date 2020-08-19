@@ -67,6 +67,9 @@ private:
 
     void Update(const float dt)
     {
+    	static size_t frameCount = 0;
+
+    	frameCount++;
         fps_counter.Update(dt);
         m_scene->Update(dt);
     }
@@ -80,7 +83,6 @@ private:
     {
         Graphics::OnRenderStart();
         m_scene->Render();
-    	m_scene->RenderUI();
         Graphics::DrawLayers();
         Graphics::RenderPresent();
     }
@@ -88,50 +90,6 @@ private:
 
 public:
 
-	Term::Color RandomColor()
-    {
-    return Term::Color (
-        static_cast<Uint8>(rand()%255),
-        static_cast<Uint8>(rand()%255),
-        static_cast<Uint8>(rand()%255) );
-    }
-
-    void RandomColors( Term::String& str )
-    {
-    for( Term::Char& ch : str )
-        ch.PriColor( Term::Color::Black ).SecColor( RandomColor() );
-    }
-
-
-	void SetupConsole()
-    {
-	    // Term::SDL::Context term( 48, 15 );
-		
-		term.Tilemap( "resources/sprites/tileset.png" );
-		term.Framebuffer().Clear();
-		Term::TTY tty( term.Framebuffer() );
-
-	    Term::String hello = Term::MakeString("Hello, terminal!");
-	    Term::String wrapStr = Term::MakeString( "Wraaaaaaaap" );
-	    Term::String newLineStr = Term::MakeString( "Eeeey, I'll change line\nNewline!" );
-	    RandomColors(hello);
-	    RandomColors(wrapStr);
-            
-	    using Term::TTY;
-	    tty.Set( TTY::Wrap ).PriColor( Term::Color(255,200,0) ).SecColor( Term::Color(0,0,0) );
-	    tty.Place( 15,7 ).Put( wrapStr );
-	    tty.Place( 0, 3 ).Put( "Done!" );
-	    tty.Place( 6,10 ).Put( newLineStr );
-	    tty.Place( 0,16 ).Put( "Insert between angles ><" );
-	    tty.Set( TTY::Insert ).Place( 23, 16 ).Put( "!inserted!" );
-	    std::stringstream ss;
-	    ss << "Char size: " << sizeof(Term::Char);
-	    tty.Place( 0,14 ).Put( ss.str() );
-	    tty.Place(0,2);
-	    for( int i=0; i < 20; ++i )
-	        tty.Put( (char) i+127 );
-    }
-	
     // Initialization SDL's subsystems. 
     void InitializeSubsystems()
     {
@@ -214,8 +172,6 @@ public:
     {
         m_scene = std::make_unique<TScene>(std::forward<Args>(args)...);
     }
-
-	Term::SDL::Context term = Term::SDL::Context( 80, 40 );
 
 private:
     bool m_hadInitialization = false;

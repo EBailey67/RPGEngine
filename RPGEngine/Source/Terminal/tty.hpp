@@ -28,15 +28,13 @@ namespace Term
 		TTY& Put(const String&);
 		TTY& Put(char);
 		TTY& Put(const std::string&);
-		TTY& PriColor(Color);
-		TTY& SecColor(Color);
-
+		TTY& BgColor(Color);
+		TTY& FgColor(Color);
 	private:
 		Buffer* buffer;
 		int         curs_x, curs_y;
 		StateBit    state;
-		Color       pri, sec;
+		Color       bg_color, fg_color;
 	};
-
-} // namespace Term
+}
 

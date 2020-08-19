@@ -9,7 +9,7 @@ namespace Term
 		Char ch;
 		for (auto c : str)
 		{
-			ch.ASCII(c);
+			ch.Ascii(c);
 			termstr.push_back(ch);
 		}
 		return termstr;
@@ -18,12 +18,12 @@ namespace Term
 	void PriColor(String& str, Color color)
 	{
 		for (auto& ch : str)
-			ch.PriColor(color);
+			ch.BgColor(color);
 	}
 
 	void SecColor(String& str, Color color)
 	{
 		for (auto& ch : str)
-			ch.SecColor(color);
+			ch.FgColor(color);
 	}
 }

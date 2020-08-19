@@ -6,8 +6,8 @@ namespace Term
 		buffer(&buf),
 		curs_x(0), curs_y(0),
 		state(0),
-		pri(255, 255, 255),
-		sec(0, 0, 0)
+		bg_color(255, 255, 255),
+		fg_color(0, 0, 0)
 	{}
 
 
@@ -65,7 +65,7 @@ namespace Term
 	TTY& TTY::Put(Char ch)
 	{
 		if (IsSet(Insert) &&
-			Peek().ASCII() != '\0')
+			Peek().Ascii() != '\0')
 		{
 			TTY insert(*buffer);
 			insert.Place(curs_x + 1, curs_y);
@@ -74,10 +74,10 @@ namespace Term
 				Char tmp = insert.Peek();
 				insert.Put(next);
 				next = tmp;
-			} while (next.ASCII() != '\0');
+			} while (next.Ascii() != '\0');
 		}
 
-		if (ch.ASCII() == '\n')
+		if (ch.Ascii() == '\n')
 			Place(0, curs_y + 1);
 		else
 		{
@@ -100,7 +100,7 @@ namespace Term
 
 	TTY& TTY::Put(char c)
 	{
-		Put(Char(c, 0, pri, sec));
+		Put(Char(c, 0, bg_color, fg_color));
 		return *this;
 	}
 
@@ -113,16 +113,16 @@ namespace Term
 	}
 
 
-	TTY& TTY::PriColor(const Color color)
+	TTY& TTY::BgColor(const Color color)
 	{
-		pri = color;
+		bg_color = color;
 		return *this;
 	}
 
 
-	TTY& TTY::SecColor(const Color color)
+	TTY& TTY::FgColor(const Color color)
 	{
-		sec = color;
+		fg_color = color;
 		return *this;
 	}
 }

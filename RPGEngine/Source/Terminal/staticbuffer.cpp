@@ -7,26 +7,25 @@ using std::min;
 
 namespace Term
 {
-	StaticBuffer::StaticBuffer(size_t w, size_t h) :
+	StaticBuffer::StaticBuffer(int w, int h) :
 		width(w), height(h),
-		clear_char('\0'),
+		clear_char('\0', 0, Color::Black, Color::White),
 		buffer(new Char[w * h])
 	{}
 
-
-	size_t StaticBuffer::Width() const
+	int StaticBuffer::Width() const
 	{
 		return width;
 	}
 
-	size_t StaticBuffer::Height() const
+	int StaticBuffer::Height() const
 	{
 		return height;
 	}
 
 	void StaticBuffer::Clear()
 	{
-		size_t size = width * height;
+		int size = width * height;
 		for (size_t i = 0; i < size; ++i)
 			buffer[i] = clear_char;
 	}
@@ -36,15 +35,17 @@ namespace Term
 		clear_char = ch;
 	}
 
-	void StaticBuffer::Put(const size_t x, const size_t y, const Char c)
+	void StaticBuffer::Put(const int x, const int y, const Char c)
 	{
 		if (x >= width || y >= height)
 			return;
-
+		
+		Dirty();
+		
 		buffer[x + y * width] = c;
 	}
 
-	Char StaticBuffer::Get(const size_t x, const size_t y) const
+	Char StaticBuffer::Get(const int x, const int y) const
 	{
 		if (x < width && y < height)
 			return buffer[x + y * width];
@@ -61,15 +62,14 @@ namespace Term
 		*this = std::move(tmpBuf);
 	}
 
-
 	void StaticBuffer::Copy(const Buffer& other, const int dx, const int dy, 
-			const int sx, const int sy, size_t sw, size_t sh)
+			const int sx, const int sy, int sw, int sh)
 	{
 		sh = min(sh, other.Height() - sy);
 		sw = min(sw, other.Width() - sx);
 
-		for (size_t y = max(-sy, 0); y < sh; ++y)
-			for (size_t x = max(-sx, 0); x < sw; ++x)
+		for (int y = max(-sy, 0); y < sh; ++y)
+			for (int x = max(-sx, 0); x < sw; ++x)
 				Put(dx + x, dy + y, other.Get(sx + x, sy + y));
 	}
 
