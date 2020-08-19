@@ -18,28 +18,28 @@ namespace Term
 			return sdl;
 		}
 
-		class Context : public Term::Context
+		class Context
 		{
 		public:
 			Context(size_t width, size_t height);
-			~Context() override;
+			~Context();
 
 			void Tilemap(const std::string& path);
 			[[nodiscard]] SDL_Texture* Tilemap() const;
-			[[nodiscard]] PixDim TileWidth() const;
-			[[nodiscard]] PixDim TileHeight() const;
-			void Print(Char ch, size_t x, size_t y) const override;
-			void Print() override;
+			[[nodiscard]] int TileWidth() const;
+			[[nodiscard]] int TileHeight() const;
+			void Print(Char ch, size_t x, size_t y) const;
+			void Print();
 			void Render(int x, int y) const;
 
-			Buffer& Framebuffer() override;
+			ConsoleBuffer& Framebuffer();
 
 		private:
-			PixDim twidth, theight;
+			int twidth, theight;
 			SDL_Texture* tilemap;
 			SDL_Surface* tilemap_surface;
 			SDL_Texture* buffer_texture;
-			StaticBuffer buffer;
+			ConsoleBuffer buffer;
 		};
 	}
 }

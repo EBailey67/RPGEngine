@@ -49,12 +49,12 @@ namespace Term
 			return tilemap;
 		}
 
-		PixDim Context::TileWidth() const
+		int Context::TileWidth() const
 		{
 			return twidth;
 		}
 
-		PixDim Context::TileHeight() const
+		int Context::TileHeight() const
 		{
 			return theight;
 		}
@@ -111,7 +111,7 @@ namespace Term
 			Graphics::RenderToLayer(Layer::UI, buffer_texture, &srcRect, &dstRect, SDL_FLIP_NONE);
 		}
 		
-		Buffer& Context::Framebuffer()
+		ConsoleBuffer& Context::Framebuffer()
 		{
 			return buffer;
 		}

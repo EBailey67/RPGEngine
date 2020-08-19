@@ -2,7 +2,7 @@
 
 namespace Term
 {
-	TTY::TTY(Buffer& buf) :
+	TTY::TTY(ConsoleBuffer& buf) :
 		buffer(&buf),
 		curs_x(0), curs_y(0),
 		state(0),

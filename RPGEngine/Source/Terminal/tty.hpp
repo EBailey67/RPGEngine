@@ -1,6 +1,6 @@
 #pragma once
 
-#include "buffer.hpp"
+#include "ConsoleBuffer.hpp"
 #include "string.hpp"
 
 namespace Term
@@ -17,7 +17,7 @@ namespace Term
 			VScroll = 4
 		};
 
-		explicit TTY(Buffer&);
+		explicit TTY(ConsoleBuffer&);
 
 		[[nodiscard]] bool IsSet(StateBit b) const;
 		[[nodiscard]] Char Peek() const;
@@ -31,7 +31,7 @@ namespace Term
 		TTY& BgColor(Color);
 		TTY& FgColor(Color);
 	private:
-		Buffer* buffer;
+		ConsoleBuffer* buffer;
 		int curs_x, curs_y;
 		StateBit state;
 		Color bg_color, fg_color;

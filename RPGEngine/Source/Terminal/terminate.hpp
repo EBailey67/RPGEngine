@@ -3,10 +3,8 @@
 
 #pragma once
 
-#include "buffer.hpp"
-#include "staticbuffer.hpp"
+#include "ConsoleBuffer.hpp"
 #include "char.hpp"
-#include "context.hpp"
 #include "string.hpp"
 #include "tty.hpp"
 
