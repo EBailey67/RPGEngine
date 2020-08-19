@@ -27,7 +27,7 @@ namespace Term
 	}
 
 
-	TTY& TTY::Place(size_t x, size_t y)
+	TTY& TTY::Place(int x, int y)
 	{
 		if (IsSet(Wrap) && x >= buffer->Width())
 		{
@@ -48,7 +48,7 @@ namespace Term
 
 	TTY& TTY::ClearLine()
 	{
-		for (size_t x = 0; x < buffer->Width(); ++x)
+		for (auto x = 0; x < buffer->Width(); ++x)
 			buffer->Put(x, curs_y, Char());
 
 		Place(0, curs_y);
@@ -62,28 +62,31 @@ namespace Term
 	}
 
 
-	TTY& TTY::Put(Char ch)
+	TTY& TTY::Put(const Char ch)
 	{
-		if (IsSet(Insert) &&
-			Peek().Ascii() != '\0')
+		if (IsSet(Insert) && Peek().Ascii() != '\0')
 		{
 			TTY insert(*buffer);
 			insert.Place(curs_x + 1, curs_y);
-			Char next = Peek();
-			do {
-				Char tmp = insert.Peek();
+			auto next = Peek();
+			do 
+			{
+				auto tmp = insert.Peek();
 				insert.Put(next);
 				next = tmp;
 			} while (next.Ascii() != '\0');
 		}
 
 		if (ch.Ascii() == '\n')
+		{
 			Place(0, curs_y + 1);
+		}
 		else
 		{
 			buffer->Put(curs_x, curs_y, ch);
 			Place(curs_x + 1, curs_y);
 		}
+		
 		return *this;
 	}
 
@@ -100,7 +103,7 @@ namespace Term
 
 	TTY& TTY::Put(char c)
 	{
-		Put(Char(c, 0, bg_color, fg_color));
+		Put(Char(c, bg_color, fg_color));
 		return *this;
 	}
 

@@ -74,40 +74,40 @@ public:
 
 
 		map_console.Tilemap( "resources/sprites/tileset.png" );
-		Term::Char clearChar('\0', 0, Term::Color::Black, Term::Color::White);
+		Term::Char clearChar('\0', Color::Black, Color::White);
 		Term::TTY tty_map( map_console.Framebuffer() );
-		tty_map.FgColor(Term::Color::White);
-		tty_map.BgColor(Term::Color::Black);
+		tty_map.FgColor(Color::White);
+		tty_map.BgColor(Color::Black);
 		map_console.Framebuffer().ClearChar(clearChar);
 		map_console.Framebuffer().Clear();
 		tty_map.Place(0, 0).Put("Map");
 
 		message_console.Tilemap( "resources/sprites/tileset.png" );
 		Term::TTY tty_message( message_console.Framebuffer() );
-		clearChar.BgColor(Term::Color(85, 85, 85));
-		clearChar.FgColor(Term::Color::White);
-		tty_message.FgColor(Term::Color::White);
-		tty_message.BgColor(Term::Color(85, 85, 85));
+		clearChar.BgColor(Color(85, 85, 85));
+		clearChar.FgColor(Color::White);
+		tty_message.FgColor(Color::White);
+		tty_message.BgColor(Color(85, 85, 85));
 		message_console.Framebuffer().ClearChar(clearChar);
 		message_console.Framebuffer().Clear();
 		tty_message.Place(0, 0).Put("Message");
 
 		stat_console.Tilemap( "resources/sprites/tileset.png" );
 		Term::TTY tty_stat( stat_console.Framebuffer() );
-		clearChar.BgColor(Term::Color(170, 85, 0));
-		clearChar.FgColor(Term::Color::White);
-		tty_stat.FgColor(Term::Color::White);
-		tty_stat.BgColor(Term::Color(170, 85, 0));
+		clearChar.BgColor(Color(170, 85, 0));
+		clearChar.FgColor(Color::White);
+		tty_stat.FgColor(Color::White);
+		tty_stat.BgColor(Color(170, 85, 0));
 		stat_console.Framebuffer().ClearChar(clearChar);
 		stat_console.Framebuffer().Clear();
 		tty_stat.Place(0, 0).Put("Stats");
 
 		inventory_console.Tilemap( "resources/sprites/tileset.png" );
 		Term::TTY tty_inventory( inventory_console.Framebuffer() );
-		clearChar.BgColor(Term::Color(0, 170, 170));
-		clearChar.FgColor(Term::Color::White);
-		tty_inventory.FgColor(Term::Color::White);
-		tty_inventory.BgColor(Term::Color(0, 170, 170));
+		clearChar.BgColor(Color(0, 170, 170));
+		clearChar.FgColor(Color::White);
+		tty_inventory.FgColor(Color::White);
+		tty_inventory.BgColor(Color(0, 170, 170));
 		inventory_console.Framebuffer().ClearChar(clearChar);
 		inventory_console.Framebuffer().Clear();
 		tty_inventory.Place(0, 0).Put("Inventory");
@@ -123,10 +123,9 @@ public:
 
 		const auto frameRate = static_cast<int>(floorf(Game::GetInstance()->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
 	    Term::TTY tty(message_console.Framebuffer());	
-		tty.FgColor(Term::Color::White);
-		tty.BgColor(Term::Color(85, 85, 85));
+		tty.FgColor(Color::White);
+		tty.BgColor(Color(85, 85, 85));
         tty.Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
-
 		
 		map_console.Print();
 		message_console.Print();

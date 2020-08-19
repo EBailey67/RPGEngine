@@ -1,9 +1,8 @@
-#pragma once
-
+﻿#pragma once
 #include <cstdint>
 #include "../Utility/Color.h"
 
-namespace Term
+namespace Console
 {
 	class Char
 	{
@@ -27,4 +26,12 @@ namespace Term
 		Color bg_color = Color::Black;
 		Color fg_color = Color::White;
 	};
+
+
+	class Console
+	{
+	public:
+
+	};
+
 }

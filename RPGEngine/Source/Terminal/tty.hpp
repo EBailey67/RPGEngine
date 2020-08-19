@@ -14,7 +14,8 @@ namespace Term
 		{
 			Wrap = 1,
 			Insert = 2,
-			VScroll = 4
+			VScroll = 4,
+			AutoVScroll = 8
 		};
 
 		explicit TTY(ConsoleBuffer&);
@@ -22,7 +23,7 @@ namespace Term
 		[[nodiscard]] bool IsSet(StateBit b) const;
 		[[nodiscard]] Char Peek() const;
 		TTY& Set(StateBit b, bool setTo = true);
-		TTY& Place(size_t x, size_t y);
+		TTY& Place(int x, int y);
 		TTY& ClearLine();
 		TTY& Put(Char);
 		TTY& Put(const String&);
@@ -30,11 +31,12 @@ namespace Term
 		TTY& Put(const std::string&);
 		TTY& BgColor(Color);
 		TTY& FgColor(Color);
+
 	private:
-		ConsoleBuffer* buffer;
-		int curs_x, curs_y;
 		StateBit state;
+		int curs_x, curs_y;
 		Color bg_color, fg_color;
+		ConsoleBuffer* buffer;
 	};
 }
 

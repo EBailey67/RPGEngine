@@ -10,7 +10,7 @@ namespace Term
 {
 	namespace SDL
 	{
-		Context::Context(const size_t width, const size_t height) :
+		Context::Context(const int width, const int height) :
 			twidth(0), theight(0),
 			tilemap(nullptr),
 			tilemap_surface(nullptr),

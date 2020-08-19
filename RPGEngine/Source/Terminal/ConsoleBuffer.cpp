@@ -7,10 +7,10 @@ using std::min;
 
 namespace Term
 {
-	ConsoleBuffer::ConsoleBuffer(int w, int h) :
-		width(w), height(h),
-		clear_char('\0', 0, Color::Black, Color::White),
-		buffer(new Char[w * h])
+	ConsoleBuffer::ConsoleBuffer(const int width, const int height) :
+		width(width), height(height),
+		clear_char('\0', Color::Black, Color::White),
+		buffer(new Char[width * height])
 	{}
 
 	int ConsoleBuffer::Width() const
@@ -23,7 +23,7 @@ namespace Term
 		return height;
 	}
 
-	void ConsoleBuffer::Clear()
+	void ConsoleBuffer::Clear() const
 	{
 		int size = width * height;
 		for (size_t i = 0; i < size; ++i)

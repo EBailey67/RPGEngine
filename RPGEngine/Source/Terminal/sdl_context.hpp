@@ -21,7 +21,7 @@ namespace Term
 		class Context
 		{
 		public:
-			Context(size_t width, size_t height);
+			Context(int width, int height);
 			~Context();
 
 			void Tilemap(const std::string& path);
