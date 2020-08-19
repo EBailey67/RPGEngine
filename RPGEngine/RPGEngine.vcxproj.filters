@@ -168,9 +168,6 @@
     <ClCompile Include="Source\Terminal\string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Terminal\tty.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Terminal\ConsoleBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -450,9 +447,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Terminal\terminate.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Terminal\tty.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Utility\Swatch.h">

@@ -34,8 +34,8 @@ namespace RPGEngine
 
 		Ray(const Ray& obj) = default;
 
-		Ray(const Vector2D pos, const float angle) :
-			pos(pos), dir(Vector2D::FromAngle(angle))
+		Ray(const Vector2Df pos, const float angle) :
+			pos(pos), dir(Vector2Df::FromAngle(angle))
 		{}
 
 		Ray(const int x, const int y) :
@@ -44,8 +44,8 @@ namespace RPGEngine
 
 		bool HitsWall(const Boundary& wall, Ray& rOut) const;
 
-		Vector2D pos;
-		Vector2D dir;
+		Vector2Df pos;
+		Vector2Df dir;
 	};
 
 }

@@ -14,7 +14,7 @@ namespace Term
 			twidth(0), theight(0),
 			tilemap(nullptr),
 			tilemap_surface(nullptr),
-			buffer(width, height)
+			console(width, height)
 		{
 			std::cout << "Constructing Term::SDL::Context()\n";
 			buffer_texture = SDL_CreateTexture(Graphics::Renderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width * 8, height * 8);
@@ -73,11 +73,10 @@ namespace Term
 				static_cast<Sint16>(y * TileHeight()),
 				TileWidth(),TileHeight() };
 
-			auto bg = toSDLColor(ch.BgColor());
-			auto fg = toSDLColor(ch.FgColor());
+			auto fg = ch.FgColor();
 
 			SDL_RenderFillRect(Graphics::Renderer(), &dst);
-			Graphics::SetDrawColor(bg.r, bg.g, bg.b, bg.a);
+			Graphics::SetDrawColor(ch.BgColor());
 			SDL_RenderFillRect(Graphics::Renderer(), &dst);
 			SDL_SetTextureColorMod(tilemap, fg.r, fg.g, fg.b);
 			SDL_RenderCopyEx(Graphics::Renderer(), tilemap, &tile, &dst, 0, nullptr, SDL_FLIP_NONE);
@@ -85,35 +84,35 @@ namespace Term
 
 		void Context::Print()
 		{
-			PROFILE_FUNCTION();
-
-			if (!buffer.IsDirty())
+			if (!console.IsDirty())
 				return;
+
+			PROFILE_FUNCTION();		// Only profile if we're actually doing something to reduce noise.
 
 			const auto l = Graphics::GetCurrentLayer();
 			SDL_SetRenderTarget(Graphics::Renderer(), buffer_texture);
 			SDL_Texture *rt = SDL_GetRenderTarget(Graphics::Renderer());
 			Graphics::TargetClear();
 			
-			for (auto y = 0; y < buffer.Height(); ++y)
-				for (auto x = 0; x < buffer.Width(); ++x)
-					Print(buffer.Get(x, y), x, y);
+			for (auto y = 0; y < console.Height(); ++y)
+				for (auto x = 0; x < console.Width(); ++x)
+					Print(console.GetCh(x, y), x, y);
 
 			Graphics::RenderTarget(l);
-			buffer.Clean();
+			console.Clean();
 		}
 
 		void Context::Render(const int x, const int y) const
 		{
-			SDL_Rect srcRect = {0, 0, buffer.Width() * TileWidth(), buffer.Height() * TileHeight()};
-			SDL_Rect dstRect = {x, y, buffer.Width() * TileWidth(), buffer.Height() * TileHeight()};
+			SDL_Rect srcRect = {0, 0, console.Width() * TileWidth(), console.Height() * TileHeight()};
+			SDL_Rect dstRect = {x, y, console.Width() * TileWidth(), console.Height() * TileHeight()};
 
 			Graphics::RenderToLayer(Layer::UI, buffer_texture, &srcRect, &dstRect, SDL_FLIP_NONE);
 		}
-		
-		ConsoleBuffer& Context::Framebuffer()
+
+		Console& Context::GetConsole()
 		{
-			return buffer;
+			return console;
 		}
 	}
 }

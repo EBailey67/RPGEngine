@@ -6,5 +6,4 @@
 #include "ConsoleBuffer.hpp"
 #include "char.hpp"
 #include "string.hpp"
-#include "tty.hpp"
 

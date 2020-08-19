@@ -5,46 +5,46 @@
 #include "../game_scene.hpp"
 #include "../sdlgui/widget.h"
 
-std::pair<Vector2D, Vector2D> AABBW(const SDL_FRect &lhs, const SDL_FRect &rhs)
+std::pair<Vector2Df, Vector2Df> AABBW(const SDL_FRect &lhs, const SDL_FRect &rhs)
 {
     if (!((lhs.x > rhs.x + rhs.w) || (lhs.x + lhs.w < rhs.x) || (lhs.y > rhs.y + rhs.h) || (lhs.y + lhs.h < rhs.y)))
     {
         if (lhs.x < rhs.x && lhs.y < rhs.y)
         {
-            return std::make_pair(Vector2D::Right(), Vector2D::Up());
+            return std::make_pair(Vector2Df::Right(), Vector2Df::Up());
         }
         if (lhs.x > rhs.x && lhs.y < rhs.y)
         {
-            return std::make_pair(Vector2D::Left(), Vector2D::Up());
+            return std::make_pair(Vector2Df::Left(), Vector2Df::Up());
         }
         if (lhs.x < rhs.x && lhs.y > rhs.y)
         {
-            return std::make_pair(Vector2D::Right(), Vector2D::Down());
+            return std::make_pair(Vector2Df::Right(), Vector2Df::Down());
         }
         if (lhs.x > rhs.x && lhs.y > rhs.y)
         {
-            return std::make_pair(Vector2D::Left(), Vector2D::Down());
+            return std::make_pair(Vector2Df::Left(), Vector2Df::Down());
         }
         if (lhs.x < rhs.x)
         {
-            return std::make_pair(Vector2D::Right(), Vector2D::Zero());
+            return std::make_pair(Vector2Df::Right(), Vector2Df::Zero());
         }
         if (lhs.x > rhs.x)
         {
-            return std::make_pair(Vector2D::Left(), Vector2D::Zero());
+            return std::make_pair(Vector2Df::Left(), Vector2Df::Zero());
         }
         if (lhs.y < rhs.y)
         {
-            return std::make_pair(Vector2D::Up(), Vector2D::Zero());
+            return std::make_pair(Vector2Df::Up(), Vector2Df::Zero());
         }
         if (lhs.y > rhs.y)
         {
-            return std::make_pair(Vector2D::Down(), Vector2D::Zero());
+            return std::make_pair(Vector2Df::Down(), Vector2Df::Zero());
         }
-        return std::make_pair(Vector2D::One(), Vector2D::One());
+        return std::make_pair(Vector2Df::One(), Vector2Df::One());
     }
 
-    return std::make_pair(Vector2D::Zero(), Vector2D::Zero());
+    return std::make_pair(Vector2Df::Zero(), Vector2Df::Zero());
 }
 
 void NullVelocity(const CollisionData &lhs, const CollisionData &rhs)
@@ -57,19 +57,19 @@ void NullVelocity(const CollisionData &lhs, const CollisionData &rhs)
 
                 auto &&[xDir, yDir] = col.direction;
                 auto &&[vel, pos] = registry.get<Velocity, Position>(col.id);
-                if (xDir == Vector2D::Left() && vel.x < 0)
+                if (xDir == Vector2Df::Left() && vel.x < 0)
                 {
                     vel.x = 0;
                 }
-                else if (xDir == Vector2D::Right() && vel.x > 0)
+                else if (xDir == Vector2Df::Right() && vel.x > 0)
                 {
                     vel.x = 0;
                 }
-                if (yDir == Vector2D::Up() && vel.y > 0)
+                if (yDir == Vector2Df::Up() && vel.y > 0)
                 {
                     vel.y = 0;
                 }
-                else if (yDir == Vector2D::Down() && vel.y < 0)
+                else if (yDir == Vector2Df::Down() && vel.y < 0)
                 {
                     vel.y = 0;
                 }
@@ -109,19 +109,19 @@ void CollisionDetection()
             	if (CollisionLayer::Matrix[layer.layer][prev_layer.layer] ||
                     CollisionLayer::Matrix[prev_layer.layer][layer.layer])
                 {
-                    Vector2D parent_pos{};
+                    Vector2Df parent_pos{};
 
                     SDL_FRect frect{position.position.x + parent_pos.x + rect.rect.x,
                                     position.position.y + parent_pos.y + rect.rect.y, rect.rect.w, rect.rect.h};
 
                     auto direction = AABBW(frect, prev_frect);
-                    if (direction.first != Vector2D::Zero() && direction.second != Vector2D::Zero())
+                    if (direction.first != Vector2Df::Zero() && direction.second != Vector2Df::Zero())
                     {
                         registry.ctx<collision_signal>().publish(
                             {entt, frect, direction},
                             {entity,
                              prev_frect,
-                             {Vector2D::Zero() - direction.first, Vector2D::Zero() - direction.second}});
+                             {Vector2Df::Zero() - direction.first, Vector2Df::Zero() - direction.second}});
                     }
                 }
             }
@@ -162,7 +162,7 @@ void CollisionTileDetection(const float dt)
                         {
                             world_tile.x = grid_pos.position.x + i * world_tile.w;
                             auto direction = AABBW(world_rect, world_tile);
-                            if (direction.first != Vector2D::Zero() && direction.second != Vector2D::Zero())
+                            if (direction.first != Vector2Df::Zero() && direction.second != Vector2Df::Zero())
                             {
                                 //                                registry.ctx<collision_signal>().publish(
                                 //                                    {rect_entt, world_rect, direction},
@@ -172,20 +172,20 @@ void CollisionTileDetection(const float dt)
                                 //                                     Vector2D::zero() - direction.second}});
                                 if (tile_layer.layer == LayersID::WALLS)
                                 {
-                                    if (direction.first == Vector2D::Left() && rect_vel.x < 0)
+                                    if (direction.first == Vector2Df::Left() && rect_vel.x < 0)
                                     {
                                         rect_vel.x = 0;
                                     }
-                                    else if (direction.first == Vector2D::Right() && rect_vel.x > 0)
+                                    else if (direction.first == Vector2Df::Right() && rect_vel.x > 0)
                                     {
 
                                         rect_vel.x = 0;
                                     }
-                                    if (direction.second == Vector2D::Up() && rect_vel.y > 0)
+                                    if (direction.second == Vector2Df::Up() && rect_vel.y > 0)
                                     {
                                         rect_vel.y = 0;
                                     }
-                                    else if (direction.second == Vector2D::Down() && rect_vel.y < 0)
+                                    else if (direction.second == Vector2Df::Down() && rect_vel.y < 0)
                                     {
                                         rect_vel.y = 0;
                                     }

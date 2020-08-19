@@ -1,37 +1,43 @@
 ﻿#pragma once
-#include <cstdint>
 #include "../Utility/Color.h"
+#include "ConsoleBuffer.hpp"
+#include "string.hpp"
+#include "char.hpp"
 
-namespace Console
+namespace Term
 {
-	class Char
+	class Console : public ConsoleBuffer
 	{
+	typedef unsigned StateBit;
+		
 	public:
-		typedef uint8_t char_t;
+		enum : StateBit // State bitflags
+		{
+			Wrap = 1,
+			Insert = 2,
+			VScroll = 4,
+			AutoVScroll = 8
+		};
 
-		Char() = default;
-		Char(char_t, Color, Color);
+		Console(int width, int height);
+		explicit Console(ConsoleBuffer&);
 
-		explicit Char(char_t, uint8_t pal_i = 0);
+		[[nodiscard]] bool IsSet(StateBit b) const;
+		[[nodiscard]] Char Peek() const;
+		Console& Set(StateBit b, bool setTo = true);
+		Console& Place(int x, int y);
+		Console& ClearLine();
+		Console& Put(Char);
+		Console& Put(const String&);
+		Console& Put(char);
+		Console& Put(const std::string&);
+		Console& BgColor(Color);
+		Console& FgColor(Color);
 
-		[[nodiscard]] char_t Ascii() const;
-		[[nodiscard]] Color BgColor() const;
-		[[nodiscard]] Color FgColor() const;
-
-		Char& Ascii(char_t);
-		Char& BgColor(Color);
-		Char& FgColor(Color);
 	private:
-		char_t  c;
-		Color bg_color = Color::Black;
-		Color fg_color = Color::White;
-	};
-
-
-	class Console
-	{
-	public:
-
+		StateBit state;
+		int curs_x, curs_y;
+		Color bg_color, fg_color;
 	};
 
 }

@@ -1,23 +1,14 @@
 #pragma once
 
-#include "terminate.hpp"
 #include <SDL.h>
+
+#include "Console.h"
+#include "terminate.hpp"
 
 namespace Term
 {
 	namespace SDL
 	{
-		inline SDL_Color toSDLColor(const Color& c)
-		{
-			SDL_Color sdl;
-			sdl.r = c.r;
-			sdl.g = c.g;
-			sdl.b = c.b;
-			sdl.a = SDL_ALPHA_OPAQUE;
-			
-			return sdl;
-		}
-
 		class Context
 		{
 		public:
@@ -32,14 +23,14 @@ namespace Term
 			void Print();
 			void Render(int x, int y) const;
 
-			ConsoleBuffer& Framebuffer();
-
+			Console& GetConsole();
+//			ConsoleBuffer& Framebuffer();
 		private:
 			int twidth, theight;
 			SDL_Texture* tilemap;
 			SDL_Surface* tilemap_surface;
 			SDL_Texture* buffer_texture;
-			ConsoleBuffer buffer;
+			Console console;
 		};
 	}
 }

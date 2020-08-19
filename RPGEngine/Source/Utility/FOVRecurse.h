@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "../Utility/Vector2D.h"
+#include "../sdlgui/common.h"
 
 namespace RPGEngine
 {
@@ -24,7 +25,7 @@ namespace RPGEngine
 	public:
 		FOVRecurse()
 		{
-			MapSize = Vector2D(64, 64);
+			MapSize = Vector2Di(64, 64);
 			VisualRange = 9;
 			ClearMap();
 		}
@@ -78,22 +79,22 @@ namespace RPGEngine
 		{
 			if (Point_Valid(pX, pY) && PointGet(pX, pY) == 0)
 			{
-				player.x = static_cast<float>(pX);
-				player.y = static_cast<float>(pY);
+				player.x = pX;
+				player.y = pY;
 				GetVisibleCells();
 			}
 		}
 
 
-		Vector2D MapSize;
+		Vector2Di MapSize;
 		int VisualRange; // Radius of the player's circle of vision
-		std::vector<Vector2D> VisiblePoints;   // List of points visible to the player
-		[[nodiscard]] Vector2D GetPlayerPosition() const { return player; }
-		void SetPlayerPosition(Vector2D& point) { player = point; }
+		std::vector<Vector2Di> VisiblePoints;   // List of points visible to the player
+		[[nodiscard]] Vector2Di GetPlayerPosition() const { return player; }
+		void SetPlayerPosition(Vector2Di& point) { player = point; }
 
 	private:
 		int map[64][64]{};
-		Vector2D player;
+		Vector2Di player;
 		int visible_octants[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };  // The octants which a player can see
 
 
@@ -153,7 +154,7 @@ namespace RPGEngine
 								//..adjust the startslope
 								pStartSlope = GetSlope(x - 0.5, y - 0.5, player.x, player.y, false);
 
-							VisiblePoints.emplace_back(Vector2D(x, y));
+							VisiblePoints.emplace_back(Vector2Di(x, y));
 						}
 					}
 					x++;
@@ -184,7 +185,7 @@ namespace RPGEngine
 							if (x + 1 < MapSize.x && map[x + 1][y] == 1)
 								pStartSlope = -GetSlope(x + 0.5, y - 0.5, player.x, player.y, false);
 
-							VisiblePoints.emplace_back(Vector2D(x, y));
+							VisiblePoints.emplace_back(Vector2Di(x, y));
 						}
 					}
 					x--;
@@ -216,7 +217,7 @@ namespace RPGEngine
 							if (y - 1 >= 0 && map[x][y - 1] == 1)
 								pStartSlope = -GetSlope(x + 0.5, y - 0.5, player.x, player.y, true);
 
-							VisiblePoints.emplace_back(Vector2D(x, y));
+							VisiblePoints.emplace_back(Vector2Di(x, y));
 						}
 					}
 					y++;
@@ -247,7 +248,7 @@ namespace RPGEngine
 							if (y + 1 < MapSize.y && map[x][y + 1] == 1)
 								pStartSlope = GetSlope(x + 0.5, y + 0.5, player.x, player.y, true);
 
-							VisiblePoints.emplace_back(Vector2D(x, y));
+							VisiblePoints.emplace_back(Vector2Di(x, y));
 						}
 					}
 					y--;
@@ -278,7 +279,7 @@ namespace RPGEngine
 								&& map[x + 1][y] == 1)
 								pStartSlope = GetSlope(x + 0.5, y + 0.5, player.x, player.y, false);
 
-							VisiblePoints.emplace_back(Vector2D(x, y));
+							VisiblePoints.emplace_back(Vector2Di(x, y));
 						}
 					}
 					x--;
@@ -307,7 +308,7 @@ namespace RPGEngine
 							if (x - 1 >= 0 && map[x - 1][y] == 1)
 								pStartSlope = -GetSlope(x - 0.5, y + 0.5, player.x, player.y, false);
 
-							VisiblePoints.emplace_back(Vector2D(x, y));
+							VisiblePoints.emplace_back(Vector2Di(x, y));
 						}
 					}
 					x++;
@@ -338,7 +339,7 @@ namespace RPGEngine
 							if (y + 1 < MapSize.y && map[x][y + 1] == 1)
 								pStartSlope = -GetSlope(x - 0.5, y + 0.5, player.x, player.y, true);
 
-							VisiblePoints.emplace_back(Vector2D(x, y));
+							VisiblePoints.emplace_back(Vector2Di(x, y));
 						}
 					}
 					y--;
@@ -369,7 +370,7 @@ namespace RPGEngine
 							if (y - 1 >= 0 && map[x][y - 1] == 1)
 								pStartSlope = GetSlope(x - 0.5, y - 0.5, player.x, player.y, true);
 
-							VisiblePoints.emplace_back(Vector2D(x, y));
+							VisiblePoints.emplace_back(Vector2Di(x, y));
 						}
 					}
 					y++;

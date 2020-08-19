@@ -7,7 +7,7 @@
 
 struct Position
 {
-    Vector2D position;
+    Vector2Df position;
     inline static bool hasDebugDraw = false;
 };
 
@@ -26,7 +26,7 @@ struct Player
 {
     bool isAttacking = true;
     bool isHit = true;
-    Vector2D attack_direction;
+    Vector2Df attack_direction;
     float attack_rate = 0.5;
     float dt = 0;
     int score = 0;
@@ -91,7 +91,7 @@ class Transform
 {
 public:
 private:
-    Vector2D position;
-    Vector2D scale;
-    // Vector2D rotation;
+    Vector2Df position;
+    Vector2Df scale;
+    // Vector2Df rotation;
 };

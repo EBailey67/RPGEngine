@@ -25,7 +25,7 @@ struct CollisionData
 {
     entt::entity id;
     SDL_FRect rect;
-    std::pair<Vector2D, Vector2D> direction;
+    std::pair<Vector2Df, Vector2Df> direction;
 };
 
 #ifndef LayersID

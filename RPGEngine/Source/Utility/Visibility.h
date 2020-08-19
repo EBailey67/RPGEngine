@@ -69,7 +69,7 @@ namespace RPGEngine
             auto cdb = ComputeOrientation(c, d, b);
             if (cdb == Orientation::collinear && cda == Orientation::collinear)
             {
-                return Vector2D::DistanceSquared(origin, a) < Vector2D::DistanceSquared(origin, c);
+                return Vector2D<Vector>::DistanceSquared(origin, a) < Vector2D<Vector>::DistanceSquared(origin, c);
             }
             else if (cda == cdb ||
                 cda == Orientation::collinear ||
@@ -113,10 +113,10 @@ namespace RPGEngine
 
             auto oa = a - vertex;
             auto ob = b - vertex;
-            auto det = Vector2D::Cross(oa, ob);
+            auto det = Vector2D<Vector>::Cross(oa, ob);
             if (ApproxEqual(det, 0.f))
             {
-                return Vector2D::Dot(oa, oa) < Vector2D::Dot(ob, ob);
+                return Vector2D<Vector>::Dot(oa, oa) < Vector2D<Vector>::Dot(ob, ob);
             }
             return det < 0;
         }

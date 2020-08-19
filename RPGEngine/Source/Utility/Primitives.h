@@ -21,18 +21,28 @@ namespace RPGEngine
      * @return orientation of the points in the plane (left turn, right turn
      *         or collinear)
      */
-    inline Orientation ComputeOrientation(const Vector2D a, const Vector2D b, const Vector2D c)
+    inline Orientation ComputeOrientation(const Vector2Df a, const Vector2Df b, const Vector2Df c)
     {
-	    const auto det = Vector2D::Cross(b - a, c - a);
+	    const auto det = Vector2Df::Cross(b - a, c - a);
         return static_cast<Orientation>(
             static_cast<int>(StrictlyLess(0.f, det)) -
             static_cast<int>(StrictlyLess(det, 0.f))
             );
     }
 
+    inline Orientation ComputeOrientation(const Vector2Di a, const Vector2Di b, const Vector2Di c)
+    {
+	    const auto det = Vector2Di::Cross(b - a, c - a);
+        return static_cast<Orientation>(
+            static_cast<int>(StrictlyLess(0.f, static_cast<float>(det))) -
+            static_cast<int>(StrictlyLess(static_cast<float>(det), 0.f))
+            );
+    }
+
+	
     struct Light
     {
-	    Vector2D position;
+	    Vector2Df position;
     	SDL_Color color;
     	float energy;
     	float radius;
@@ -47,10 +57,11 @@ namespace RPGEngine
 	
     struct LineSegment
     {
-        Vector2D a, b;
+        Vector2Di a, b;
 
         LineSegment() = default;
-        LineSegment(const Vector2D a, const Vector2D b) : a(a), b(b) {}
+        LineSegment(const Vector2Df a, const Vector2Df b) : a(a.ToInt()), b(b.ToInt()) {}
+        LineSegment(const Vector2Di a, const Vector2Di b) : a(a), b(b) {}
         LineSegment(const LineSegment&) = default;
         LineSegment& operator=(const LineSegment& segment) = default;
     };
@@ -73,18 +84,18 @@ namespace RPGEngine
          *        when there is no intersection)
          * @return true iff the ray intersects the line segment
          */
-        bool Intersects(const LineSegment& segment, Vector2D& out_point) const
+        bool Intersects(const LineSegment& segment, Vector2D<Vector>& out_point) const
         {
             auto ao = origin - segment.a;
             auto ab = segment.b - segment.a;
-            auto det = Vector2D::Cross(ab, direction);
+            auto det = Vector2D<Vector>::Cross(ab, direction);
             if (ApproxEqual(det, 0.f))
             {
                 auto abo = ComputeOrientation(segment.a, segment.b, origin);
                 if (abo != Orientation::collinear)
                     return false;
-                auto dist_a = Vector2D::Dot(ao, direction);
-                auto dist_b = Vector2D::Dot(origin - segment.b, direction);
+                auto dist_a = Vector2D<Vector>::Dot(ao, direction);
+                auto dist_b = Vector2D<Vector>::Dot(origin - segment.b, direction);
 
                 if (dist_a > 0 && dist_b > 0)
                     return false;
@@ -97,12 +108,12 @@ namespace RPGEngine
                 return true;
             }
             
-            auto u = Vector2D::Cross(ao, direction) / det;
+            auto u = Vector2D<Vector>::Cross(ao, direction) / det;
             if (StrictlyLess(u, 0.f) ||
                 StrictlyLess(1.f, u))
                 return false;
 
-            float t = -Vector2D::Cross(ab, ao) / det;
+            float t = -Vector2D<Vector>::Cross(ab, ao) / det;
             out_point = origin + direction * t;
             return ApproxEqual(t, 0.f) || t > 0;
         }

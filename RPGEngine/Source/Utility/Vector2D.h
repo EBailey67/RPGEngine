@@ -9,53 +9,54 @@
  * The Vector2D class.
  * Representation of 2D vectors and points.
  */
+template <class T>
 class Vector2D
 {
 
 public:
-    float x{};
-    float y{};
+    T x{};
+    T y{};
 
     // Shorthand for writing Vector2(0, 0).
     static constexpr auto Zero()
     {
-        return Vector2D();
+        return Vector2D<T>();
     }
 
     /*! @brief Shorthand for writing Vector2(0, 1). */
     static constexpr auto Up()
     {
-        return Vector2D(0, 1);
+        return Vector2D<T>(0, 1);
     }
 
     /*! @brief Shorthand for writing Vector2(0, -1). */
     static constexpr auto Down()
     {
-        return Vector2D(0, -1);
+        return Vector2D<T>(0, -1);
     }
 
     /*! @brief Shorthand for writing Vector2(-1, 0). */
     static constexpr auto Left()
     {
-        return Vector2D(-1, 0);
+        return Vector2D<T>(-1, 0);
     }
 
     /*! @brief Shorthand for writing Vector2(0, 1). */
     static constexpr auto Right()
     {
-        return Vector2D(0, 1);
+        return Vector2D<T>(0, 1);
     }
 
     /*! @brief Shorthand for writing Vector2(1, 1). */
     static constexpr auto One()
     {
-        return Vector2D(1, 1);
+        return Vector2D<T>(1, 1);
     }
 
 	/*! @brief Returns a unit vector based on the angle (in radians) */
 	static constexpr auto FromAngle(const float radians)
     {
-		return Vector2D(cosf(radians), sinf(radians));
+		return Vector2D<T>(cosf(radians), sinf(radians));
     }
 	
     /*! @brief Default constructor !*/
@@ -64,17 +65,17 @@ public:
     }
 
     /*! @brief Construct vector with desired coordinates. */
-    constexpr Vector2D(const float x, const float y) : x(x), y(y)
+    constexpr Vector2D(const float x, const float y) : x(static_cast<T>(x)), y(static_cast<T>(y))
     {
     }
 
 	/*! @brief Construct vector with desired coordinates. */
-    constexpr Vector2D(const int x, const int y) : x(static_cast<float>(x)), y(static_cast<float>(y))
+    constexpr Vector2D(const int x, const int y) : x(static_cast<T>(x)), y(static_cast<T>(y))
     {
     }
 
     /*! @brief Copy constructor. */
-    Vector2D(const Vector2D &other) = default;
+    Vector2D(const Vector2D<T> &other) = default;
 
     /*! @brief Default destructor. */
     ~Vector2D() = default;
@@ -89,7 +90,7 @@ public:
     [[nodiscard]] Vector2D Normalized() const noexcept
     {
 	    const auto length = Magnitude();
-        return Vector2D(x / length, y / length);
+        return Vector2D<T>(static_cast<T>(x / length), static_cast<T>(y / length));
     }
 
     /*! @brief Self normalize. */
@@ -99,32 +100,32 @@ public:
     }
 
     /*! @brief Set x and y coordinates. */
-    void Set(const float xIn, const float yIn) noexcept
+    void Set(const T xIn, const T yIn) noexcept
     {
         x = xIn;
         y = yIn;
     }
 
     /*! @brief Check if two vectors are equals. */
-    static bool Equals(const Vector2D &lhs, const Vector2D &rhs) noexcept
+    static bool Equals(const Vector2D<T> &lhs, const Vector2D<T> &rhs) noexcept
     {
         return lhs == rhs;
     }
 
     /*! @brief returns the cross-product of two vectors */
-	static float Cross(const Vector2D& lhs, const Vector2D& rhs)
+	static T Cross(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
     {
         return lhs.x * rhs.y - lhs.y * rhs.x;
     }
 
     /*! @brief returns the dot-product of two vectors */
-    static float Dot(const Vector2D& lhs, const Vector2D& rhs)
+    static T Dot(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
     {
         return lhs.x * rhs.x - lhs.y * rhs.y;
     }
 
     /*! @brief returns the distance between two vectors */
-    static float Distance(const Vector2D& lhs, const Vector2D& rhs)
+    static float Distance(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
     {
 	    const auto xd = rhs.x - lhs.x;
 	    const auto yd = rhs.y - lhs.y;
@@ -132,7 +133,7 @@ public:
     }
 
 	/*! @brief returns the squared distance between two vectors */
-    static float DistanceSquared(const Vector2D& lhs, const Vector2D& rhs)
+    static float DistanceSquared(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
     {
 	    const auto xd = rhs.x - lhs.x;
 	    const auto yd = rhs.y - lhs.y;
@@ -146,7 +147,7 @@ public:
     }
 
     /*! @brief Copy assignment. */
-    Vector2D &operator=(const Vector2D &other)
+    Vector2D<T> &operator=(const Vector2D<T> &other)
     {
         if (this != &other)
         {
@@ -157,42 +158,53 @@ public:
         return *this;
     }
 	
-    /*! @brief Multiplies vector by number. */
-    Vector2D operator*(const float multiplier) const noexcept
+    [[nodiscard]] Vector2D<int> ToInt() const noexcept
     {
-        Vector2D other(x * multiplier, y * multiplier);
+	    return Vector2D<int>(x, y);
+    }
+
+    [[nodiscard]] Vector2D<float> ToFloat() const noexcept
+    {
+	    return Vector2D<float>(x, y);
+    }
+
+	
+    /*! @brief Multiplies vector by number. */
+    Vector2D<T> operator*(const float multiplier) const noexcept
+    {
+        Vector2D<T> other(x * multiplier, y * multiplier);
         return other;
     }
 	
     /*! @brief Divides vector by number. */
-    Vector2D operator/(const float divider) const
+    Vector2D<T> operator/(const float divider) const
     {
-        Vector2D other(x / divider, y / divider);
+        Vector2D<T> other(x / divider, y / divider);
         return other;
     }
 
     /*! @brief Adds to vectors. */
-    Vector2D operator+(const Vector2D &other) const noexcept
+    Vector2D<T> operator+(const Vector2D<T> &other) const noexcept
     {
-        Vector2D result(x + other.x, y + other.y);
+        Vector2D<T> result(x + other.x, y + other.y);
         return result;
     }
 
     /*! @brief Subtracts one vector from another. */
-    Vector2D operator-(const Vector2D &other) const noexcept
+    Vector2D<T> operator-(const Vector2D<T> &other) const noexcept
     {
-        Vector2D result(x - other.x, y - other.y);
+        Vector2D<T> result(x - other.x, y - other.y);
         return result;
     }
 
     /*! @brief Returns true if two vectors are approximately equal. */
-    bool operator==(const Vector2D &other) const noexcept
+    bool operator==(const Vector2D<T> &other) const noexcept
     {
         return (x == other.x && y == other.y);
     }
 
     /*! @brief Returns false if two vectors are approximately equal. */
-    bool operator!=(const Vector2D &other) const noexcept
+    bool operator!=(const Vector2D<T> &other) const noexcept
     {
         return !(*this == other);
     }
@@ -204,7 +216,7 @@ public:
      * \param t  = between 0 and 1 
      * \return a vector between a and b specified as time 't'
      */
-    static Vector2D Lerp(const Vector2D &a, const Vector2D &b, const float t)
+    static Vector2D<T> Lerp(const Vector2D<T> &a, const Vector2D<T> &b, const float t)
     {
         return b * t + a * (1 - t);
     }
@@ -218,3 +230,6 @@ public:
     	return false;
     }
 };
+
+typedef Vector2D<float> Vector2Df;
+typedef Vector2D<int> Vector2Di;

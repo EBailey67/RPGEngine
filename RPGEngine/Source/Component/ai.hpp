@@ -12,7 +12,7 @@ struct Enemy
 {
     inline static int currentSpawn = 0;
     inline static constexpr auto MAX_SPAWNS = 8;
-    inline static const Vector2D spawns[MAX_SPAWNS]
+    inline static const Vector2Df spawns[MAX_SPAWNS]
     {
         {250.0f, 250.0f},
         {500.0f, 500.0f},

@@ -12,6 +12,7 @@
 #include "../Utility/Instrumentor.h"
 #include "../Utility/Primitives.h"
 #include "../Utility/Vector2D.h"
+#include "../Utility/Color.h"
 
 enum class Layer
 {
@@ -41,7 +42,7 @@ private:
 		Edge* next;
 	};
 
-	static int yNext(const int k, const int cnt, const std::vector<Vector2D>& pts)
+	static int yNext(const int k, const int cnt, const std::vector<Vector2Df>& pts)
 	{
 		int j;
 
@@ -87,7 +88,7 @@ private:
 		q->next = edge;
 	}
 
-	static void makeEdgeRec(const Vector2D& lower, const Vector2D& upper, const int yComp, Edge* edge, Edge* edges[])
+	static void makeEdgeRec(const Vector2Df& lower, const Vector2Df& upper, const int yComp, Edge* edge, Edge* edges[])
 	{
 		edge->dxPerScan = ((upper.x - lower.x) / (upper.y - lower.y));
 		edge->xIntersect = lower.x;
@@ -100,9 +101,9 @@ private:
 		insertEdge(edges[static_cast<int>(lower.y)], edge);
 	}
 
-	static void buildEdgeList(const int cnt, const std::vector<Vector2D>& pts, Edge* edges[])
+	static void buildEdgeList(const int cnt, const std::vector<Vector2Df>& pts, Edge* edges[])
 	{
-		Vector2D v1;
+		Vector2Df v1;
 
 		auto yPrev = static_cast<int>(pts[static_cast<size_t>(cnt) - 2].y);
 
@@ -202,7 +203,7 @@ private:
 	}
 
 	// https://www.geeksforgeeks.org/program-for-point-of-intersection-of-two-lines/
-	static bool linelineIntersection(RPGEngine::LineSegment& l1, RPGEngine::LineSegment& l2, Vector2D& intersectionPoint)
+	static bool linelineIntersection(RPGEngine::LineSegment& l1, RPGEngine::LineSegment& l2, Vector2Df& intersectionPoint)
 	{
 		// Line AB represented as a1x + b1y = c1 
 		const auto a1 = l1.b.y - l1.a.y;
@@ -214,9 +215,9 @@ private:
 		const auto b2 = l2.a.x - l2.b.x;
 		const auto c2 = a2 * (l2.a.x) + b2 * (l2.a.y);
 
-		const auto determinant = a1 * b2 - a2 * b1;
+		const float determinant = static_cast<float>(a1 * b2 - a2 * b1);
 
-		if (determinant == 0)
+		if (RPGEngine::ApproxEqual(determinant ,0.0f))
 		{
 			// The lines are parallel. This is simplified 
 			// by returning a pair of FLT_MAX
@@ -232,7 +233,7 @@ private:
 		}
 	}
 
-	static bool isInsideClipWindow(const Vector2D p, const int edge_id, RPGEngine::LineSegment& edge)
+	static bool isInsideClipWindow(const Vector2Df p, const int edge_id, RPGEngine::LineSegment& edge)
 	{
 		switch (edge_id)
 		{
@@ -250,10 +251,10 @@ private:
 	}
 
 	// http://www.sunshine2k.de/coding/java/SutherlandHodgman/SutherlandHodgman.html
-	static std::vector<Vector2D> PolygonClipToRect(SDL_Rect& rClip, std::vector<Vector2D> coordinates)
+	static std::vector<Vector2Df> PolygonClipToRect(SDL_Rect& rClip, std::vector<Vector2Df> coordinates)
 	{
-		std::vector<Vector2D> clippedPolygon;
-		std::vector<Vector2D> polygon;
+		std::vector<Vector2Df> clippedPolygon;
+		std::vector<Vector2Df> polygon;
 
 		if (coordinates.size() < 3)
 			return polygon;
@@ -269,10 +270,10 @@ private:
 		};
 
 		std::vector<RPGEngine::LineSegment> edges(4);
-		edges[TOPEDGE] = RPGEngine::LineSegment(Vector2D(rClip.x, rClip.y), Vector2D(rClip.x + rClip.w, rClip.y));
-		edges[RIGHTEDGE] = RPGEngine::LineSegment(Vector2D(rClip.x + rClip.w, rClip.y), Vector2D(rClip.x + rClip.w, rClip.y + rClip.h));
-		edges[BOTTOMEDGE] = RPGEngine::LineSegment(Vector2D(rClip.x, rClip.y + rClip.h), Vector2D(rClip.x + rClip.w, rClip.y + rClip.h));
-		edges[LEFTEDGE] = RPGEngine::LineSegment(Vector2D(rClip.x, rClip.y), Vector2D(rClip.x, rClip.y + rClip.h));
+		edges[TOPEDGE] = RPGEngine::LineSegment(Vector2Di(rClip.x, rClip.y), Vector2Di(rClip.x + rClip.w, rClip.y));
+		edges[RIGHTEDGE] = RPGEngine::LineSegment(Vector2Di(rClip.x + rClip.w, rClip.y), Vector2Di(rClip.x + rClip.w, rClip.y + rClip.h));
+		edges[BOTTOMEDGE] = RPGEngine::LineSegment(Vector2Di(rClip.x, rClip.y + rClip.h), Vector2Di(rClip.x + rClip.w, rClip.y + rClip.h));
+		edges[LEFTEDGE] = RPGEngine::LineSegment(Vector2Di(rClip.x, rClip.y), Vector2Di(rClip.x, rClip.y + rClip.h));
 
 		// Do this for each edge
 		for (auto j = 0; j < 4; j++)
@@ -290,7 +291,7 @@ private:
 					}
 					else
 					{
-						Vector2D ptInter;
+						Vector2Df ptInter;
 						RPGEngine::LineSegment ls(pi, pi1);
 						if (linelineIntersection(ls, edges[j], ptInter))
 							clippedPolygon.emplace_back(ptInter);
@@ -300,7 +301,7 @@ private:
 				{
 					if (isInsideClipWindow(pi1, j, edges[j]))
 					{
-						Vector2D ptInter;
+						Vector2Df ptInter;
 						RPGEngine::LineSegment ls(pi, pi1);
 						if (linelineIntersection(ls, edges[j], ptInter))
 						{
@@ -330,7 +331,7 @@ private:
 		return polygon;
 	}
 
-	static void Polygon(std::vector<Vector2D> coordinates)
+	static void Polygon(std::vector<Vector2Df> coordinates)
 	{
 		if (coordinates.size() >= 2)
 		{
@@ -344,7 +345,7 @@ private:
 	}
 
 	// https://www.codepoc.io/blog/cpp/2830/program-to-fill-a-polygon-using-scan-line-polygon-fill-algorithm
-	static void FillPolygon(const std::vector<Vector2D>& pointsIn)
+	static void FillPolygon(const std::vector<Vector2Df>& pointsIn)
 	{
 		// Make sure we're given a valid polygon
 		if (pointsIn.size() < 3)
@@ -358,7 +359,7 @@ private:
 		clipRegion.y = 0;
 		clipRegion.w = 3000;
 		clipRegion.h = 1600;
-		std::vector<Vector2D> points = PolygonClipToRect(clipRegion, pointsIn);
+		std::vector<Vector2Df> points = PolygonClipToRect(clipRegion, pointsIn);
 
 		if (points.size() < 3)
 			return;
@@ -368,7 +369,7 @@ private:
 			assert(point.InRect(clipRegion) == true);
 		}
 
-		std::vector<Vector2D> pts;
+		std::vector<Vector2Df> pts;
 		std::copy(points.begin(), points.end(), std::back_inserter(pts));
 
 		// Initialize the edges
@@ -663,6 +664,17 @@ public:
 		}
 	}
 
+	static void SetDrawColor(const Color color)
+	{
+		SDL_SetRenderDrawColor(Graphics::Renderer(), color.r, color.g, color.b, color.a);
+	}
+
+	
+	static void SetDrawColor(const SDL_Color color)
+	{
+		SDL_SetRenderDrawColor(Graphics::Renderer(), color.r, color.g, color.b, color.a);
+	}
+	
 	static void SetDrawColor(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a = SDL_ALPHA_OPAQUE) noexcept
 	{
 		SDL_SetRenderDrawColor(Graphics::Renderer(), r, g, b, a);
@@ -775,7 +787,7 @@ public:
 		return status;
 	}
 
-	static void DrawPolygonToLayer(const Layer layer, std::vector<Vector2D>& vertices)
+	static void DrawPolygonToLayer(const Layer layer, std::vector<Vector2Df>& vertices)
 	{
 		if (layer != m_currentLayer)
 		{
@@ -785,7 +797,7 @@ public:
 		Polygon(vertices);
 	}
 
-	static void DrawFillPolygonToLayer(const Layer layer, std::vector<Vector2D>& vertices)
+	static void DrawFillPolygonToLayer(const Layer layer, std::vector<Vector2Df>& vertices)
 	{
 		if (layer != m_currentLayer)
 		{
@@ -795,12 +807,9 @@ public:
 		FillPolygon(vertices);
 	}
 
-	static void DrawTriangleToLayer(const Layer layer, Vector2D& pos1, Vector2D& pos2, Vector2D& pos3)
+	static void DrawTriangleToLayer(const Layer layer, Vector2Di& pos1, Vector2Di& pos2, Vector2Di& pos3)
 	{
-		DrawTriangleToLayer(layer,
-			static_cast<int>(pos1.x), static_cast<int>(pos1.y),
-			static_cast<int>(pos2.x), static_cast<int>(pos2.y),
-			static_cast<int>(pos3.x), static_cast<int>(pos3.y));
+		DrawTriangleToLayer(layer, pos1.x, pos1.y, pos2.x, pos2.y, pos3.x, pos3.y);
 	}
 
 	static void DrawTriangleToLayer(const Layer layer, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3)
@@ -810,12 +819,9 @@ public:
 		DrawLineToLayer(layer, x3, y3, x1, y1);
 	}
 
-	static void DrawFillTriangleToLayer(const Layer layer, Vector2D& pos1, Vector2D& pos2, Vector2D& pos3)
+	static void DrawFillTriangleToLayer(const Layer layer, Vector2Di& pos1, Vector2Di& pos2, Vector2Di& pos3)
 	{
-		DrawFillTriangleToLayer(layer,
-			static_cast<int>(pos1.x), static_cast<int>(pos1.y),
-			static_cast<int>(pos2.x), static_cast<int>(pos2.y),
-			static_cast<int>(pos3.x), static_cast<int>(pos3.y));
+		DrawFillTriangleToLayer(layer, pos1.x, pos1.y, pos2.x, pos2.y, pos3.x, pos3.y);
 	}
 
 	// https://www.avrfreaks.net/sites/default/files/triangles.c

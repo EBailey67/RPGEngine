@@ -72,45 +72,50 @@ public:
 		SDL_GetWindowSize(Graphics::Window(), &ww, &wh);
 		gameUI = new GUI::GameSceneUI(Graphics::Window(), ww, wh);
 
-
-		map_console.Tilemap( "resources/sprites/tileset.png" );
 		Term::Char clearChar('\0', Color::Black, Color::White);
-		Term::TTY tty_map( map_console.Framebuffer() );
-		tty_map.FgColor(Color::White);
-		tty_map.BgColor(Color::Black);
-		map_console.Framebuffer().ClearChar(clearChar);
-		map_console.Framebuffer().Clear();
-		tty_map.Place(0, 0).Put("Map");
 
+		{
+		map_console.Tilemap( "resources/sprites/tileset.png" );
+		auto& console = map_console.GetConsole();
+		console.FgColor(Color::White).BgColor(Color::Black);
+		console.ClearChar(clearChar);
+		console.Clear();
+		console.Place(0, 0).Put("Map");
+		}
+
+		{
 		message_console.Tilemap( "resources/sprites/tileset.png" );
-		Term::TTY tty_message( message_console.Framebuffer() );
+		auto& console = message_console.GetConsole();
 		clearChar.BgColor(Color(85, 85, 85));
 		clearChar.FgColor(Color::White);
-		tty_message.FgColor(Color::White);
-		tty_message.BgColor(Color(85, 85, 85));
-		message_console.Framebuffer().ClearChar(clearChar);
-		message_console.Framebuffer().Clear();
-		tty_message.Place(0, 0).Put("Message");
+		console.FgColor(Color::White);
+		console.BgColor(Color(85, 85, 85));
+		console.ClearChar(clearChar);
+		console.Clear();
+		console.Place(0, 0).Put("Message");
+		}
 
+		{
 		stat_console.Tilemap( "resources/sprites/tileset.png" );
-		Term::TTY tty_stat( stat_console.Framebuffer() );
+		auto& console = stat_console.GetConsole();
 		clearChar.BgColor(Color(170, 85, 0));
 		clearChar.FgColor(Color::White);
-		tty_stat.FgColor(Color::White);
-		tty_stat.BgColor(Color(170, 85, 0));
-		stat_console.Framebuffer().ClearChar(clearChar);
-		stat_console.Framebuffer().Clear();
-		tty_stat.Place(0, 0).Put("Stats");
+		console.FgColor(Color::White).BgColor(Color(170, 85, 0));
+		console.ClearChar(clearChar);
+		console.Clear();
+		console.Place(0, 0).Put("Stats");
+		}
 
+		{
 		inventory_console.Tilemap( "resources/sprites/tileset.png" );
-		Term::TTY tty_inventory( inventory_console.Framebuffer() );
+		auto& console = inventory_console.GetConsole();
 		clearChar.BgColor(Color(0, 170, 170));
 		clearChar.FgColor(Color::White);
-		tty_inventory.FgColor(Color::White);
-		tty_inventory.BgColor(Color(0, 170, 170));
-		inventory_console.Framebuffer().ClearChar(clearChar);
-		inventory_console.Framebuffer().Clear();
-		tty_inventory.Place(0, 0).Put("Inventory");
+		console.FgColor(Color::White).BgColor(Color(0, 170, 170));
+		console.ClearChar(clearChar);
+		console.Clear();
+		console.Place(0, 0).Put("Inventory");
+		}
 	}
 
 	void FixedUpdate() override
@@ -122,10 +127,7 @@ public:
 		HealthUpdate();
 
 		const auto frameRate = static_cast<int>(floorf(Game::GetInstance()->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
-	    Term::TTY tty(message_console.Framebuffer());	
-		tty.FgColor(Color::White);
-		tty.BgColor(Color(85, 85, 85));
-        tty.Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
+		message_console.GetConsole().FgColor(Color::White).BgColor(Color(85, 85, 85)).Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
 		
 		map_console.Print();
 		message_console.Print();

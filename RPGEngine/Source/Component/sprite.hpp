@@ -14,7 +14,7 @@ struct Sprite
 {
     SDL_Texture *texture = nullptr;
     SDL_Rect rect{};
-    Vector2D scale{1, 1};
+    Vector2Df scale{1, 1};
     Layer layer = Layer::None;
     bool isFliped = false;
 

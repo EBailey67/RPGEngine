@@ -61,12 +61,12 @@ public:
 	Layer layer;
     TileSet *tileSet;
     std::vector<std::vector<id_type>> cell;
-    Vector2D scale;
+    Vector2Df scale;
     inline static bool hasDebugDraw = false;
 
 	std::vector<RPGEngine::LineSegment> vecEdges;
-	std::vector<Vector2D> vecVisibilityPolygon;
-	Vector2D visibilityPos;
+	std::vector<Vector2Df> vecVisibilityPolygon;
+	Vector2Df visibilityPos;
 	std::vector<RPGEngine::Light> vecLights;
-	std::vector<Vector2D> vecLightsPolygon;
+	std::vector<Vector2Df> vecLightsPolygon;
 };

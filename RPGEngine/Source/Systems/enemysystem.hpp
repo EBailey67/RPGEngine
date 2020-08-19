@@ -3,7 +3,7 @@
 #include "../Component/colliders.hpp"
 #include "../Utility/Vector2D.h"
 
-void EnemyCreate(Vector2D spawn);
+void EnemyCreate(Vector2Df spawn);
 void EnemyCharging(const CollisionData &lhs, const CollisionData &rhs);
 void UpdateView();
 void EnemyWalking(const float dt);

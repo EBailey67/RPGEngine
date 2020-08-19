@@ -12,9 +12,9 @@ constexpr int South = 1;
 constexpr int East = 2;
 constexpr int West = 3;
 
-std::vector<Vector2D> VisibleTiles;
+std::vector<Vector2Di> VisibleTiles;
 
-void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, const int width, const int height, const float fBlockWidth, const int pitch, const std::shared_ptr<RPGEngine::Cell[]>& world)
+void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, const int width, const int height, const int fBlockWidth, const int pitch, const std::shared_ptr<RPGEngine::Cell[]>& world)
 {
 	PROFILE_FUNCTION();
 	
@@ -65,8 +65,8 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 					{
 						// Northern neighbour does not have one, so create one
 						RPGEngine::LineSegment edge;
-						edge.a.x = static_cast<float>(sx + x) * fBlockWidth;
-						edge.a.y = static_cast<float>(sy + y) * fBlockWidth;
+						edge.a.x = (sx + x) * fBlockWidth;
+						edge.a.y = (sy + y) * fBlockWidth;
 						edge.b.x = edge.a.x;
 						edge.b.y = edge.a.y + fBlockWidth;
 
@@ -96,8 +96,8 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 					{
 						// Northern neighbour does not have one, so create one
 						RPGEngine::LineSegment edge;
-						edge.a.x = static_cast<float>(sx + x + 1) * fBlockWidth;
-						edge.a.y = static_cast<float>(sy + y) * fBlockWidth;
+						edge.a.x = (sx + x + 1) * fBlockWidth;
+						edge.a.y = (sy + y) * fBlockWidth;
 						edge.b.x = edge.a.x;
 						edge.b.y = edge.a.y + fBlockWidth;
 
@@ -127,8 +127,8 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 					{
 						// Western neighbour does not have one, so create one
 						RPGEngine::LineSegment edge;
-						edge.a.x = static_cast<float>(sx + x) * fBlockWidth;
-						edge.a.y = static_cast<float>(sy + y) * fBlockWidth;
+						edge.a.x = (sx + x) * fBlockWidth;
+						edge.a.y = (sy + y) * fBlockWidth;
 						edge.b.x = edge.a.x + fBlockWidth;
 						edge.b.y = edge.a.y;
 
@@ -158,8 +158,8 @@ void ConvertTileMapToPolyMap(TileGrid& tileGrid, const int sx, const int sy, con
 					{
 						// Western neighbor does not have one, so I need to create one
 						RPGEngine::LineSegment edge;
-						edge.a.x = static_cast<float>(sx + x) * fBlockWidth;
-						edge.a.y = static_cast<float>(sy + y + 1) * fBlockWidth;
+						edge.a.x = (sx + x) * fBlockWidth;
+						edge.a.y = (sy + y + 1) * fBlockWidth;
 						edge.b.x = edge.a.x + fBlockWidth;
 						edge.b.y = edge.a.y;
 
@@ -222,7 +222,7 @@ void GridCalculateVisibility()
             }
             j--;
         }
-		ConvertTileMapToPolyMap(grid, 0, 0, grid.mapWidth, grid.mapHeight, 32.0f, grid.mapWidth, world);
+		ConvertTileMapToPolyMap(grid, 0, 0, grid.mapWidth, grid.mapHeight, 32, grid.mapWidth, world);
     }
 }
 
@@ -254,7 +254,7 @@ void GridRender()
                    	auto testRect = activeCamera.FromWorldToScreenRect(testTile);
                     if (activeCamera.Contains(testRect))
                     {
-                    	if(std::find(std::begin(VisibleTiles), std::end(VisibleTiles), Vector2D(i, j)) == std::end(VisibleTiles))
+                    	if(std::find(std::begin(VisibleTiles), std::end(VisibleTiles), Vector2Di(i, j)) == std::end(VisibleTiles))
 	                    	SDL_SetTextureColorMod(grid.tileSet->Texture(), 128, 128, 128);
                         Graphics::RenderToLayer(grid.layer, grid.tileSet->Texture(), &(*grid.tileSet)[id - 1], &testRect);
                     	SDL_SetTextureColorMod(grid.tileSet->Texture(), 255, 255, 255);
@@ -316,14 +316,14 @@ void LightsRender()
 			{
 				for (const auto& e : grid.vecEdges)
 				{
-					const auto p1 = activeCamera.FromWorldToScreenView(e.a);
-					const auto p2 = activeCamera.FromWorldToScreenView(e.b);
+					const auto p1 = activeCamera.FromWorldToScreenView(e.a.ToFloat());
+					const auto p2 = activeCamera.FromWorldToScreenView(e.b.ToFloat());
 
 					Graphics::SetDrawColor(0, 255, 0, 255);
-					Graphics::DrawLineToLayer(Layer::Debug, static_cast<int>(roundf(p1.x)), static_cast<int>(roundf(p1.y)), static_cast<int>(roundf(p2.x)), static_cast<int>(roundf(p2.y)));
+					Graphics::DrawLineToLayer(Layer::Debug, p1.x, p1.y, p2.x, p2.y);
 					Graphics::SetDrawColor(255, 0, 0);
-					Graphics::DrawFillCircleToLayer(Layer::Debug, static_cast<int>(p1.x), static_cast<int>(p1.y), 4);
-					Graphics::DrawFillCircleToLayer(Layer::Debug, static_cast<int>(p2.x), static_cast<int>(p2.y), 4);
+					Graphics::DrawFillCircleToLayer(Layer::Debug, p1.x, p1.y, 4);
+					Graphics::DrawFillCircleToLayer(Layer::Debug, p2.x, p2.y, 4);
 					Graphics::ResetDrawColor();
 				}
 			}
@@ -332,10 +332,10 @@ void LightsRender()
 			constexpr  SDL_Color background{0, 0, 0, 96};
 			Graphics::LayerClear(Layer::Lights, background );
 
-			std::vector<Vector2D> screenPolygon(grid.vecVisibilityPolygon.size());
+			std::vector<Vector2Df> screenPolygon(grid.vecVisibilityPolygon.size());
 			for (auto i = 0; i < static_cast<int>(grid.vecVisibilityPolygon.size()); i++)
 			{
-				screenPolygon[i] = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i]);
+				screenPolygon[i] = activeCamera.FromWorldToScreenView(grid.vecVisibilityPolygon[i]).ToFloat();
 			}
 			SDL_SetRenderDrawBlendMode(Graphics::Renderer(), SDL_BLENDMODE_NONE);
 			Graphics::SetDrawColor(255, 255, 255, 0);

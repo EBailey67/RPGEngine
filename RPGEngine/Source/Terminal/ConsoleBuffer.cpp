@@ -13,6 +13,15 @@ namespace Term
 		buffer(new Char[width * height])
 	{}
 
+	ConsoleBuffer::ConsoleBuffer(ConsoleBuffer& cb) :
+		width(cb.width), height(cb.height),
+		clear_char('\0', Color::Black, Color::White),
+		buffer(new Char[cb.width * cb.height])
+	
+	{
+		Copy(cb);
+	}
+	
 	int ConsoleBuffer::Width() const
 	{
 		return width;
@@ -35,7 +44,7 @@ namespace Term
 		clear_char = ch;
 	}
 
-	void ConsoleBuffer::Put(const int x, const int y, const Char c)
+	void ConsoleBuffer::PutCh(const int x, const int y, const Char c)
 	{
 		if (x >= width || y >= height)
 			return;
@@ -45,7 +54,7 @@ namespace Term
 		buffer[x + y * width] = c;
 	}
 
-	Char ConsoleBuffer::Get(const int x, const int y) const
+	Char ConsoleBuffer::GetCh(const int x, const int y) const
 	{
 		if (x < width && y < height)
 			return buffer[x + y * width];
@@ -59,7 +68,8 @@ namespace Term
 		tmpBuf.ClearChar(clear_char);
 		tmpBuf.Clear();
 		tmpBuf.Copy(*this, -cols, -rows, 0, 0, Width(), Height());
-		*this = std::move(tmpBuf);
+		Copy(tmpBuf); // [REVIEW:EBailey] - Used this instead of std::move
+		// *this = std::move(tmpBuf);
 	}
 
 	void ConsoleBuffer::Copy(const ConsoleBuffer& other, const int dx, const int dy, 
@@ -70,7 +80,7 @@ namespace Term
 
 		for (int y = max(-sy, 0); y < sh; ++y)
 			for (int x = max(-sx, 0); x < sw; ++x)
-				Put(dx + x, dy + y, other.Get(sx + x, sy + y));
+				PutCh(dx + x, dy + y, other.GetCh(sx + x, sy + y));
 	}
 
 	void ConsoleBuffer::Copy(const ConsoleBuffer& other)

@@ -9,14 +9,15 @@ namespace Term
 	{
 	public:
 		ConsoleBuffer(int width, int height);
+		ConsoleBuffer(ConsoleBuffer&);
 
 		[[nodiscard]] int Width() const;
 		[[nodiscard]] int Height() const;
-		[[nodiscard]] Char Get(int x, int y) const;
+		[[nodiscard]] Char GetCh(int x, int y) const;
 
 		void Clear() const;
 		void ClearChar(Char);
-		void Put(int x, int y, Char);
+		void PutCh(int x, int y, Char);
 		void Scroll(int rows, int cols = 0);
 		void Copy(const ConsoleBuffer&, int dx, int dy, int sx, int sy, int sw, int sh);
 		void Copy(const ConsoleBuffer&);

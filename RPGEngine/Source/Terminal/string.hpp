@@ -33,6 +33,6 @@ namespace Term
 
 	typedef std::basic_string<Char, TermCharTraits> String;
 	String MakeString(const std::string&);
-	void PriColor(String&, Color);
-	void SecColor(String&, Color);
+	void BgColor(String&, Color);
+	void FgColor(String&, Color);
 }

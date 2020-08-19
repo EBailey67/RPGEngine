@@ -18,7 +18,7 @@ class Camera
 public:
     Camera() = default;
     
-    Camera(const Vector2D &position, const Vector2D &viewRadius) : 
+    Camera(const Vector2Df &position, const Vector2Df &viewRadius) : 
         position(position), viewRadius(viewRadius)
     {
     }
@@ -28,17 +28,17 @@ public:
     {
     }
 
-    [[nodiscard]] Vector2D FromScreenViewToWorld(const Vector2D& point) const
+    [[nodiscard]] Vector2Df FromScreenViewToWorld(const Vector2Df& point) const
     {
-        Vector2D world{(point.x * (2 * viewRadius.x) / static_cast<float>(m_windowWidth) + position.x - viewRadius.x),
+        Vector2Df world{(point.x * (2 * viewRadius.x) / static_cast<float>(m_windowWidth) + position.x - viewRadius.x),
                        -(point.y * (2 * viewRadius.y) / static_cast<float>(m_windowHeight) + position.y + viewRadius.y)};
 
     	return world;
     }
 
-    [[nodiscard]] Vector2D FromWorldToScreenView(const Vector2D& point) const
+    [[nodiscard]] Vector2Di FromWorldToScreenView(const Vector2Df& point) const
     {
-        Vector2D screen{
+        Vector2Di screen{
             std::round(((point.x - (position.x - viewRadius.x)) * static_cast<float>(m_windowWidth)) / (2.0f * viewRadius.x)),
             -std::round(((point.y - (position.y + viewRadius.y)) * static_cast<float>(m_windowHeight)) / (2.0f * viewRadius.y))};
 
@@ -82,7 +82,7 @@ public:
 	    return zoom_level[current_zoom_level];
     }
 
-    [[nodiscard]] bool Contains(const Vector2D &point) const noexcept
+    [[nodiscard]] bool Contains(const Vector2Df &point) const noexcept
     {
         return (point.x >= (position.x - viewRadius.x) && (point.x <= (position.x + viewRadius.x))) &&
                (point.y >= (position.y - viewRadius.y) && (point.y <= (position.y + viewRadius.y)));
@@ -107,8 +107,8 @@ public:
         viewRadius.y = viewRadius.x / (static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
     }
 
-    Vector2D position{};
-    Vector2D viewRadius{};
+    Vector2Df position{};
+    Vector2Df viewRadius{};
 
 private:
 	

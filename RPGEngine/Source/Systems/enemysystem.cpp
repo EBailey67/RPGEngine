@@ -3,7 +3,7 @@
 #include "enemysystem.hpp"
 #include "../core.hpp"
 
-void EnemyCreate(const Vector2D spawn)
+void EnemyCreate(const Vector2Df spawn)
 {
 	const auto enemy = registry.create();
     registry.emplace<Enemy>(enemy);

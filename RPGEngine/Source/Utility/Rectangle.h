@@ -18,18 +18,18 @@ namespace RPGEngine
         inline T Top(void) const { return y; }
         inline T Bottom(void) const { return y + h; }
 
-        bool Contains(Vector2D& vVec) const;
+        bool Contains(Vector2D<T>& vVec) const;
         bool Contains(T x, T y) const;
 
         static Rectangle Empty();
 
         // Static methods below are derived from the RectangleExtensions class
         // written in C#, released under the MSPL
-        static Vector2D GetIntersectionDepth(const Rectangle<T>& rectA, const Rectangle<T>& rectB);
-        static Vector2D GetBottomCenter(const Rectangle<T>& rect);
-        static Vector2D GetCenter(const Rectangle<T>& rect);
+        static Vector2D<T> GetIntersectionDepth(const Rectangle<T>& rectA, const Rectangle<T>& rectB);
+        static Vector2D<T> GetBottomCenter(const Rectangle<T>& rect);
+        static Vector2D<T> GetCenter(const Rectangle<T>& rect);
         static float GetDistance(const Rectangle<T>& rectA, const Rectangle<T>& rectB);
-        static Vector2D GetDirection(const Rectangle<T>& rectA, const Rectangle<T>& rectB);
+        static Vector2D<T> GetDirection(const Rectangle<T>& rectA, const Rectangle<T>& rectB);
 
         Rectangle<T>& operator= (const Rectangle<T>& r2);
 

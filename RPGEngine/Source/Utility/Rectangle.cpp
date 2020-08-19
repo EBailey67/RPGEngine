@@ -19,7 +19,7 @@ namespace RPGEngine
     // Purpose: Check if rectangle contains a 2D vector
     //-----------------------------------------------------------------------------
     template <typename T>
-    bool Rectangle<T>::Contains(Vector2D& vVec) const
+    bool Rectangle<T>::Contains(Vector2D<T>& vVec) const
     {
         if ((vVec.x >= x) &&
             (vVec.x <= x + w) &&
@@ -62,7 +62,7 @@ namespace RPGEngine
     // Purpose: Get intersection depth between two rectangles
     //-----------------------------------------------------------------------------
     template <typename T>
-    Vector2D Rectangle<T>::GetIntersectionDepth(const Rectangle<T>& rectA, const Rectangle<T>& rectB)
+    Vector2D<T> Rectangle<T>::GetIntersectionDepth(const Rectangle<T>& rectA, const Rectangle<T>& rectB)
     {
         // Calculate half sizes.
         float halfWidthA = rectA.w / 2.0f;
@@ -82,7 +82,7 @@ namespace RPGEngine
 
         // If we are not intersecting at all, return (0, 0).
         if (abs(distanceX) >= minDistanceX || abs(distanceY) >= minDistanceY)
-            return Vector2D::Zero();
+            return Vector2D<T>::Zero();
 
         // Calculate and return intersection depths.
         const auto depthX = distanceX > 0 ? minDistanceX - distanceX : -minDistanceX - distanceX;
@@ -94,7 +94,7 @@ namespace RPGEngine
     // Purpose: Gets the position of the center of the bottom edge of the rectangle.
     //-----------------------------------------------------------------------------
     template <typename T>
-    Vector2D Rectangle<T>::GetBottomCenter(const Rectangle<T>& rect)
+    Vector2D<T> Rectangle<T>::GetBottomCenter(const Rectangle<T>& rect)
     {
         return Vector2D(static_cast<float>(rect.x + rect.w / 2.0f), static_cast<float>(rect.y + rect.h));
     }
@@ -103,7 +103,7 @@ namespace RPGEngine
     // Purpose: Gets the position of the center point of a rectangle
     //-----------------------------------------------------------------------------
     template <typename T>
-    Vector2D Rectangle<T>::GetCenter(const Rectangle<T>& rect)
+    Vector2D<T> Rectangle<T>::GetCenter(const Rectangle<T>& rect)
     {
         return Vector2D(static_cast<float>(rect.x + rect.w / 2.0f), static_cast<float>(rect.y + rect.h / 2.0f));
     }
@@ -122,7 +122,7 @@ namespace RPGEngine
     // Purpose: Gets the unit vector from one rectangle to another
     //-----------------------------------------------------------------------------
     template <typename T>
-    Vector2D Rectangle<T>::GetDirection(const Rectangle<T>& rectA, const Rectangle<T>& rectB)
+    Vector2D<T> Rectangle<T>::GetDirection(const Rectangle<T>& rectA, const Rectangle<T>& rectB)
     {
         Vector2D direction = GetCenter(rectA) - GetCenter(rectB);
         direction.Normalize();
