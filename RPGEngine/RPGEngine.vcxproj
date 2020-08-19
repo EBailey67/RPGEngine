@@ -274,6 +274,7 @@
     <ClInclude Include="Source\sdlgui\window.h" />
     <ClInclude Include="Source\Utility\Instrumentor.h" />
     <ClInclude Include="Source\Utility\Ray.h" />
+    <ClInclude Include="Source\Utility\Swatch.h" />
     <ClInclude Include="Source\Utility\Vector2D.h" />
     <ClInclude Include="Source\config.hpp" />
     <ClInclude Include="Source\core.hpp" />
