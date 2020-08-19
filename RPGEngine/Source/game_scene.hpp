@@ -14,6 +14,7 @@
 #include "sdlgui/window.h"
 // #include "xml/pugixml.hpp"
 #include "GameSceneUI.h"
+#include "Utility/Swatch.h"
 
 constexpr auto tileid = "tileset";
 constexpr auto spriteid = "spritesheet";
@@ -86,10 +87,10 @@ public:
 		{
 		message_console.Tilemap( "resources/sprites/tileset.png" );
 		auto& console = message_console.GetConsole();
-		clearChar.BgColor(Color(85, 85, 85));
+		clearChar.BgColor(Swatch::DbDeepWater);
 		clearChar.FgColor(Color::White);
 		console.FgColor(Color::White);
-		console.BgColor(Color(85, 85, 85));
+		console.BgColor(Swatch::DbDeepWater);
 		console.ClearChar(clearChar);
 		console.Clear();
 		console.Place(0, 0).Put("Message");
@@ -98,9 +99,9 @@ public:
 		{
 		stat_console.Tilemap( "resources/sprites/tileset.png" );
 		auto& console = stat_console.GetConsole();
-		clearChar.BgColor(Color(170, 85, 0));
+		clearChar.BgColor(Swatch::DbOldStone);
 		clearChar.FgColor(Color::White);
-		console.FgColor(Color::White).BgColor(Color(170, 85, 0));
+		console.FgColor(Color::White).BgColor(Swatch::DbOldStone);
 		console.ClearChar(clearChar);
 		console.Clear();
 		console.Place(0, 0).Put("Stats");
@@ -109,9 +110,9 @@ public:
 		{
 		inventory_console.Tilemap( "resources/sprites/tileset.png" );
 		auto& console = inventory_console.GetConsole();
-		clearChar.BgColor(Color(0, 170, 170));
+		clearChar.BgColor(Swatch::DbWood);
 		clearChar.FgColor(Color::White);
-		console.FgColor(Color::White).BgColor(Color(0, 170, 170));
+		console.FgColor(Color::White).BgColor(Swatch::DbWood);
 		console.ClearChar(clearChar);
 		console.Clear();
 		console.Place(0, 0).Put("Inventory");
