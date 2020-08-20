@@ -73,7 +73,7 @@ namespace GUI
         if (mFixedSize.x > 0)
             SDL_RenderCopy(renderer, _texture, absolutePosition());
         else
-            SDL_RenderCopy(renderer, _texture, absolutePosition() + Vector2i(0, (mSize.y - _texture.rrect.h) * 0.5f));
+            SDL_RenderCopy(renderer, _texture, absolutePosition() + Vector2i(0, (mSize.y - _texture.rrect.h) / 2));
     }
 
 }
