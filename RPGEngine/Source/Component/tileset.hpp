@@ -3,7 +3,6 @@
 #include <cstddef>
 #include <map>
 #include <string>
-//#include <type_traits>
 #include <vector>
 
 #include <SDL_render.h>

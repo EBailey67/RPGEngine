@@ -3,50 +3,40 @@
 #include <SDL_image.h>
 #include <stdexcept>
 
+
+#include "../core.hpp"
 #include "../SDL/graphics.hpp"
+#include "../SDL/resource_loader.hpp"
 
 
 namespace Term
 {
+	constexpr auto console_fontid = "console_font";
 	namespace SDL
 	{
 		Context::Context(const int width, const int height) :
 			twidth(0), theight(0),
-			tilemap(nullptr),
-			tilemap_surface(nullptr),
 			console(width, height)
 		{
 			std::cout << "Constructing Term::SDL::Context()\n";
 			buffer_texture = SDL_CreateTexture(Graphics::Renderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width * 8, height * 8);
+			TTF_Font *font = fontCache.load(console_fontid, ResourceLoader::Font("resources/fonts/consola.ttf", 14));
+			if (!TTF_FontFaceIsFixedWidth(font))
+			{
+				throw std::runtime_error("Font for console must be a fixed-width font.");
+			}
+			
+			// Get the size of the fixed-spaced font
+			const SDL_Color defColor{ 255,255,255,0 };
+			auto* const glyphTexture = ResourceLoader::Glyph(font, 'X', defColor);
+			SDL_QueryTexture(glyphTexture, nullptr, nullptr, &twidth, &theight);
+			SDL_DestroyTexture(glyphTexture);
 		}
 
 		Context::~Context()
 		{
-			if (tilemap != nullptr)
-				SDL_DestroyTexture(tilemap);
-		}
-
-		void Context::Tilemap(const std::string& path)
-		{
-			if (tilemap_surface != nullptr)
-				SDL_FreeSurface(tilemap_surface);
-			
-			tilemap_surface = IMG_Load(path.c_str());
-			if (tilemap_surface == nullptr)
-				throw std::runtime_error("Error opening file: " + path);
-
-			auto* const texture = SDL_CreateTextureFromSurface(Graphics::Renderer(), tilemap_surface);
-			if (tilemap != nullptr)
-				SDL_DestroyTexture(tilemap);
-			tilemap = texture;
-			SDL_QueryTexture(texture, nullptr, nullptr, &twidth, &theight);
-			twidth /= 16;
-			theight /= 16;
-		}
-
-		SDL_Texture* Context::Tilemap() const
-		{
-			return tilemap;
+			if (buffer_texture != nullptr)
+				SDL_DestroyTexture(buffer_texture);
 		}
 
 		int Context::TileWidth() const
@@ -59,27 +49,35 @@ namespace Term
 			return theight;
 		}
 
-		void Context::Print(const Char ch, const size_t x, const size_t y) const
+
+		void Context::Print(const Char ch, const int x, const int y) const
 		{
-			// Convert the ASCII value to tilemap coordinates.
-			Sint16 tilex = (ch.Ascii() % 16) * TileWidth();
-			Sint16 tiley = (ch.Ascii() / 16) * TileHeight();
-			SDL_Rect tile = {
-				tilex, tiley,
-				static_cast<Uint16>(TileWidth()),
-				static_cast<Uint16>(TileHeight()) };
-			SDL_Rect dst = {
-				static_cast<Sint16>(x * TileWidth()),
-				static_cast<Sint16>(y * TileHeight()),
-				TileWidth(),TileHeight() };
+			auto tw = TileWidth() ;
+			auto th = TileHeight();
+			SDL_Rect bgRect = {x * tw, y * th, tw, th};
+
+			if (ch.Ascii() == 0)
+			{
+				Graphics::SetDrawColor(ch.BgColor());
+				SDL_RenderFillRect(Graphics::Renderer(), &bgRect);
+				return;
+			}
+
+			TTF_Font *font = fontCache.resource(console_fontid);
+			auto* const labelTex = ResourceLoader::Glyph(font, ch.Ascii(), static_cast<SDL_Color>(ch.FgColor()));
+
+			int gw, gh;
+			SDL_QueryTexture(labelTex, nullptr, nullptr, &gw, &gh);
+			SDL_Rect dst = {x * tw, y *th, gw , gh};
 
 			auto fg = ch.FgColor();
 
-			SDL_RenderFillRect(Graphics::Renderer(), &dst);
 			Graphics::SetDrawColor(ch.BgColor());
-			SDL_RenderFillRect(Graphics::Renderer(), &dst);
-			SDL_SetTextureColorMod(tilemap, fg.r, fg.g, fg.b);
-			SDL_RenderCopyEx(Graphics::Renderer(), tilemap, &tile, &dst, 0, nullptr, SDL_FLIP_NONE);
+			SDL_RenderFillRect(Graphics::Renderer(), &bgRect);
+			SDL_SetTextureBlendMode(labelTex, SDL_BLENDMODE_BLEND);
+			SDL_RenderCopy(Graphics::Renderer(), labelTex, nullptr, &dst);
+			SDL_DestroyTexture(labelTex);
+		
 		}
 
 		void Context::Print()
@@ -90,6 +88,7 @@ namespace Term
 			PROFILE_FUNCTION();		// Only profile if we're actually doing something to reduce noise.
 
 			const auto l = Graphics::GetCurrentLayer();
+			SDL_SetTextureBlendMode(buffer_texture, SDL_BLENDMODE_BLEND);
 			SDL_SetRenderTarget(Graphics::Renderer(), buffer_texture);
 			SDL_Texture *rt = SDL_GetRenderTarget(Graphics::Renderer());
 			Graphics::TargetClear();
@@ -104,8 +103,13 @@ namespace Term
 
 		void Context::Render(const int x, const int y) const
 		{
-			SDL_Rect srcRect = {0, 0, console.Width() * TileWidth(), console.Height() * TileHeight()};
-			SDL_Rect dstRect = {x, y, console.Width() * TileWidth(), console.Height() * TileHeight()};
+			int gw;
+			int gh;
+
+			SDL_QueryTexture(buffer_texture, nullptr, nullptr, &gw, &gh);
+
+			SDL_Rect srcRect = {0, 0, gw, gh};
+			SDL_Rect dstRect = {x, y, gw, gh};
 
 			Graphics::RenderToLayer(Layer::UI, buffer_texture, &srcRect, &dstRect, SDL_FLIP_NONE);
 		}

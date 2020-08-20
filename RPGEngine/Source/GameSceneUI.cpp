@@ -38,7 +38,8 @@ namespace GUI
                 for (auto& ability : abilities)
                 {
 	                //window.add<Label>(abilitie.name, "sans-bold");
-                	auto& label = window.wdg<Label>(ability.name, "sans-bold");
+//                	auto& label = window.wdg<Label>(ability.name, "sans-bold");
+                	auto& label = window.wdg<Label>(ability.name, "resources/fonts/consola.ttf");
                 	label.setFontSize(14);
 	                auto& textBox = window.wdg<TextBox>();
 	                textBox.setEditable(false);

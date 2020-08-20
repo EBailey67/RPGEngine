@@ -75,8 +75,8 @@ public:
 
 		Term::Char clearChar('\0', Color::Black, Color::White);
 
+		// ==== MAP CONSOLE ====
 		{
-		map_console.Tilemap( "resources/sprites/tileset.png" );
 		auto& console = map_console.GetConsole();
 		console.FgColor(Color::White).BgColor(Color::Black);
 		console.ClearChar(clearChar);
@@ -84,8 +84,8 @@ public:
 		console.Place(0, 0).Put("Map");
 		}
 
+		// ==== MESSAGE CONSOLE ====
 		{
-		message_console.Tilemap( "resources/sprites/tileset.png" );
 		auto& console = message_console.GetConsole();
 		clearChar.BgColor(Swatch::DbDeepWater);
 		clearChar.FgColor(Color::White);
@@ -96,8 +96,8 @@ public:
 		console.Place(0, 0).Put("Message");
 		}
 
+		// ==== STATS CONSOLE ====
 		{
-		stat_console.Tilemap( "resources/sprites/tileset.png" );
 		auto& console = stat_console.GetConsole();
 		clearChar.BgColor(Swatch::DbOldStone);
 		clearChar.FgColor(Color::White);
@@ -107,8 +107,8 @@ public:
 		console.Place(0, 0).Put("Stats");
 		}
 
+		// ==== INVENTORY CONSOLE ==== 
 		{
-		inventory_console.Tilemap( "resources/sprites/tileset.png" );
 		auto& console = inventory_console.GetConsole();
 		clearChar.BgColor(Swatch::DbWood);
 		clearChar.FgColor(Color::White);
@@ -128,7 +128,7 @@ public:
 		HealthUpdate();
 
 		const auto frameRate = static_cast<int>(floorf(Game::GetInstance()->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
-		message_console.GetConsole().FgColor(Color::White).BgColor(Color(85, 85, 85)).Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
+		message_console.GetConsole().FgColor(Color::White).Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
 		
 		map_console.Print();
 		message_console.Print();

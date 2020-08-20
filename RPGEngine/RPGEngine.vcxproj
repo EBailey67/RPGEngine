@@ -215,6 +215,7 @@
     <ClCompile Include="Source\XML\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Component\Cell.h" />
     <ClInclude Include="Source\Terminal\char.hpp" />
     <ClInclude Include="Source\Terminal\Console.h" />
     <ClInclude Include="Source\Terminal\sdl_context.hpp" />

@@ -32,6 +32,23 @@ struct ResourceLoader
         return font;
     }
 
+	static SDL_Texture* Glyph(TTF_Font *font, uint16_t c, const SDL_Color fgColor)
+    {
+	    auto* const surface = TTF_RenderGlyph_Blended(font, c, fgColor);
+        if (!surface)
+        {
+            SDL_THROW();
+        }
+
+	    auto* const texture = SDL_CreateTextureFromSurface(Graphics::Renderer(), surface);
+        if (!texture)
+        {
+            SDL_THROW();
+        }
+        SDL_FreeSurface(surface);
+        return texture;
+    }
+	
     static SDL_Texture *Text(TTF_Font *font, const std::string_view text, const SDL_Color color = {0, 0, 0, SDL_ALPHA_OPAQUE}, const int width = -1)
     {
         SDL_Surface* surface;
