@@ -32,9 +32,9 @@ struct ResourceLoader
         return font;
     }
 
-	static SDL_Texture* Glyph(TTF_Font *font, uint16_t c, const SDL_Color fgColor)
+	static SDL_Texture* Glyph(TTF_Font *font, uint16_t c, const SDL_Color fgColor, const SDL_Color bgColor)
     {
-	    auto* const surface = TTF_RenderGlyph_Blended(font, c, fgColor);
+	    auto* const surface = TTF_RenderGlyph_Shaded(font, c, fgColor, bgColor);
         if (!surface)
         {
             SDL_THROW();

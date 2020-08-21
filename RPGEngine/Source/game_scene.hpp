@@ -14,6 +14,7 @@
 #include "sdlgui/window.h"
 // #include "xml/pugixml.hpp"
 #include "GameSceneUI.h"
+#include "Terminal/sdl_context.hpp"
 #include "Utility/Swatch.h"
 
 constexpr auto tileid = "tileset";
@@ -73,7 +74,7 @@ public:
 		SDL_GetWindowSize(Graphics::Window(), &ww, &wh);
 		gameUI = new GUI::GameSceneUI(Graphics::Window(), ww, wh);
 
-		Term::Char clearChar('\0', Color::Black, Color::White);
+		Term::CharCell clearChar('\0', Color::Black, Color::White);
 
 		// ==== MAP CONSOLE ====
 		{
@@ -87,6 +88,7 @@ public:
 		// ==== MESSAGE CONSOLE ====
 		{
 		auto& console = message_console.GetConsole();
+		console.Set(Term::Console::VScroll, true);
 		clearChar.BgColor(Swatch::DbDeepWater);
 		clearChar.FgColor(Color::White);
 		console.FgColor(Color::White);
@@ -99,8 +101,8 @@ public:
 		// ==== STATS CONSOLE ====
 		{
 		auto& console = stat_console.GetConsole();
-		clearChar.BgColor(Swatch::DbOldStone);
 		clearChar.FgColor(Color::White);
+		clearChar.BgColor(Swatch::DbOldStone);
 		console.FgColor(Color::White).BgColor(Swatch::DbOldStone);
 		console.ClearChar(clearChar);
 		console.Clear();
@@ -110,8 +112,8 @@ public:
 		// ==== INVENTORY CONSOLE ==== 
 		{
 		auto& console = inventory_console.GetConsole();
-		clearChar.BgColor(Swatch::DbWood);
 		clearChar.FgColor(Color::White);
+		clearChar.BgColor(Swatch::DbWood);
 		console.FgColor(Color::White).BgColor(Swatch::DbWood);
 		console.ClearChar(clearChar);
 		console.Clear();
@@ -128,8 +130,10 @@ public:
 		HealthUpdate();
 
 		const auto frameRate = static_cast<int>(floorf(Game::GetInstance()->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
-		message_console.GetConsole().FgColor(Color::White).Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
-		
+		// message_console.GetConsole().FgColor(Color::White).Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
+		static int current_frame = 0;
+		message_console.GetConsole().Put(std::to_string(current_frame) + "\n");
+		current_frame++;
 		map_console.Print();
 		message_console.Print();
 		stat_console.Print();

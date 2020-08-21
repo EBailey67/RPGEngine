@@ -3,7 +3,6 @@
 #include <SDL.h>
 
 #include "Console.h"
-#include "terminate.hpp"
 
 namespace Term
 {
@@ -17,7 +16,7 @@ namespace Term
 
 			[[nodiscard]] int TileWidth() const;
 			[[nodiscard]] int TileHeight() const;
-			void Print(const Char ch, const int x, const int y) const;
+			void Print(const CharCell ch, const int x, const int y) const;
 			void Print();
 			void Render(int x, int y) const;
 

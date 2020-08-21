@@ -18,19 +18,21 @@ namespace Term
 			twidth(0), theight(0),
 			console(width, height)
 		{
+
 			std::cout << "Constructing Term::SDL::Context()\n";
-			buffer_texture = SDL_CreateTexture(Graphics::Renderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width * 8, height * 8);
-			TTF_Font *font = fontCache.load(console_fontid, ResourceLoader::Font("resources/fonts/consola.ttf", 14));
+			TTF_Font *font = fontCache.load(console_fontid, ResourceLoader::Font("resources/fonts/consola.ttf", 16));
 			if (!TTF_FontFaceIsFixedWidth(font))
 			{
 				throw std::runtime_error("Font for console must be a fixed-width font.");
 			}
-			
+
 			// Get the size of the fixed-spaced font
 			const SDL_Color defColor{ 255,255,255,0 };
-			auto* const glyphTexture = ResourceLoader::Glyph(font, 'X', defColor);
+			auto* const glyphTexture = ResourceLoader::Glyph(font, 'X', defColor, defColor);
 			SDL_QueryTexture(glyphTexture, nullptr, nullptr, &twidth, &theight);
 			SDL_DestroyTexture(glyphTexture);
+			
+			buffer_texture = SDL_CreateTexture(Graphics::Renderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width * twidth, height * theight);
 		}
 
 		Context::~Context()
@@ -50,10 +52,10 @@ namespace Term
 		}
 
 
-		void Context::Print(const Char ch, const int x, const int y) const
+		void Context::Print(const CharCell ch, const int x, const int y) const
 		{
-			auto tw = TileWidth() ;
-			auto th = TileHeight();
+			const auto tw = TileWidth() ;
+			const auto th = TileHeight();
 			SDL_Rect bgRect = {x * tw, y * th, tw, th};
 
 			if (ch.Ascii() == 0)
@@ -63,8 +65,8 @@ namespace Term
 				return;
 			}
 
-			TTF_Font *font = fontCache.resource(console_fontid);
-			auto* const labelTex = ResourceLoader::Glyph(font, ch.Ascii(), ch.FgColor());
+			auto* const font = fontCache.resource(console_fontid);
+			auto* const labelTex = ResourceLoader::Glyph(font, ch.Ascii(), ch.FgColor(), ch.BgColor());
 
 			int gw, gh;
 			SDL_QueryTexture(labelTex, nullptr, nullptr, &gw, &gh);
@@ -72,8 +74,8 @@ namespace Term
 
 			auto fg = ch.FgColor();
 
-			Graphics::SetDrawColor(ch.BgColor());
-			SDL_RenderFillRect(Graphics::Renderer(), &bgRect);
+			//Graphics::SetDrawColor(ch.BgColor());
+			//SDL_RenderFillRect(Graphics::Renderer(), &bgRect);
 			SDL_SetTextureBlendMode(labelTex, SDL_BLENDMODE_BLEND);
 			SDL_RenderCopy(Graphics::Renderer(), labelTex, nullptr, &dst);
 			SDL_DestroyTexture(labelTex);

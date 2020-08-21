@@ -5,23 +5,23 @@
 
 namespace Term
 {
-	class Char
+	class CharCell
 	{
 	public:
 		typedef uint8_t char_t;
 
-		Char() = default;
-		Char(char_t, Color, Color);
+		CharCell() = default;
+		CharCell(char_t, Color, Color);
 
-		Char(char_t);
+		CharCell(char_t);
 
 		[[nodiscard]] char_t Ascii() const;
 		[[nodiscard]] Color BgColor() const;
 		[[nodiscard]] Color FgColor() const;
 
-		Char& Ascii(char_t);
-		Char& BgColor(Color);
-		Char& FgColor(Color);
+		CharCell& Ascii(char_t);
+		CharCell& BgColor(Color);
+		CharCell& FgColor(Color);
 	private:
 		char_t  c{};
 		Color bg_color = Color::Black;

@@ -1,25 +1,25 @@
 #pragma once
 
 #include <string>
-#include "char.hpp"
+#include "CharCell.hpp"
 
 namespace Term
 {
-	struct TermCharTraits : std::char_traits<Char>
+	struct TermCharTraits : std::char_traits<CharCell>
 	{
-		typedef Char char_type;
+		typedef CharCell char_type;
 
-		static bool eq(Char a, Char b)
+		static bool eq(CharCell a, CharCell b)
 		{
 			return a.Ascii() == b.Ascii();
 		}
 
-		static bool lt(Char a, Char b)
+		static bool lt(CharCell a, CharCell b)
 		{
 			return a.Ascii() < b.Ascii();
 		}
 
-		static int compare(const Char* a, const Char* b, size_t n)
+		static int compare(const CharCell* a, const CharCell* b, size_t n)
 		{
 			while (n-- != 0)
 			{
@@ -31,7 +31,7 @@ namespace Term
 		}
 	};
 
-	typedef std::basic_string<Char, TermCharTraits> String;
+	typedef std::basic_string<CharCell, TermCharTraits> String;
 	String MakeString(const std::string&);
 	void BgColor(String&, Color);
 	void FgColor(String&, Color);

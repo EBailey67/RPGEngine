@@ -159,10 +159,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Terminal\char.cpp" />
+    <ClCompile Include="Source\Terminal\CharCell.cpp" />
     <ClCompile Include="Source\Terminal\Console.cpp" />
     <ClCompile Include="Source\Terminal\sdl_context.cpp" />
-    <ClCompile Include="Source\Terminal\ConsoleBuffer.cpp" />
     <ClCompile Include="Source\Terminal\string.cpp" />
     <ClCompile Include="Source\Utility\Color.cpp" />
     <ClCompile Include="Source\Utility\FOVRecurse.cpp" />
@@ -216,12 +215,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Component\Cell.h" />
-    <ClInclude Include="Source\Terminal\char.hpp" />
+    <ClInclude Include="Source\Terminal\CharCell.hpp" />
     <ClInclude Include="Source\Terminal\Console.h" />
     <ClInclude Include="Source\Terminal\sdl_context.hpp" />
-    <ClInclude Include="Source\Terminal\ConsoleBuffer.hpp" />
     <ClInclude Include="Source\Terminal\string.hpp" />
-    <ClInclude Include="Source\Terminal\terminate.hpp" />
     <ClInclude Include="Source\Utility\Color.h" />
     <ClInclude Include="Source\Utility\MessageBus.h" />
     <ClInclude Include="Source\Utility\FOVRecurse.h" />

@@ -6,7 +6,7 @@ namespace Term
 	{
 		String termstr;
 		termstr.reserve(str.length());
-		Char ch;
+		CharCell ch;
 		for (auto c : str)
 		{
 			ch.Ascii(c);

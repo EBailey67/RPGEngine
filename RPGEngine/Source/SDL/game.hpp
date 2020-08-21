@@ -14,11 +14,9 @@
 
 #include "events.hpp"
 #include "graphics.hpp"
-#include "../Terminal/sdl_context.hpp"
 
 #include "../Utility/FramerateCounter.h"
 #include "../Utility/Timer.h"
-#include "../Terminal/terminate.hpp"
 
 class Game
 {
