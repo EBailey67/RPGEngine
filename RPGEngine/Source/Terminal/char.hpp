@@ -13,7 +13,7 @@ namespace Term
 		Char() = default;
 		Char(char_t, Color, Color);
 
-		explicit Char(char_t, uint8_t pal_i = 0);
+		Char(char_t);
 
 		[[nodiscard]] char_t Ascii() const;
 		[[nodiscard]] Color BgColor() const;
@@ -23,7 +23,7 @@ namespace Term
 		Char& BgColor(Color);
 		Char& FgColor(Color);
 	private:
-		char_t  c;
+		char_t  c{};
 		Color bg_color = Color::Black;
 		Color fg_color = Color::White;
 	};

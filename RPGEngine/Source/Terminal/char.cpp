@@ -2,11 +2,11 @@
 
 namespace Term
 {
-	Char::Char(char_t c_, Color bg, Color fg) :
+	Char::Char(const char_t c_, const Color bg, const Color fg) :
 		c(c_), bg_color(bg), fg_color(fg)
 	{}
 
-	Char::Char(const char_t c_, const uint8_t pal) :
+	Char::Char(const char_t c_) :
 		c(c_), bg_color(Color::Black), fg_color(Color::White)
 	{}
 

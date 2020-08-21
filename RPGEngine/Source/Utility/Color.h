@@ -10,11 +10,12 @@ struct Color
 	Color(const uint8_t r_, const uint8_t g_, const uint8_t b_, const uint8_t a_ = 255) :
 		r(r_), g(g_), b(b_), a(a_)
 	{}
+
 	Color(const SDL_Color& color) :
 		r(color.r), g(color.g), b(color.b), a(color.a)
 	{}
 
-	explicit operator SDL_Color() const { return {r, g, b, a};}
+	operator SDL_Color() const { return {r, g, b, a};}
 
 	static const Color AliceBlue;			// System-defined color ( R:240 G:248 B:255 ).
 	static const Color AntiqueWhite;		// System-defined color ( R:250 G:235 B:215 ).

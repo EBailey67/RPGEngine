@@ -339,7 +339,7 @@ namespace GUI
         //! Constructor with two different values
         Vector2(T nx, T ny) : x(nx), y(ny) {}
         //! Constructor with the same value for both members
-        explicit Vector2(T n) : x(n), y(n) {}
+        Vector2(T n) : x(n), y(n) {}
         //! Copy constructor
         Vector2(const Vector2<T>& o) : x(o.x), y(o.y) {}
 

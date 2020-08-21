@@ -64,7 +64,7 @@ namespace Term
 			}
 
 			TTF_Font *font = fontCache.resource(console_fontid);
-			auto* const labelTex = ResourceLoader::Glyph(font, ch.Ascii(), static_cast<SDL_Color>(ch.FgColor()));
+			auto* const labelTex = ResourceLoader::Glyph(font, ch.Ascii(), ch.FgColor());
 
 			int gw, gh;
 			SDL_QueryTexture(labelTex, nullptr, nullptr, &gw, &gh);
@@ -103,15 +103,11 @@ namespace Term
 
 		void Context::Render(const int x, const int y) const
 		{
-			int gw;
-			int gh;
-
+			int gw, gh;
 			SDL_QueryTexture(buffer_texture, nullptr, nullptr, &gw, &gh);
 
-			SDL_Rect srcRect = {0, 0, gw, gh};
 			SDL_Rect dstRect = {x, y, gw, gh};
-
-			Graphics::RenderToLayer(Layer::UI, buffer_texture, &srcRect, &dstRect, SDL_FLIP_NONE);
+			Graphics::RenderToLayer(Layer::UI, buffer_texture, nullptr, &dstRect, SDL_FLIP_NONE);
 		}
 
 		Console& Context::GetConsole()
