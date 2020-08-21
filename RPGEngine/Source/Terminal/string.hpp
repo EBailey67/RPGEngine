@@ -32,7 +32,8 @@ namespace Term
 	};
 
 	typedef std::basic_string<CharCell, TermCharTraits> String;
-	String MakeString(const std::string&);
-	void BgColor(String&, Color);
-	void FgColor(String&, Color);
+	String MakeString(const std::string_view&);
+	String MakeString(const std::string_view&, const Color fgColor, const Color bgColor);
+	void BgColor(String&, const Color);
+	void FgColor(String&, const Color);
 }
