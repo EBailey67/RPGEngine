@@ -154,6 +154,4 @@ struct Color
 	static const Color White;				// System-defined color ( R:255 G:255 B:255 ).
 	static const Color WhiteSmoke;			// System-defined color ( R:245 G:245 B:245 ).
 	static const Color YellowGreen;			// System-defined color ( R:154 G:205 B:50 ).
-
-	
 };

@@ -130,10 +130,8 @@ public:
 		HealthUpdate();
 
 		const auto frameRate = static_cast<int>(floorf(Game::GetInstance()->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
-		// message_console.GetConsole().FgColor(Color::White).Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
-		static int current_frame = 0;
-		message_console.GetConsole().Put(std::to_string(current_frame) + "\n");
-		current_frame++;
+		message_console.GetConsole().FgColor(Color::White).Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
+
 		map_console.Print();
 		message_console.Print();
 		stat_console.Print();
@@ -176,16 +174,20 @@ public:
 
 	void RenderUI() override
 	{
-		map_console.Render(0, 88);
-		message_console.Render(0, 472);
-		stat_console.Render(640, 0);
 		inventory_console.Render(0, 0);
+		map_console.Render(0, inventory_console.TileHeight() * inventory_height);
+		message_console.Render(0, inventory_console.TileHeight() * inventory_height + map_console.TileHeight() * map_height);
+		stat_console.Render(inventory_console.TileWidth() * inventory_width, 0);
 		gameUI->drawAll();
 	}
 
 	virtual void ResizeEvent() override
 	{
 		gameUI->resizeCallbackEvent(0, 0);
+		inventory_console.GetConsole().Dirty();
+		map_console.GetConsole().Dirty();
+		message_console.GetConsole().Dirty();
+		stat_console.GetConsole().Dirty();
 	}
 private:
 	const int map_width = 80;

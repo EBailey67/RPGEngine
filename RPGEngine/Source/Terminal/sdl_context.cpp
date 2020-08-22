@@ -20,7 +20,7 @@ namespace Term
 		{
 
 			std::cout << "Constructing Term::SDL::Context()\n";
-			TTF_Font *font = fontCache.load(console_fontid, ResourceLoader::Font("resources/fonts/consola.ttf", 16));
+			TTF_Font *font = fontCache.load(console_fontid, ResourceLoader::Font("resources/fonts/consola.ttf", 12));
 			if (!TTF_FontFaceIsFixedWidth(font))
 			{
 				throw std::runtime_error("Font for console must be a fixed-width font.");
@@ -51,7 +51,6 @@ namespace Term
 			return theight;
 		}
 
-
 		void Context::Print(const CharCell ch, const int x, const int y) const
 		{
 			const auto tw = TileWidth() ;
@@ -72,10 +71,6 @@ namespace Term
 			SDL_QueryTexture(labelTex, nullptr, nullptr, &gw, &gh);
 			SDL_Rect dst = {x * tw, y *th, gw , gh};
 
-			auto fg = ch.FgColor();
-
-			//Graphics::SetDrawColor(ch.BgColor());
-			//SDL_RenderFillRect(Graphics::Renderer(), &bgRect);
 			SDL_SetTextureBlendMode(labelTex, SDL_BLENDMODE_BLEND);
 			SDL_RenderCopy(Graphics::Renderer(), labelTex, nullptr, &dst);
 			SDL_DestroyTexture(labelTex);

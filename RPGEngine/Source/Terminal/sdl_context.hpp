@@ -8,6 +8,8 @@ namespace Term
 {
 	namespace SDL
 	{
+		// This is an SDL specific implementation to handle the
+		// rendering of a Console class.
 		class Context
 		{
 		public:
