@@ -20,7 +20,6 @@ namespace Term
 		width(buf.width), height(buf.height),
 		clear_char('\0', Color::Black, Color::White),
 		buffer(new CharCell[buf.width * buf.height]),
-	
 		state(0),
 		curs_x(0), curs_y(0),
 		bg_color(255, 255, 255),
@@ -164,10 +163,11 @@ namespace Term
 	{
 		if (x < 0 || x >= width || y < 0 || y >= height)
 			return;
-		
+
+		const auto offset = x + y * width;
+		buffer[offset] = c;
+
 		Dirty();
-		
-		buffer[x + y * width] = c;
 	}
 
 	CharCell Console::GetCh(const int x, const int y) const
@@ -185,6 +185,7 @@ namespace Term
 		tmpBuf.Clear();
 		tmpBuf.Copy(*this, -cols, -rows, 0, 0, Width(), Height());
 		Copy(tmpBuf);
+		Dirty();
 	}
 
 	void Console::Copy(const Console& other, const int dx, const int dy, 

@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Component\Map.cpp" />
+    <ClCompile Include="Source\Systems\MapSystem.cpp" />
     <ClCompile Include="Source\Terminal\CharCell.cpp" />
     <ClCompile Include="Source\Terminal\Console.cpp" />
     <ClCompile Include="Source\Terminal\sdl_context.cpp" />
@@ -215,6 +217,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Component\Cell.h" />
+    <ClInclude Include="Source\Component\Map.h" />
+    <ClInclude Include="Source\Systems\MapSystem.h" />
     <ClInclude Include="Source\Terminal\CharCell.hpp" />
     <ClInclude Include="Source\Terminal\Console.h" />
     <ClInclude Include="Source\Terminal\sdl_context.hpp" />

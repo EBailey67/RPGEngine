@@ -14,6 +14,7 @@
 #include "sdlgui/window.h"
 // #include "xml/pugixml.hpp"
 #include "GameSceneUI.h"
+#include "Systems/MapSystem.h"
 #include "Terminal/sdl_context.hpp"
 #include "Utility/Swatch.h"
 
@@ -59,6 +60,7 @@ public:
 
 		CameraCreate();
 		GridCreate();
+		MapCreate(80, 48);
 		PlayerCreate();
 
 		//EnemyCreate(Enemy::spawns[0]);
@@ -163,6 +165,7 @@ public:
 		PROFILE_SCOPE("Render Pass");
 		{
 		GridRender();
+		MapRender(map_console);
 		SpriteRender();
 		// LightsRender();
 		PositionDebug();

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <map>
 #include <SDL.h>
 
 #include "Console.h"
+#include "CharCell.hpp"
 
 namespace Term
 {
@@ -18,7 +20,7 @@ namespace Term
 
 			[[nodiscard]] int TileWidth() const;
 			[[nodiscard]] int TileHeight() const;
-			void Print(const CharCell ch, const int x, const int y) const;
+			void Print(const CharCell ch, const int x, const int y);
 			void Print();
 			void Render(int x, int y) const;
 
@@ -27,6 +29,7 @@ namespace Term
 			int twidth, theight;
 			SDL_Texture* buffer_texture;
 			Console console;
+			std::map<int, SDL_Texture*> cache;
 		};
 	}
 }

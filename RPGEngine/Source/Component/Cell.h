@@ -3,8 +3,14 @@
 class Cell
 {
 public:
-	Cell(int x, int y, bool isTransparent, bool isWalkable) :
-		x(x), y(y), isTransparent(isTransparent), isWalkable(isWalkable), isExplored(false)
+	Cell() :
+		x(0), y(0), isTransparent(false), isWalkable(false), isExplored(false), isDirty(true)
+	{
+		
+	}
+	
+	Cell(const int x, const int y, const bool isTransparent, const bool isWalkable) :
+		x(x), y(y), isTransparent(isTransparent), isWalkable(isWalkable), isExplored(false), isDirty(true)
 	{}
 
 	int x;
@@ -12,4 +18,5 @@ public:
 	bool isTransparent;
 	bool isWalkable;
 	bool isExplored;
+	bool isDirty;
 };

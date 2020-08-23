@@ -16,7 +16,12 @@ struct Color
 	{}
 
 	operator SDL_Color() const { return {r, g, b, a};}
+	bool operator ==(const Color& rhs) const
+	{
+		return r == rhs.r && g == rhs.g && b == rhs.b && a == rhs.a;
+	}
 
+	
 	static const Color AliceBlue;			// System-defined color ( R:240 G:248 B:255 ).
 	static const Color AntiqueWhite;		// System-defined color ( R:250 G:235 B:215 ).
 	static const Color Aqua;				// System-defined color ( R:0 G:255 B:255 ).

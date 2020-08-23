@@ -18,9 +18,8 @@ namespace Term
 			twidth(0), theight(0),
 			console(width, height)
 		{
-
 			std::cout << "Constructing Term::SDL::Context()\n";
-			TTF_Font *font = fontCache.load(console_fontid, ResourceLoader::Font("resources/fonts/consola.ttf", 12));
+			auto* const font = fontCache.load(console_fontid, ResourceLoader::Font("resources/fonts/consola.ttf", 12));
 			if (!TTF_FontFaceIsFixedWidth(font))
 			{
 				throw std::runtime_error("Font for console must be a fixed-width font.");
@@ -39,6 +38,11 @@ namespace Term
 		{
 			if (buffer_texture != nullptr)
 				SDL_DestroyTexture(buffer_texture);
+
+			for (auto [ch, t] : cache)
+			{
+				SDL_DestroyTexture(t);
+			}
 		}
 
 		int Context::TileWidth() const
@@ -51,21 +55,26 @@ namespace Term
 			return theight;
 		}
 
-		void Context::Print(const CharCell ch, const int x, const int y) const
+		void Context::Print(const CharCell ch, const int x, const int y)
 		{
 			const auto tw = TileWidth() ;
 			const auto th = TileHeight();
-			SDL_Rect bgRect = {x * tw, y * th, tw, th};
 
 			if (ch.Ascii() == 0)
-			{
-				Graphics::SetDrawColor(ch.BgColor());
-				SDL_RenderFillRect(Graphics::Renderer(), &bgRect);
 				return;
-			}
 
-			auto* const font = fontCache.resource(console_fontid);
-			auto* const labelTex = ResourceLoader::Glyph(font, ch.Ascii(), ch.FgColor(), ch.BgColor());
+			SDL_Texture* labelTex;
+			
+			if (cache.find(ch.Ascii()) != cache.end())
+			{
+				labelTex = cache[ch.Ascii()];	
+			}
+			else
+			{
+				auto* const font = fontCache.resource(console_fontid);
+				labelTex = ResourceLoader::Glyph(font, ch.Ascii(), ch.FgColor(), ch.BgColor());
+				cache[ch.Ascii()] = labelTex;
+			}
 
 			int gw, gh;
 			SDL_QueryTexture(labelTex, nullptr, nullptr, &gw, &gh);
@@ -73,8 +82,6 @@ namespace Term
 
 			SDL_SetTextureBlendMode(labelTex, SDL_BLENDMODE_BLEND);
 			SDL_RenderCopy(Graphics::Renderer(), labelTex, nullptr, &dst);
-			SDL_DestroyTexture(labelTex);
-		
 		}
 
 		void Context::Print()
@@ -87,12 +94,16 @@ namespace Term
 			const auto l = Graphics::GetCurrentLayer();
 			SDL_SetTextureBlendMode(buffer_texture, SDL_BLENDMODE_BLEND);
 			SDL_SetRenderTarget(Graphics::Renderer(), buffer_texture);
-			SDL_Texture *rt = SDL_GetRenderTarget(Graphics::Renderer());
-			Graphics::TargetClear();
-			
+			auto chc = console.GetClearChar();
+			SDL_SetRenderDrawColor(Graphics::Renderer(), chc.BgColor().r, chc.BgColor().g, chc.BgColor().b, SDL_ALPHA_OPAQUE);
+			SDL_RenderClear(Graphics::Renderer());
+
 			for (auto y = 0; y < console.Height(); ++y)
 				for (auto x = 0; x < console.Width(); ++x)
-					Print(console.GetCh(x, y), x, y);
+				{
+					auto ch = console.GetCh(x, y);
+					Print(ch, x, y);
+				}
 
 			Graphics::RenderTarget(l);
 			console.Clean();

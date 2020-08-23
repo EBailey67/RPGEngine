@@ -22,7 +22,13 @@ namespace Term
 		CharCell& Ascii(char_t);
 		CharCell& BgColor(Color);
 		CharCell& FgColor(Color);
-	private:
+
+		bool operator ==(const CharCell& rhs) const
+		{
+			return c == rhs.c && bg_color == rhs.bg_color && fg_color == rhs.fg_color;
+		}
+
+private:
 		char_t  c{};
 		Color bg_color = Color::Black;
 		Color fg_color = Color::White;
