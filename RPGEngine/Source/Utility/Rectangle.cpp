@@ -62,7 +62,7 @@ namespace RPGEngine
     // Purpose: Get intersection depth between two rectangles
     //-----------------------------------------------------------------------------
     template <typename T>
-    Vector2D<T> Rectangle<T>::GetIntersectionDepth(const Rectangle<T>& rectA, const Rectangle<T>& rectB)
+    Vector2D<T> GetIntersectionDepth(const Rectangle<T>& rectA, const Rectangle<T>& rectB)
     {
         // Calculate half sizes.
         float halfWidthA = rectA.w / 2.0f;
@@ -71,8 +71,8 @@ namespace RPGEngine
         float halfHeightB = rectB.h / 2.0f;
 
         // Calculate centers.
-        const Vector2D centerA(rectA.x + halfWidthA, rectA.y + halfHeightA);
-        const Vector2D centerB(rectB.x + halfWidthB, rectB.y + halfHeightB);
+        const Vector2D<T> centerA(rectA.x + halfWidthA, rectA.y + halfHeightA);
+        const Vector2D<T> centerB(rectB.x + halfWidthB, rectB.y + halfHeightB);
 
         // Calculate current and minimum-non-intersecting distances between centers.
         const auto distanceX = centerA.x - centerB.x;
@@ -87,9 +87,25 @@ namespace RPGEngine
         // Calculate and return intersection depths.
         const auto depthX = distanceX > 0 ? minDistanceX - distanceX : -minDistanceX - distanceX;
         const auto depthY = distanceY > 0 ? minDistanceY - distanceY : -minDistanceY - distanceY;
-        return Vector2D(depthX, depthY);
+        return Vector2D<T>(depthX, depthY);
     }
 
+    bool Intersect(const Rect& lhs, const Rect& rhs)
+    {
+	    if (!((lhs.x > rhs.x + rhs.w) || (lhs.x + lhs.w < rhs.x) || (lhs.y > rhs.y + rhs.h) || (lhs.y + lhs.h < rhs.y)))
+		{
+			return true;
+		}
+
+    	return false;
+    }
+
+    Vector2Di GetCenter(const Rect& rect)
+    {
+        return Vector2Di(static_cast<float>(rect.x + rect.w / 2.0f), static_cast<float>(rect.y + rect.h / 2.0f));
+    }
+
+	
     //-----------------------------------------------------------------------------
     // Purpose: Gets the position of the center of the bottom edge of the rectangle.
     //-----------------------------------------------------------------------------
@@ -102,11 +118,11 @@ namespace RPGEngine
     //-----------------------------------------------------------------------------
     // Purpose: Gets the position of the center point of a rectangle
     //-----------------------------------------------------------------------------
-    template <typename T>
-    Vector2D<T> Rectangle<T>::GetCenter(const Rectangle<T>& rect)
-    {
-        return Vector2D(static_cast<float>(rect.x + rect.w / 2.0f), static_cast<float>(rect.y + rect.h / 2.0f));
-    }
+    //template <typename T>
+    //Vector2D<T> GetCenter(const Rectangle<T>& rect)
+    //{
+    //    return Vector2D(static_cast<float>(rect.x + rect.w / 2.0f), static_cast<float>(rect.y + rect.h / 2.0f));
+    //}
 
     //-----------------------------------------------------------------------------
     // Purpose: Gets the floating point distance between the center point

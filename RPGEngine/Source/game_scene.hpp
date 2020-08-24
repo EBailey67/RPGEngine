@@ -60,7 +60,7 @@ public:
 
 		CameraCreate();
 		GridCreate();
-		MapCreate(80, 48);
+		CreateMap(80, 48);
 		PlayerCreate();
 
 		//EnemyCreate(Enemy::spawns[0]);

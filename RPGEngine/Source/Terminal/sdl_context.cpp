@@ -65,15 +65,15 @@ namespace Term
 
 			SDL_Texture* labelTex;
 			
-			if (cache.find(ch.Ascii()) != cache.end())
+			if (cache.find(ch) != cache.end())
 			{
-				labelTex = cache[ch.Ascii()];	
+				labelTex = cache[ch];
 			}
 			else
 			{
 				auto* const font = fontCache.resource(console_fontid);
 				labelTex = ResourceLoader::Glyph(font, ch.Ascii(), ch.FgColor(), ch.BgColor());
-				cache[ch.Ascii()] = labelTex;
+				cache[ch] = labelTex;
 			}
 
 			int gw, gh;

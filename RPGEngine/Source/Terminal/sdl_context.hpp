@@ -2,6 +2,8 @@
 
 #include <map>
 #include <SDL.h>
+#include <unordered_map>
+
 
 #include "Console.h"
 #include "CharCell.hpp"
@@ -29,7 +31,7 @@ namespace Term
 			int twidth, theight;
 			SDL_Texture* buffer_texture;
 			Console console;
-			std::map<int, SDL_Texture*> cache;
+			std::unordered_map<CharCell, SDL_Texture*, CharCellHashFunction> cache;
 		};
 	}
 }

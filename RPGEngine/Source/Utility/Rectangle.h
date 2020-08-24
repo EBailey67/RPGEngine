@@ -25,9 +25,7 @@ namespace RPGEngine
 
         // Static methods below are derived from the RectangleExtensions class
         // written in C#, released under the MSPL
-        static Vector2D<T> GetIntersectionDepth(const Rectangle<T>& rectA, const Rectangle<T>& rectB);
         static Vector2D<T> GetBottomCenter(const Rectangle<T>& rect);
-        static Vector2D<T> GetCenter(const Rectangle<T>& rect);
         static float GetDistance(const Rectangle<T>& rectA, const Rectangle<T>& rectB);
         static Vector2D<T> GetDirection(const Rectangle<T>& rectA, const Rectangle<T>& rectB);
 
@@ -36,7 +34,6 @@ namespace RPGEngine
         bool operator== (const Rectangle<T>& r2) const;
         bool operator!= (const Rectangle<T>& r2) const;
 
-    public:
         T x, y, w, h;
     };
 
@@ -44,4 +41,11 @@ namespace RPGEngine
     typedef Rectangle<float> RectF;
     typedef Rectangle<double> RectD;
 
+	template <typename T>
+    Vector2D<T> GetIntersectionDepth(const Rectangle<T>& rectA, const Rectangle<T>& rectB);
+
+	bool Intersect(const Rect& lhs, const Rect& rhs);
+	Vector2Di GetCenter(const Rect& rect);
+	//template <typename T>
+	//Vector2D<T> GetCenter(const Rectangle<T>& rect);
 }

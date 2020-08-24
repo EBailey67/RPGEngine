@@ -159,7 +159,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Component\Map.cpp" />
     <ClCompile Include="Source\Systems\MapSystem.cpp" />
     <ClCompile Include="Source\Terminal\CharCell.cpp" />
     <ClCompile Include="Source\Terminal\Console.cpp" />
@@ -210,6 +209,7 @@
     <ClCompile Include="Source\Utility\Debug.cpp" />
     <ClCompile Include="Source\Utility\Floats.cpp" />
     <ClCompile Include="Source\Utility\FramerateCounter.cpp" />
+    <ClCompile Include="Source\Utility\MTRandom.cpp" />
     <ClCompile Include="Source\Utility\Ray.cpp" />
     <ClCompile Include="Source\Utility\Rectangle.cpp" />
     <ClCompile Include="Source\Utility\Timer.cpp" />
@@ -275,6 +275,7 @@
     <ClInclude Include="Source\sdlgui\widget.h" />
     <ClInclude Include="Source\sdlgui\window.h" />
     <ClInclude Include="Source\Utility\Instrumentor.h" />
+    <ClInclude Include="Source\Utility\MTRandom.h" />
     <ClInclude Include="Source\Utility\Ray.h" />
     <ClInclude Include="Source\Utility\Swatch.h" />
     <ClInclude Include="Source\Utility\Vector2D.h" />

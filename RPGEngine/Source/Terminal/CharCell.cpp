@@ -42,4 +42,11 @@ namespace Term
 	{
 		return fg_color;
 	}
+
+
+	bool operator ==(const CharCell& lhs, const CharCell& rhs)
+	{
+		return lhs.Ascii() == rhs.Ascii() && lhs.BgColor() == rhs.BgColor() && lhs.FgColor() == rhs.FgColor();
+	}
+
 }

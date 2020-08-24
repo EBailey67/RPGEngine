@@ -33,4 +33,24 @@ private:
 		Color bg_color = Color::Black;
 		Color fg_color = Color::White;
 	};
+
+	// bool operator ==(const CharCell& lhs, const CharCell& rhs);
+	
+	class CharCellHashFunction
+	{ 
+	public: 
+		// ch * (fg + bg)
+	    size_t operator()(const CharCell& cell) const
+	    {
+	    	Color bg = cell.BgColor();
+	    	Color fg = cell.FgColor();
+	    	int ch = cell.Ascii();
+	    	int a = ((fg.a + bg.a) % 255) << 24;
+	    	int r = ((fg.r + bg.r) % 255) << 16;
+	    	int g = ((fg.g + bg.g) % 255) << 8;
+	    	int b = ((fg.b + bg.b) % 255);
+	        return ch * (a + r + g + b);
+	    } 
+	}; 
+
 }

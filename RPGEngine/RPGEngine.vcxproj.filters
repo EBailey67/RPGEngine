@@ -174,10 +174,10 @@
     <ClCompile Include="Source\Terminal\CharCell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Component\Map.cpp">
+    <ClCompile Include="Source\Systems\MapSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Systems\MapSystem.cpp">
+    <ClCompile Include="Source\Utility\MTRandom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -465,6 +465,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Systems\MapSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utility\MTRandom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
