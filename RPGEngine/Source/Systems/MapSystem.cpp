@@ -30,9 +30,15 @@ void MapCreate(int w, int h)
             for (auto &id : row)
             {
             	if (j == grid.mapHeight - 1 || j == 0 || i == 0 || i == grid.mapWidth - 1)
+            	{
                     id.isWalkable = false;
+                	id.isTransparent = false;
+				}
                 else
+                {
                     id.isWalkable = true;
+                	id.isTransparent = true;
+				}
                 i++;
             }
             j--;
@@ -41,10 +47,20 @@ void MapCreate(int w, int h)
 
 }
 
+bool IsInFov(std::vector<Vector2Di> fovCells, int x, int y)
+{
+	if(std::find(fovCells.begin(), fovCells.end(), Vector2Di(x, y)) == std::end(fovCells))
+		return false;
+
+	return true;
+}
+
 void MapRender(Term::SDL::Context& context)
 {
 	PROFILE_FUNCTION();
     auto mapView = registry.view<Map, Position>();
+	const auto playerView = registry.view<Player, Position>();
+	auto &&[player, pos] = registry.get<Player, Position>(*playerView.begin());
 
 	auto& console = context.GetConsole();
 	
@@ -59,16 +75,24 @@ void MapRender(Term::SDL::Context& context)
 	        auto i = 0;
             for (auto &id : row)
             {
-            	if(id.isDirty)
+            	// if(id.isDirty)
             	{
                		console.Place(i, j);
-	                if (id.isWalkable)
+            		if (i == static_cast<int>(pos.position.x) && j == static_cast<int>(pos.position.y))
+            		{
+                		console.FgColor(Color::DarkGray).BgColor(Color::White).Put('@');
+            		}
+					else 
+					if (id.isWalkable)
 	                {
-                		console.FgColor(Color::DarkGray).BgColor(Color::Black).Put('.');
+						if (IsInFov(grid.fovCells, i, j))
+							console.FgColor(Color::White).BgColor(Color::Black).Put('.');
+						else
+							console.FgColor(Color::DarkGray).BgColor(Color::Black).Put('.');
 	                }
 	                else
 	                {
-                		console.FgColor(Color::Black).BgColor(Color::White).Put('#');
+                		console.FgColor(Color::DarkSlateGray).BgColor(Color::Black).Put('#');
 	                }
             		id.isDirty = false;
                 }
@@ -128,7 +152,6 @@ void MakeVerticalTunnel(Map& map, int yStart, int yEnd, int xPosition)
 
 void CreateMap(int w, int h)
 {
-
 	MTRandom random;
 	random.Randomize();
 	std::vector<RPGEngine::Rect> rooms;

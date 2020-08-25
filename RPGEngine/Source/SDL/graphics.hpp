@@ -8,7 +8,7 @@
 #include "config.hpp"
 #include "fwd.hpp"
 
-#define PROFILING 1  // NOLINT(cppcoreguidelines-macro-usage)
+#define PROFILING 1
 #include "../Utility/Instrumentor.h"
 #include "../Utility/Primitives.h"
 #include "../Utility/Vector2D.h"

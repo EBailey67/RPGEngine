@@ -457,7 +457,7 @@ namespace GUI
     {
 	    if (auto* pfps = gfind<Label>("FPS"))
         {
-   			auto game = Game::GetInstance();
+   			const auto game = Game::GetInstance();
 			auto* gs = dynamic_cast<GameScene*>(game->Scene());
 
             const auto frameRate = static_cast<int>(floorf(game->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
@@ -481,8 +481,8 @@ namespace GUI
 
         if (auto* plabel = gfind<Label>("LOCATION"))
         {
-        	int x = static_cast<int>(pos.position.x) / 32;
-        	int y = static_cast<int>(pos.position.y) / 32;
+	        const auto x = static_cast<int>(pos.position.x);
+	        const auto y = static_cast<int>(pos.position.y);
             plabel->setCaption(std::to_string(x) + ", " + std::to_string(y));
         }
 

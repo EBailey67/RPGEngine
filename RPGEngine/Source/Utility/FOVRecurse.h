@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <vector>
 
+
+#include "../Component/Map.h"
 #include "../Utility/Vector2D.h"
 #include "../sdlgui/common.h"
 
@@ -23,32 +25,21 @@ namespace RPGEngine
 	{
 
 	public:
-		FOVRecurse()
+		FOVRecurse(const int px, const int py, const int range, Map* _map)
 		{
-			MapSize = Vector2Di(64, 64);
-			VisualRange = 9;
-			ClearMap();
-		}
-
-		void ClearMap()
-		{
-			for (auto y = 0; y < MapSize.y; y++)
-				for (auto x = 0; x < MapSize.x; x++)
-					map[x][y] = 0;
+			map = _map;
+			MapSize = Vector2Di(map->mapWidth, map->mapHeight);
+			player.x = px;
+			player.y = py;
+			VisualRange = range;
 		}
 
 		// Get the value of the point at the specified location
-		int PointGet(const int x, const int y)
+		int PointGet(const int x, const int y) const
 		{
-			return map[x][y];
+			return map->cell[y][x].isWalkable;
 		}
 
-		// Set the map point to the specified value
-		void PointSet(const int x, const int y, const int val)
-		{
-			if (Point_Valid(x, y))
-				map[x][y] = val;
-		}
 
 		//  Octant data
 		//
@@ -75,14 +66,9 @@ namespace RPGEngine
 
 
 		// Move the player in the specified direction provided the cell is valid and empty
-		void MovePlayer(const int pX, const int pY)
+		void CalculateFOV()
 		{
-			if (Point_Valid(pX, pY) && PointGet(pX, pY) == 0)
-			{
-				player.x = pX;
-				player.y = pY;
-				GetVisibleCells();
-			}
+			GetVisibleCells();
 		}
 
 
@@ -93,7 +79,7 @@ namespace RPGEngine
 		void SetPlayerPosition(Vector2Di& point) { player = point; }
 
 	private:
-		int map[64][64]{};
+		Map* map;
 		Vector2Di player;
 		int visible_octants[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };  // The octants which a player can see
 
@@ -120,7 +106,7 @@ namespace RPGEngine
 		/// <param name="pDepth">Depth of the scan</param>
 		/// <param name="pOctant">Octant being examined</param>
 		/// <param name="pStartSlope">Start slope of the octant</param>
-		/// <param name="pEndSlope">End slope of the octance</param>
+		/// <param name="pEndSlope">End slope of the octanct</param>
 		void ScanOctant(int pDepth, int pOctant, double pStartSlope, double pEndSlope)
 		{
 			int visrange2 = VisualRange * VisualRange;
@@ -129,7 +115,6 @@ namespace RPGEngine
 
 			switch (pOctant)
 			{
-
 			case 1: //nnw
 				y = player.y - pDepth;
 				if (y < 0) return;
@@ -141,16 +126,16 @@ namespace RPGEngine
 				{
 					if (GetVisDistance(x, y, player.x, player.y) <= visrange2)
 					{
-						if (map[x][y] == 1) //current cell blocked
+						if (!map->cell[y][x].isTransparent) //current cell blocked
 						{
-							if (x - 1 >= 0 && map[x - 1, y] == 0) //prior cell within range AND open...
+							if (x - 1 >= 0 && map->cell[y][x - 1].isTransparent) //prior cell within range AND open...
 								//...incremenet the depth, adjust the endslope and recurse
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y + 0.5, player.x, player.y, false));
 						}
 						else
 						{
 
-							if (x - 1 >= 0 && map[x - 1][y] == 1) //prior cell within range AND open...
+							if (x - 1 >= 0 && !map->cell[y][x - 1].isTransparent) //prior cell within range AND open...
 								//..adjust the startslope
 								pStartSlope = GetSlope(x - 0.5, y - 0.5, player.x, player.y, false);
 
@@ -163,7 +148,6 @@ namespace RPGEngine
 				break;
 
 			case 2: //nne
-
 				y = player.y - pDepth;
 				if (y < 0) return;
 
@@ -175,14 +159,14 @@ namespace RPGEngine
 				{
 					if (GetVisDistance(x, y, player.x, player.y) <= visrange2)
 					{
-						if (map[x][y] == 1)
+						if (!map->cell[y][x].isTransparent)
 						{
-							if (x + 1 < MapSize.x && map[x + 1][y] == 0)
+							if (x + 1 < MapSize.x && map->cell[y][x + 1].isTransparent)
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y + 0.5, player.x, player.y, false));
 						}
 						else
 						{
-							if (x + 1 < MapSize.x && map[x + 1][y] == 1)
+							if (x + 1 < MapSize.x && !map->cell[y][x + 1].isTransparent)
 								pStartSlope = -GetSlope(x + 0.5, y - 0.5, player.x, player.y, false);
 
 							VisiblePoints.emplace_back(Vector2Di(x, y));
@@ -194,7 +178,6 @@ namespace RPGEngine
 				break;
 
 			case 3:
-
 				x = player.x + pDepth;
 				if (x >= MapSize.x) return;
 
@@ -206,15 +189,14 @@ namespace RPGEngine
 				{
 					if (GetVisDistance(x, y, player.x, player.y) <= visrange2)
 					{
-
-						if (map[x][y] == 1)
+						if (!map->cell[y][x].isTransparent)
 						{
-							if (y - 1 >= 0 && map[x][y - 1] == 0)
+							if (y - 1 >= 0 && map->cell[y - 1][x].isTransparent)
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y - 0.5, player.x, player.y, true));
 						}
 						else
 						{
-							if (y - 1 >= 0 && map[x][y - 1] == 1)
+							if (y - 1 >= 0 && !map->cell[y - 1][x].isTransparent)
 								pStartSlope = -GetSlope(x + 0.5, y - 0.5, player.x, player.y, true);
 
 							VisiblePoints.emplace_back(Vector2Di(x, y));
@@ -226,7 +208,6 @@ namespace RPGEngine
 				break;
 
 			case 4:
-
 				x = player.x + pDepth;
 				if (x >= MapSize.x) return;
 
@@ -238,14 +219,14 @@ namespace RPGEngine
 				{
 					if (GetVisDistance(x, y, player.x, player.y) <= visrange2)
 					{
-						if (map[x][y] == 1)
+						if (!map->cell[y][x].isTransparent)
 						{
-							if (y + 1 < MapSize.y && map[x][y + 1] == 0)
+							if (y + 1 < MapSize.y && map->cell[y + 1][x].isTransparent)
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y + 0.5, player.x, player.y, true));
 						}
 						else
 						{
-							if (y + 1 < MapSize.y && map[x][y + 1] == 1)
+							if (y + 1 < MapSize.y && !map->cell[y + 1][x].isTransparent)
 								pStartSlope = GetSlope(x + 0.5, y + 0.5, player.x, player.y, true);
 
 							VisiblePoints.emplace_back(Vector2Di(x, y));
@@ -268,15 +249,14 @@ namespace RPGEngine
 				{
 					if (GetVisDistance(x, y, player.x, player.y) <= visrange2)
 					{
-						if (map[x][y] == 1)
+						if (!map->cell[y][x].isTransparent)
 						{
-							if (x + 1 < MapSize.y && map[x + 1][y] == 0)
+							if (x + 1 < MapSize.y && map->cell[y][x + 1].isTransparent)
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y - 0.5, player.x, player.y, false));
 						}
 						else
 						{
-							if (x + 1 < MapSize.y
-								&& map[x + 1][y] == 1)
+							if (x + 1 < MapSize.y && !map->cell[y][x + 1].isTransparent)
 								pStartSlope = GetSlope(x + 0.5, y + 0.5, player.x, player.y, false);
 
 							VisiblePoints.emplace_back(Vector2Di(x, y));
@@ -298,14 +278,14 @@ namespace RPGEngine
 				{
 					if (GetVisDistance(x, y, player.x, player.y) <= visrange2)
 					{
-						if (map[x][y] == 1)
+						if (!map->cell[y][x].isTransparent)
 						{
-							if (x - 1 >= 0 && map[x - 1][y] == 0)
+							if (x - 1 >= 0 && map->cell[y][x - 1].isTransparent)
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y - 0.5, player.x, player.y, false));
 						}
 						else
 						{
-							if (x - 1 >= 0 && map[x - 1][y] == 1)
+							if (x - 1 >= 0 && !map->cell[y][x - 1].isTransparent)
 								pStartSlope = -GetSlope(x - 0.5, y + 0.5, player.x, player.y, false);
 
 							VisiblePoints.emplace_back(Vector2Di(x, y));
@@ -326,17 +306,16 @@ namespace RPGEngine
 
 				while (GetSlope(x, y, player.x, player.y, true) <= pEndSlope)
 				{
-
 					if (GetVisDistance(x, y, player.x, player.y) <= visrange2)
 					{
-						if (map[x][y] == 1)
+						if (!map->cell[y][x].isTransparent)
 						{
-							if (y + 1 < MapSize.y && map[x][y + 1] == 0)
+							if (y + 1 < MapSize.y && map->cell[y + 1][x].isTransparent)
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y + 0.5, player.x, player.y, true));
 						}
 						else
 						{
-							if (y + 1 < MapSize.y && map[x][y + 1] == 1)
+							if (y + 1 < MapSize.y && !map->cell[y + 1][x].isTransparent)
 								pStartSlope = -GetSlope(x - 0.5, y + 0.5, player.x, player.y, true);
 
 							VisiblePoints.emplace_back(Vector2Di(x, y));
@@ -360,14 +339,14 @@ namespace RPGEngine
 				{
 					if (GetVisDistance(x, y, player.x, player.y) <= visrange2)
 					{
-						if (map[x][y] == 1)
+						if (!map->cell[y][x].isTransparent)
 						{
-							if (y - 1 >= 0 && map[x][y - 1] == 0)
+							if (y - 1 >= 0 && map->cell[y - 1][x].isTransparent)
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y - 0.5, player.x, player.y, true));
 						}
 						else
 						{
-							if (y - 1 >= 0 && map[x][y - 1] == 1)
+							if (y - 1 >= 0 && !map->cell[y - 1][x].isTransparent)
 								pStartSlope = GetSlope(x - 0.5, y - 0.5, player.x, player.y, true);
 
 							VisiblePoints.emplace_back(Vector2Di(x, y));
@@ -382,7 +361,7 @@ namespace RPGEngine
 			x = std::clamp(x, 0, static_cast<int>(MapSize.x - 1));
 			y = std::clamp(y, 0, static_cast<int>(MapSize.y - 1));
 
-			if (pDepth < VisualRange && map[x][y] == 0)
+			if (pDepth < VisualRange && map->cell[y][x].isTransparent)
 				ScanOctant(pDepth + 1, pOctant, pStartSlope, pEndSlope);
 		}
 

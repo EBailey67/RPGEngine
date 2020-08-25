@@ -2,11 +2,11 @@
 
 #include "../core.hpp"
 
-void MovementUpdate(float dt)
+void MovementUpdate(const float dt)
 {
     auto view = registry.view<Position, Velocity, Active>();
 
-    for (auto &entity : view)
+    for (const auto& entity : view)
     {
         auto &&[pos, vel] = view.get<Position, Velocity>(entity);
         pos.position.Set(pos.position.x + vel.x * dt, pos.position.y + vel.y * dt);

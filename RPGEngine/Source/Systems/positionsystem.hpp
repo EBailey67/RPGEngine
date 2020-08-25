@@ -1,6 +1,4 @@
-#ifndef POSITIONSYSTEM_HPP
-#define POSITIONSYSTEM_HPP
+#pragma once
 
-void MovementUpdate(float dt);
+void MovementUpdate(const float dt);
 
-#endif // POSITIONSYSTEM_HPP

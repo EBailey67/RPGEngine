@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Systems\MapSystem.cpp" />
+    <ClCompile Include="Source\Systems\playersystem.cpp" />
     <ClCompile Include="Source\Terminal\CharCell.cpp" />
     <ClCompile Include="Source\Terminal\Console.cpp" />
     <ClCompile Include="Source\Terminal\sdl_context.cpp" />
@@ -218,7 +219,9 @@
   <ItemGroup>
     <ClInclude Include="Source\Component\Cell.h" />
     <ClInclude Include="Source\Component\Map.h" />
+    <ClInclude Include="Source\Component\actors.hpp" />
     <ClInclude Include="Source\Systems\MapSystem.h" />
+    <ClInclude Include="Source\Systems\playersystem.h" />
     <ClInclude Include="Source\Terminal\CharCell.hpp" />
     <ClInclude Include="Source\Terminal\Console.h" />
     <ClInclude Include="Source\Terminal\sdl_context.hpp" />

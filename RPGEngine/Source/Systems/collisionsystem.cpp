@@ -129,85 +129,39 @@ void CollisionDetection()
     }
 }
 
-void CollisionTileDetection(const float dt)
+
+void CollisionMapDetection(const float dt)
 {
-    auto viewRect = registry.view<RectCollider, Position, CollisionLayer, Velocity, Active>();
-    auto viewGrid = registry.view<TileGridCollider, Position, TileGrid, CollisionLayer, Active>();
-    for (auto rect_entt : viewRect)
+	auto viewPlayer = registry.view<Player, Position, Velocity>();
+    auto mapView = registry.view<Map, Position>();
+
+	auto&& [pos, vel] = registry.get<Position, Velocity>(*viewPlayer.begin());
+	auto&& map = registry.get<Map>(*mapView.begin());
+	for (const auto& currentMap : mapView)
     {
-
-        auto &&[rect_pos, rect_collider, rect_vel, rect_layer] =
-            viewRect.get<Position, RectCollider, Velocity, CollisionLayer>(rect_entt);
-
-        SDL_FRect world_rect{rect_pos.position.x + rect_vel.x * dt + rect_collider.rect.x,
-                             rect_pos.position.y + rect_vel.y * dt + rect_collider.rect.y, rect_collider.rect.w,
-                             rect_collider.rect.h};
-        for (auto grid_entt : viewGrid)
-        {
-
-            auto &&[grid_pos, tile_grid, tile_layer] = viewGrid.get<Position, TileGrid, CollisionLayer>(grid_entt);
-            if (true) // rect_entt != grid_entt && CollisionLayer::Matrix[rect_layer.layer][tile_layer.layer])
+        auto& map = mapView.get<Map>(currentMap);
+		Vector2Di p(pos.position.x, pos.position.y);
+		
+		if (map.mapLayer == Layer::Floor)
+		{
+            if (vel.x < 0 && !map.cell[p.y][p.x - 1].isWalkable)
             {
-                SDL_FRect world_tile{grid_pos.position.x, grid_pos.position.y,
-                                     tile_grid.tileSet->TileWidth() * tile_grid.scale.x,
-                                     tile_grid.tileSet->TileHeight() * tile_grid.scale.y};
-                int j = static_cast<int>(tile_grid.cell.size()) - 1;
-                for (auto &row : tile_grid.cell)
-                {
-                    world_tile.y = grid_pos.position.y + j * world_tile.h;
-                    int i = 0;
-                    for (auto &id : row)
-                    {
-                        if (id)
-                        {
-                            world_tile.x = grid_pos.position.x + i * world_tile.w;
-                            auto direction = AABBW(world_rect, world_tile);
-                            if (direction.first != Vector2Df::Zero() && direction.second != Vector2Df::Zero())
-                            {
-                                //                                registry.ctx<collision_signal>().publish(
-                                //                                    {rect_entt, world_rect, direction},
-                                //                                    {grid_entt,
-                                //                                     world_tile,
-                                //                                     {Vector2D::zero() - direction.first,
-                                //                                     Vector2D::zero() - direction.second}});
-                                if (tile_layer.layer == LayersID::WALLS)
-                                {
-                                    if (direction.first == Vector2Df::Left() && rect_vel.x < 0)
-                                    {
-                                        rect_vel.x = 0;
-                                    }
-                                    else if (direction.first == Vector2Df::Right() && rect_vel.x > 0)
-                                    {
-
-                                        rect_vel.x = 0;
-                                    }
-                                    if (direction.second == Vector2Df::Up() && rect_vel.y > 0)
-                                    {
-                                        rect_vel.y = 0;
-                                    }
-                                    else if (direction.second == Vector2Df::Down() && rect_vel.y < 0)
-                                    {
-                                        rect_vel.y = 0;
-                                    }
-                                }
-                                //                                                                if (tile_layer.layer
-                                //                                                                == LayersID::FLOOR)
-                                //                                                                {
-                                //                                                                    auto &player =
-                                //                                                                    viewRect.get<Player>(rect_entt);
-                                //                                                                    player.i = i;
-                                //                                                                    player.j = j;
-                                //                                                                }
-                            }
-                        }
-
-                        i++;
-                    }
-                    j--;
-                }
+            	vel.x = 0;
             }
-        }
-    };
+            if (vel.x > 0 && !map.cell[p.y][p.x + 1].isWalkable)
+            {
+            	vel.x = 0;
+            }
+            if (vel.y < 0 && !map.cell[p.y - 1][p.x].isWalkable)
+            {
+            	vel.y = 0;
+            }
+            if (vel.y > 0 && !map.cell[p.y + 1][p.x].isWalkable)
+            {
+            	vel.y = 0;
+            }
+		}
+    }
 }
 
 void OnHit(const CollisionData &lhs, const CollisionData &rhs)

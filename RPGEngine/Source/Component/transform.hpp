@@ -22,25 +22,6 @@ struct MovementSpeed
     float speed;
 };
 
-struct Player
-{
-    bool isAttacking = true;
-    bool isHit = true;
-    Vector2Df attack_direction;
-    float attack_rate = 0.5;
-    float dt = 0;
-    int score = 0;
-    std::string name = "abc";
-};
-
-struct Dash
-{
-    bool canDashing = true;
-    float duration = 0.1f;
-    float power = 3.f;
-    float cd = 2.f;
-    float dt = 0;
-};
 
 struct ScoreTable
 {

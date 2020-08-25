@@ -42,7 +42,7 @@ void PlayerCreate()
     auto &pos = registry.emplace<Position>(id);
     registry.emplace<Velocity>(id);
     auto &animation = registry.emplace<AnimationPool>(id);
-    registry.emplace<Player>(id);
+    auto& player = registry.emplace<Player>(id);
     registry.emplace<Health>(id, 3);
     registry.emplace<Active>(id);
     auto &speed = registry.emplace<MovementSpeed>(id);
@@ -61,7 +61,9 @@ void PlayerCreate()
     animation.current = "idle";
     animation.isPlaying = true;
 
-    pos.position = {550, 746};
+	player.awareness = 15;
+	
+    pos.position = {10, 10};
 
     sprite.texture = textureCache.resource("spritesheet");
 
@@ -73,7 +75,7 @@ void PlayerCreate()
     rect.rect.w = static_cast<float>(sprite.rect.w) * sprite.scale.x;
     rect.rect.h = static_cast<float>(sprite.rect.h) * sprite.scale.y;
 
-    speed.speed = 400.f;
+    speed.speed = 10.f;
 
     const auto attack = registry.create();
     [[maybe_unused]] auto &attack_pos = registry.emplace<Position>(attack);

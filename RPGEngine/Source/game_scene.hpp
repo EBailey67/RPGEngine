@@ -15,6 +15,7 @@
 // #include "xml/pugixml.hpp"
 #include "GameSceneUI.h"
 #include "Systems/MapSystem.h"
+#include "Systems/playersystem.h"
 #include "Terminal/sdl_context.hpp"
 #include "Utility/Swatch.h"
 
@@ -59,8 +60,9 @@ public:
 		tileset.Load("resources/tiled_files/RPG Test.tsx", textureCache.resource(tileid));
 
 		CameraCreate();
-		GridCreate();
-		CreateMap(80, 48);
+		// GridCreate();
+		//CreateMap(80, 48);
+		MapCreate(80, 48);
 		PlayerCreate();
 
 		//EnemyCreate(Enemy::spawns[0]);
@@ -125,10 +127,11 @@ public:
 
 	void FixedUpdate() override
 	{
-		UpdateView();
-		CameraFollow();
+		// UpdateView();
+		// CameraFollow();
 		CollisionDetection();
-		UpdateVisibility();
+		// UpdateVisibility();
+		UpdatePlayerFOV();
 		HealthUpdate();
 
 		const auto frameRate = static_cast<int>(floorf(Game::GetInstance()->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
@@ -142,7 +145,8 @@ public:
 
 	void Update(const float dt) override
 	{
-		CollisionTileDetection(dt);
+		// CollisionTileDetection(dt);
+		CollisionMapDetection(dt);
 		AnimationUpdate(dt);
 		MovementUpdate(dt);
 		EnemyWalking(dt);
@@ -164,12 +168,12 @@ public:
 	{
 		PROFILE_SCOPE("Render Pass");
 		{
-		GridRender();
-		MapRender(map_console);
-		SpriteRender();
+		// GridRender();
+		// SpriteRender();
 		// LightsRender();
-		PositionDebug();
-		RectDebug();
+		// PositionDebug();
+		// RectDebug();
+		MapRender(map_console);
 		RenderUI();
 		
 		}

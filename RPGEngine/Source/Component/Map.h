@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Cell.h"
-#include "../core.hpp"
+#include "../SDL/graphics.hpp"
 
 class Map
 {
@@ -41,5 +41,6 @@ public:
     int mapWidth;
 	int mapHeight;
     std::vector<std::vector<Cell>> cell;
+	std::vector<Vector2Di> fovCells;
     inline static bool hasDebugDraw = false;
 };

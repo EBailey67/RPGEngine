@@ -428,13 +428,13 @@ void LightsRender()
 			Graphics::ResetDrawColor();
 		}
     }
-	FOVCalculate();
 }
 
 void FOVCalculate()
 {
+/*	
 	PROFILE_FUNCTION();
-	static RPGEngine::FOVRecurse fovRecurse;
+	static RPGEngine::FOVRecurse fovRecurse(64, 64);
 	
 	const auto playerView = registry.view<Player, Hierarchy, Position, Health, Dash>();
 	auto &&[player, hierarchy, health, pos, dash] = registry.get<Player, Hierarchy, Health, Position, Dash>(*playerView.begin());
@@ -479,6 +479,7 @@ void FOVCalculate()
 			std::copy(fovRecurse.VisiblePoints.begin(), fovRecurse.VisiblePoints.end(), std::back_inserter(VisibleTiles));
 		}
     }
+*/    
 }
 
 

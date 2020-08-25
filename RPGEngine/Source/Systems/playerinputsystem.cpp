@@ -18,41 +18,41 @@ void PlayerMovement(const float dt)
         if (state[SDL_SCANCODE_W] && state[SDL_SCANCODE_D])
         {
             animation.current = "run";
-            vel.y = speed.speed * diagonal;
+            vel.y = -speed.speed * diagonal;
             vel.x = speed.speed * diagonal;
             sprite.isFliped = false;
         }
         else if (state[SDL_SCANCODE_W] && state[SDL_SCANCODE_A])
         {
             animation.current = "run";
-            vel.y = speed.speed * diagonal;
+            vel.y = -speed.speed * diagonal;
             vel.x = -speed.speed * diagonal;
             sprite.isFliped = true;
         }
         else if (state[SDL_SCANCODE_S] && state[SDL_SCANCODE_A])
         {
             animation.current = "run";
-            vel.y = -speed.speed * diagonal;
+            vel.y = speed.speed * diagonal;
             vel.x = -speed.speed * diagonal;
             sprite.isFliped = true;
         }
         else if (state[SDL_SCANCODE_S] && state[SDL_SCANCODE_D])
         {
             animation.current = "run";
-            vel.y = -speed.speed * diagonal;
+            vel.y = speed.speed * diagonal;
             vel.x = speed.speed * diagonal;
             sprite.isFliped = false;
         }
         else if (state[SDL_SCANCODE_W])
         {
             animation.current = "run";
-            vel.y = speed.speed;
+            vel.y = -speed.speed;
             vel.x = 0;
         }
         else if (state[SDL_SCANCODE_S])
         {
             animation.current = "run";
-            vel.y = -speed.speed;
+            vel.y = speed.speed;
             vel.x = 0;
         }
         else if (state[SDL_SCANCODE_A])

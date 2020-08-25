@@ -3,7 +3,7 @@
 #include "../Component/components.hpp"
 #include <SDL_rect.h>
 
-void CollisionTileDetection(float dt);
+void CollisionMapDetection(float dt);
 void CollisionDetection();
 void SetPlayerHealth(int hp);
 void SetPlayerScore(int score);
