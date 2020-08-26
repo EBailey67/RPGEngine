@@ -233,7 +233,7 @@ void CloseGame()
     {
         if (row.second < player.score)
         {
-            row.first = player.name;
+            row.first = player.Name;
             row.second = player.score;
             break;
         }
@@ -260,18 +260,18 @@ void OpenGame()
         {
             if (event.key.keysym.sym >= SDLK_a && event.key.keysym.sym <= SDLK_z)
             {
-                if (player.name.size() < 3)
+                if (player.Name.size() < 3)
                 {
-                    player.name += event.key.keysym.sym;
+                    player.Name += event.key.keysym.sym;
 
                     ResetName();
                 }
             }
             if (event.key.keysym.sym == SDLK_BACKSPACE)
             {
-                if (!player.name.empty())
+                if (!player.Name.empty())
                 {
-                    player.name.pop_back();
+                    player.Name.pop_back();
                     ResetName();
                 }
             }

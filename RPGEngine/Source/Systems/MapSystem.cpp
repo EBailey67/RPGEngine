@@ -88,7 +88,7 @@ void MapRender(Term::SDL::Context& context)
 					if (id.isWalkable)
 	                {
 						if (id.isInFOV)
-							console.FgColor(Color::White).BgColor(Color::Black).Put('.');
+							console.FgColor(Color::White).BgColor(Color(48, 48, 0)).Put('.');
 						else if (id.isExplored)
 							console.FgColor(Color::DarkGray).BgColor(Color::Black).Put('.');
 	                }

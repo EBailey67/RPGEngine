@@ -10,8 +10,17 @@ struct Player
     float attack_rate = 0.5;
     float dt = 0;
     int score = 0;
-    std::string name = "abc";
-	int awareness = 0;
+
+	int Attack = 2;
+	int AttackChance = 50;
+	int Awareness = 15;
+	int Defense = 2;
+	int DefenseChance = 40;
+	int Gold = 0;
+	int Health = 100;
+	int MaxHealth = 100;
+	std::string Name = "Luven Lightfinger";
+	int Speed = 10;
 };
 
 struct Dash

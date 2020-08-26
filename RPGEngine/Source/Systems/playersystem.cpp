@@ -4,7 +4,9 @@
 #include "playersystem.h"
 
 #include "../core.hpp"
+#include "../Terminal/Console.h"
 #include "../Utility/FOVRecurse.h"
+#include "../Utility/Swatch.h"
 #include "../Utility/Visibility.h"
 
 void UpdatePlayerFOV()
@@ -21,8 +23,7 @@ void UpdatePlayerFOV()
         auto& map = mapView.get<Map>(currentMap);
 		if (map.mapLayer == Layer::Floor)
 		{
-			auto fovRecurse = std::make_shared<RPGEngine::FOVRecurse>(static_cast<int>(pos.position.x), static_cast<int>(pos.position.y), 7, &map);
-			
+			auto fovRecurse = std::make_shared<RPGEngine::FOVRecurse>(static_cast<int>(pos.position.x), static_cast<int>(pos.position.y), player.Awareness, &map);
 			fovRecurse->CalculateFOV();
 			for (auto& row: map.cell)
 				for (auto& col : row)
@@ -42,4 +43,17 @@ void UpdatePlayerFOV()
 			}
 		}
     }
+}
+
+
+void UpdatePlayerStats(Term::Console& console)
+{
+	const auto playerView = registry.view<Player>();
+	auto &&player =  registry.get<Player>(*playerView.begin());
+
+	console.Place(1, 2).FgColor(Swatch::Text).Put("Name:    " + player.Name);
+	console.Place(1, 4).FgColor(Swatch::Text).Put("Health:  " + std::to_string(player.Health) + "/" + std::to_string(player.MaxHealth));
+	console.Place(1, 6).FgColor(Swatch::Text).Put("Attack:  " + std::to_string(player.Attack) + " (" + std::to_string(player.AttackChance) + "%)");
+	console.Place(1, 8).FgColor(Swatch::Text).Put("Defense: " + std::to_string(player.Defense) + " (" + std::to_string(player.DefenseChance) + "%)");
+	console.Place(1, 10).FgColor(Color::Gold).Put("Gold:     " + std::to_string(player.Gold));
 }

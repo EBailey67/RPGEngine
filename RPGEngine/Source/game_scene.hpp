@@ -62,7 +62,6 @@ public:
 		CameraCreate();
 		// GridCreate();
 		Vector2Di playerStartPos = CreateMap(80, 48);
-		// MapCreate(80, 48);
 		PlayerCreate(playerStartPos);
 
 		//EnemyCreate(Enemy::spawns[0]);
@@ -110,7 +109,7 @@ public:
 		console.FgColor(Color::White).BgColor(Swatch::DbOldStone);
 		console.ClearChar(clearChar);
 		console.Clear();
-		console.Place(0, 0).Put("Stats");
+		console.Place(0, 0).Put("[= Stats =]");
 		}
 
 		// ==== INVENTORY CONSOLE ==== 
@@ -130,10 +129,10 @@ public:
 		// UpdateView();
 		// CameraFollow();
 		CollisionDetection();
-		// UpdateVisibility();
 		UpdatePlayerFOV();
 		HealthUpdate();
 
+		// (FIXME: EBailey) - This should be in a better location
 		const auto frameRate = static_cast<int>(floorf(Game::GetInstance()->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
 		message_console.GetConsole().FgColor(Color::White).Place(0, 1).Put("Framerate: " + std::to_string(frameRate));
 
@@ -145,7 +144,6 @@ public:
 
 	void Update(const float dt) override
 	{
-		// CollisionTileDetection(dt);
 		CollisionMapDetection(dt);
 		AnimationUpdate(dt);
 		MovementUpdate(dt);
@@ -173,6 +171,7 @@ public:
 		// LightsRender();
 		// PositionDebug();
 		// RectDebug();
+		UpdatePlayerStats(stat_console.GetConsole());
 		MapRender(map_console);
 		RenderUI();
 		
@@ -205,7 +204,7 @@ private:
 	const int message_height = 11;
 	Term::SDL::Context message_console = Term::SDL::Context( message_width, message_height );
 
-	const int stat_width = 20;
+	const int stat_width = 40;
 	const int stat_height = 70;
 	Term::SDL::Context stat_console = Term::SDL::Context( stat_width, stat_height );
 	

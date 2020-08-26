@@ -19,7 +19,7 @@ namespace Term
 			console(width, height)
 		{
 			std::cout << "Constructing Term::SDL::Context()\n";
-			auto* const font = fontCache.load(console_fontid, ResourceLoader::Font("resources/fonts/consola.ttf", 12));
+			auto* const font = fontCache.load(console_fontid, ResourceLoader::Font("resources/fonts/consola.ttf", 14));
 			if (!TTF_FontFaceIsFixedWidth(font))
 			{
 				throw std::runtime_error("Font for console must be a fixed-width font.");

@@ -61,7 +61,7 @@ void PlayerCreate(Vector2Di playerPos)
     animation.current = "idle";
     animation.isPlaying = true;
 
-	player.awareness = 15;
+	player.Awareness = 7;
 	
     pos.position = {playerPos.x, playerPos.y};
 

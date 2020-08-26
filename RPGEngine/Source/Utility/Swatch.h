@@ -7,7 +7,6 @@ class Swatch
 {
 public:
 	// http://paletton.com/#uid=73d0u0k5qgb2NnT41jT74c8bJ8X
- 
     inline static Color PrimaryLightest { 110, 121, 119 };
     inline static Color PrimaryLighter { 88, 100, 98 };
     inline static Color Primary { 68, 82, 79 };
@@ -31,9 +30,10 @@ public:
     inline static Color Compliment { 129, 116, 107 };
     inline static Color ComplimentDarker { 97, 84, 75 };
     inline static Color ComplimentDarkest { 71, 56, 45 };
- 
+
+    inline static Color Text {255, 255, 255};
+	
     // http://pixeljoint.com/forum/forum_posts.asp?TID=12795
- 
     inline static Color DbDark { 20, 12, 28 };
     inline static Color DbOldBlood { 68, 36, 52 };
     inline static Color DbDeepWater { 48, 52, 109 };

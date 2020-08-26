@@ -7,7 +7,7 @@ namespace GUI
 	GameSceneUI::GameSceneUI(SDL_Window* pwindow, const int rwidth, const int rheight) :
 		Screen(pwindow, Vector2i(rwidth, rheight), "Game UI Test")
 	{
-
+#if 0
 			{
 				struct Ability
 				{
@@ -50,6 +50,7 @@ namespace GUI
 	                
                 }
 			}
+#endif		
 			{
 
 				{
@@ -77,27 +78,27 @@ namespace GUI
 
 				{
 				// Create the window
-				auto& window = wdg<Window>("Status").withLayout<GroupLayout>();
-//				auto& window = wdg<Widget>().withLayout<GroupLayout>();
-				window.withPosition({rwidth / 2 - 150, 0});
+//				auto& window = wdg<Window>("Status").withLayout<GroupLayout>();
+////				auto& window = wdg<Widget>().withLayout<GroupLayout>();
+//				window.withPosition({rwidth / 2 - 150, 0});
 				
 
 				// Health Bar
 
-				auto& panel = window.wdg<Widget>();
-                panel.setLayout(new BoxLayout(Orientation::Horizontal,
-                    Alignment::Middle, 0, 6));
+				//auto& panel = window.wdg<Widget>();
+    //            panel.setLayout(new BoxLayout(Orientation::Horizontal,
+    //                Alignment::Middle, 0, 6));
 
-                panel.add<Label>("HP :", "sans-bold")->setFixedWidth(32);
-				auto& healthBar = panel.wdg<ProgressBar>();
+    //            panel.add<Label>("HP :", "sans-bold")->setFixedWidth(32);
+				//auto& healthBar = panel.wdg<ProgressBar>();
 
-				healthBar.withId("HP");
-				healthBar.setFixedWidth(200);
-				healthBar.setValue(1.0f);
-                 ref<Theme> t = new Theme();
-				healthBar.setTheme(t);
-				healthBar.theme()->mProgressBarTop = Color(192, 64, 64, 255);
-				healthBar.theme()->mProgressBarBot = Color(96, 8, 8, 255);
+				//healthBar.withId("HP");
+				//healthBar.setFixedWidth(200);
+				//healthBar.setValue(1.0f);
+    //             ref<Theme> t = new Theme();
+				//healthBar.setTheme(t);
+				//healthBar.theme()->mProgressBarTop = Color(192, 64, 64, 255);
+				//healthBar.theme()->mProgressBarBot = Color(96, 8, 8, 255);
 					
                 // Mana Bar
     //            auto& mana_panel = window.wdg<Widget>();
@@ -114,8 +115,8 @@ namespace GUI
 				//manaBar.theme()->mProgressBarTop = Color(96, 96, 255, 255);
 				//manaBar.theme()->mProgressBarBot = Color(32, 32, 96, 255);
 
-                auto& score = window.label("Score : 0", "nimbusmono-oblique.otf", 16).withId("SCORE");
-                auto& dash = window.label("Dash : Available", "sans-bold").withId("DASH");
+                // auto& score = window.label("Score : 0", "nimbusmono-oblique.otf", 16).withId("SCORE");
+                // auto& dash = window.label("Dash : Available", "sans-bold").withId("DASH");
 									
                 //auto& tools = window.widget().boxlayout(Orientation::Horizontal, Alignment::Middle, 0, 6);
 
@@ -465,41 +466,41 @@ namespace GUI
         	pfps->setCaption(std::to_string(frameRate));
         }
 
-	    const auto playerView = registry.view<Player, Hierarchy, Position, Health, Dash>();
-		auto &&[player, hierarchy, health, pos, dash] = registry.get<Player, Hierarchy, Health, Position, Dash>(*playerView.begin());
+	 //   const auto playerView = registry.view<Player, Hierarchy, Position, Health, Dash>();
+		//auto &&[player, hierarchy, health, pos, dash] = registry.get<Player, Hierarchy, Health, Position, Dash>(*playerView.begin());
 
-        if (auto* pbar = gfind<ProgressBar>("HP"))
-        {
-            pbar->setValue(static_cast<float>(health.health) / 3.0f);
-        }
+  //      if (auto* pbar = gfind<ProgressBar>("HP"))
+  //      {
+  //          pbar->setValue(static_cast<float>(health.health) / 3.0f);
+  //      }
 
-		
-        if (auto* plabel = gfind<Label>("SCORE"))
-        {
-            plabel->setCaption("Score :" + std::to_string(player.score));
-        }
+		//
+  //      if (auto* plabel = gfind<Label>("SCORE"))
+  //      {
+  //          plabel->setCaption("Score :" + std::to_string(player.score));
+  //      }
 
-        if (auto* plabel = gfind<Label>("LOCATION"))
-        {
-	        const auto x = static_cast<int>(pos.position.x);
-	        const auto y = static_cast<int>(pos.position.y);
-            plabel->setCaption(std::to_string(x) + ", " + std::to_string(y));
-        }
+  //      if (auto* plabel = gfind<Label>("LOCATION"))
+  //      {
+	 //       const auto x = static_cast<int>(pos.position.x);
+	 //       const auto y = static_cast<int>(pos.position.y);
+  //          plabel->setCaption(std::to_string(x) + ", " + std::to_string(y));
+  //      }
 
-		
-        if (auto* plabel = gfind<Label>("DASH"))
-        {
-        	if(dash.canDashing)
-        	{
-				plabel->setCaption("Dash Available");
-        		plabel->setColor(Color(0, 192, 0, 255));
-            }
-        	else
-            {
-                plabel->setCaption("Dash NO");
-        		plabel->setColor(Color(192, 0, 0, 255));
-            }
-        }
+		//
+  //      if (auto* plabel = gfind<Label>("DASH"))
+  //      {
+  //      	if(dash.canDashing)
+  //      	{
+		//		plabel->setCaption("Dash Available");
+  //      		plabel->setColor(Color(0, 192, 0, 255));
+  //          }
+  //      	else
+  //          {
+  //              plabel->setCaption("Dash NO");
+  //      		plabel->setColor(Color(192, 0, 0, 255));
+  //          }
+  //      }
 
 		
         Screen::draw(renderer);
