@@ -31,6 +31,7 @@ void UpdatePlayerFOV()
 					{
 						col.isInFOV = false;
 						col.isDirty = true;
+						col.isExplored = true;
 					}
 				}
 

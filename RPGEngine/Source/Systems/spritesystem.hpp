@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
+#include "../Utility/Vector2D.h"
 
-void PlayerCreate();
+void PlayerCreate(Vector2Di playerPos);
 void SpriteRender();
 void ParticleUpdate(const float dt);
 void AnimationUpdate(const float dt);

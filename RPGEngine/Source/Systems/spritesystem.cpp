@@ -35,7 +35,7 @@ void SpriteRender()
     };
 }
 
-void PlayerCreate()
+void PlayerCreate(Vector2Di playerPos)
 {
 	const auto id = registry.create();
     auto &sprite = registry.emplace<Sprite>(id);
@@ -63,7 +63,7 @@ void PlayerCreate()
 
 	player.awareness = 15;
 	
-    pos.position = {10, 10};
+    pos.position = {playerPos.x, playerPos.y};
 
     sprite.texture = textureCache.resource("spritesheet");
 

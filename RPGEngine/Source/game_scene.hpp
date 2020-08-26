@@ -61,9 +61,9 @@ public:
 
 		CameraCreate();
 		// GridCreate();
-		CreateMap(80, 48);
+		Vector2Di playerStartPos = CreateMap(80, 48);
 		// MapCreate(80, 48);
-		PlayerCreate();
+		PlayerCreate(playerStartPos);
 
 		//EnemyCreate(Enemy::spawns[0]);
 		//EnemyCreate(Enemy::spawns[1]);

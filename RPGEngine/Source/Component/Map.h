@@ -4,6 +4,7 @@
 
 #include "Cell.h"
 #include "../SDL/graphics.hpp"
+#include "../Utility/Rectangle.h"
 
 class Map
 {
@@ -42,5 +43,7 @@ public:
     int mapWidth;
 	int mapHeight;
     std::vector<std::vector<Cell>> cell;
-    inline static bool hasDebugDraw = false;
+	std::vector<RPGEngine::Rect> rooms;
+
+	inline static bool hasDebugDraw = false;
 };

@@ -71,7 +71,6 @@ void MapRender(Term::SDL::Context& context)
         auto& grid = mapView.get<Map>(cell);
         const auto& position = mapView.get<Position>(cell);
 
-//        auto j = static_cast<int>(grid.cell.size()) - 1;
         auto j = 0;
         for (auto &row : grid.cell)
         {
@@ -90,14 +89,14 @@ void MapRender(Term::SDL::Context& context)
 	                {
 						if (id.isInFOV)
 							console.FgColor(Color::White).BgColor(Color::Black).Put('.');
-						else
+						else if (id.isExplored)
 							console.FgColor(Color::DarkGray).BgColor(Color::Black).Put('.');
 	                }
-	                else
+            		else
 	                {
 						if (id.isInFOV)
 							console.FgColor(Color::White).BgColor(Color::Black).Put('#');
-						else
+						else if (id.isExplored)
 	                		console.FgColor(Color::DarkSlateGray).BgColor(Color::Black).Put('#');
 	                }
             		id.isDirty = false;
@@ -125,6 +124,8 @@ int RandomRange(int low, int high)
 
 void MakeRoom(Map& map, RPGEngine::Rect& room)
 {
+	map.rooms.emplace_back(room);
+	
 	for (auto x = room.x + 1; x < room.x + room.w; x++)
 	{
 		for (auto y = room.y + 1; y < room.y + room.h; y++)
@@ -157,11 +158,12 @@ void MakeVerticalTunnel(Map& map, int yStart, int yEnd, int xPosition)
 }
 
 
-void CreateMap(int w, int h)
+Vector2Di CreateMap(int w, int h)
 {
 	MTRandom random;
 	random.Randomize();
 	std::vector<RPGEngine::Rect> rooms;
+	Vector2Di posOut;
 
 	const auto id = registry.create();
 	auto& mapGrid = registry.emplace<Map>(id, Layer::Floor, w, h);
@@ -227,6 +229,11 @@ void CreateMap(int w, int h)
 			}
 		}
 
+		if (!grid.rooms.empty())
+		{
+			posOut = RPGEngine::GetCenter(grid.rooms[0]);
+		}
 	}
+	return posOut;
 }
 
