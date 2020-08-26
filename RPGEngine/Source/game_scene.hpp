@@ -126,11 +126,13 @@ public:
 
 	void FixedUpdate() override
 	{
+		PROFILE_SCOPE("FixedUpdate");
 		// UpdateView();
 		// CameraFollow();
-		CollisionDetection();
+		// CollisionDetection();
 		UpdatePlayerFOV();
-		HealthUpdate();
+		UpdatePlayerStats(stat_console.GetConsole());
+		// HealthUpdate();
 
 		// (FIXME: EBailey) - This should be in a better location
 		const auto frameRate = static_cast<int>(floorf(Game::GetInstance()->fps_counter.GetFrameRate() * 100 + 0.5f) / 100.0f);
@@ -144,6 +146,7 @@ public:
 
 	void Update(const float dt) override
 	{
+		PROFILE_SCOPE("Update");
 		CollisionMapDetection(dt);
 		AnimationUpdate(dt);
 		MovementUpdate(dt);
@@ -171,7 +174,6 @@ public:
 		// LightsRender();
 		// PositionDebug();
 		// RectDebug();
-		UpdatePlayerStats(stat_console.GetConsole());
 		MapRender(map_console);
 		RenderUI();
 		

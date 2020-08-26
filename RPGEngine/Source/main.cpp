@@ -14,7 +14,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     {
         game->InitializeSubsystems();
         Game::AssignWindow(
-            SDL_CreateWindow("RPG Playground", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 800, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE),
+            SDL_CreateWindow("RPG Playground", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 980, 980, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE),
             SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
         game->CreateScene<GameScene>();
         game->Run();
