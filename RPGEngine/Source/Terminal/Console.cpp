@@ -149,8 +149,8 @@ namespace Term
 
 	void Console::Clear() const
 	{
-		int size = width * height;
-		for (size_t i = 0; i < size; ++i)
+		const auto size = width * height;
+		for (auto i = 0; i < size; ++i)
 			buffer[i] = clear_char;
 	}
 
@@ -166,8 +166,9 @@ namespace Term
 
 		const auto offset = x + y * width;
 		buffer[offset] = c;
+		buffer[offset].isDirty = true;
 
-		Dirty();
+		// Dirty();
 	}
 
 	CharCell Console::GetCh(const int x, const int y) const
@@ -178,6 +179,13 @@ namespace Term
 		return CharCell();
 	}
 
+	void Console::CleanCh(const int x, const int y)
+	{
+		if (x>= 0 && x < width && y >= 0 && y < height)
+			buffer[x + y * width].isDirty = false;
+		
+	}
+	
 	void Console::Scroll(const int rows, const int cols)
 	{
 		Console tmpBuf(Width(), Height());

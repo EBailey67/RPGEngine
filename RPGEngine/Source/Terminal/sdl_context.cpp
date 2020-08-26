@@ -86,23 +86,27 @@ namespace Term
 
 		void Context::Print()
 		{
-			if (!console.IsDirty())
-				return;
-
 			PROFILE_FUNCTION();		// Only profile if we're actually doing something to reduce noise.
 
 			const auto l = Graphics::GetCurrentLayer();
 			SDL_SetTextureBlendMode(buffer_texture, SDL_BLENDMODE_BLEND);
 			SDL_SetRenderTarget(Graphics::Renderer(), buffer_texture);
-			auto chc = console.GetClearChar();
-			SDL_SetRenderDrawColor(Graphics::Renderer(), chc.BgColor().r, chc.BgColor().g, chc.BgColor().b, SDL_ALPHA_OPAQUE);
-			SDL_RenderClear(Graphics::Renderer());
+			if (console.IsDirty())
+			{
+				auto chc = console.GetClearChar();
+				SDL_SetRenderDrawColor(Graphics::Renderer(), chc.BgColor().r, chc.BgColor().g, chc.BgColor().b, SDL_ALPHA_OPAQUE);
+				SDL_RenderClear(Graphics::Renderer());
+			}
 
 			for (auto y = 0; y < console.Height(); ++y)
 				for (auto x = 0; x < console.Width(); ++x)
 				{
 					auto ch = console.GetCh(x, y);
-					Print(ch, x, y);
+					if (ch.isDirty)
+					{
+						Print(ch, x, y);
+						console.CleanCh(x, y);
+					}
 				}
 
 			Graphics::RenderTarget(l);

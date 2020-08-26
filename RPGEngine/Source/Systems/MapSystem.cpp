@@ -33,11 +33,13 @@ void MapCreate(int w, int h)
             	{
                     id.isWalkable = false;
                 	id.isTransparent = false;
+            		id.isDirty = true;
 				}
                 else
                 {
                     id.isWalkable = true;
                 	id.isTransparent = true;
+                	id.isDirty = true;
 				}
                 i++;
             }
@@ -69,13 +71,14 @@ void MapRender(Term::SDL::Context& context)
         auto& grid = mapView.get<Map>(cell);
         const auto& position = mapView.get<Position>(cell);
 
-        auto j = static_cast<int>(grid.cell.size()) - 1;
+//        auto j = static_cast<int>(grid.cell.size()) - 1;
+        auto j = 0;
         for (auto &row : grid.cell)
         {
 	        auto i = 0;
             for (auto &id : row)
             {
-            	// if(id.isDirty)
+            	if(id.isDirty)
             	{
                		console.Place(i, j);
             		if (i == static_cast<int>(pos.position.x) && j == static_cast<int>(pos.position.y))
@@ -85,20 +88,23 @@ void MapRender(Term::SDL::Context& context)
 					else 
 					if (id.isWalkable)
 	                {
-						if (IsInFov(grid.fovCells, i, j))
+						if (id.isInFOV)
 							console.FgColor(Color::White).BgColor(Color::Black).Put('.');
 						else
 							console.FgColor(Color::DarkGray).BgColor(Color::Black).Put('.');
 	                }
 	                else
 	                {
-                		console.FgColor(Color::DarkSlateGray).BgColor(Color::Black).Put('#');
+						if (id.isInFOV)
+							console.FgColor(Color::White).BgColor(Color::Black).Put('#');
+						else
+	                		console.FgColor(Color::DarkSlateGray).BgColor(Color::Black).Put('#');
 	                }
             		id.isDirty = false;
                 }
                 i++;
             }
-            j--;
+            j++;
         }
     }
 	
@@ -106,8 +112,8 @@ void MapRender(Term::SDL::Context& context)
 
 
 constexpr int maxRooms = 10;
-constexpr int roomMinSize = 4;
-constexpr int roomMaxSize = 8;
+constexpr int roomMinSize = 5;
+constexpr int roomMaxSize = 13;
 
 int RandomRange(int low, int high)
 {
@@ -117,8 +123,6 @@ int RandomRange(int low, int high)
 	return uniform(mtengine);
 }
 
-
-
 void MakeRoom(Map& map, RPGEngine::Rect& room)
 {
 	for (auto x = room.x + 1; x < room.x + room.w; x++)
@@ -126,7 +130,8 @@ void MakeRoom(Map& map, RPGEngine::Rect& room)
 		for (auto y = room.y + 1; y < room.y + room.h; y++)
 		{
 			map.cell[y][x].isWalkable = true;;
-			map.cell[y][x].isTransparent = true;;
+			map.cell[y][x].isTransparent = true;
+			map.cell[y][x].isDirty = true;
 		}
 	}
 }
@@ -137,6 +142,7 @@ void MakeHorizontalTunnel(Map& map, const int xStart, const int xEnd, int yPosit
 	{
 		map.cell[yPosition][x].isWalkable = true;
 		map.cell[yPosition][x].isTransparent = true;
+		map.cell[yPosition][x].isDirty = true;
 	}
 }
 
@@ -146,6 +152,7 @@ void MakeVerticalTunnel(Map& map, int yStart, int yEnd, int xPosition)
 	{
 		map.cell[y][xPosition].isWalkable = true;
 		map.cell[y][xPosition].isTransparent = true;
+		map.cell[y][xPosition].isDirty = true;
 	}
 }
 

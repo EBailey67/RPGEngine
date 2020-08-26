@@ -47,6 +47,7 @@ namespace Term
 		void Clear() const;
 		void ClearChar(CharCell);
 		void PutCh(const int x, const int y, const CharCell);
+		void CleanCh(const int x, const int y);
 		void Scroll(int rows, int cols = 0);
 		void Copy(const Console&, int dx, int dy, int sx, int sy, int sw, int sh);
 		void Copy(const Console&);

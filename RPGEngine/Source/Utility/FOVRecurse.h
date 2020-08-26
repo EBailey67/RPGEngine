@@ -37,7 +37,7 @@ namespace RPGEngine
 		// Get the value of the point at the specified location
 		int PointGet(const int x, const int y) const
 		{
-			return map->cell[y][x].isWalkable;
+			return map->cell[y][x].isTransparent;
 		}
 
 
@@ -62,6 +62,7 @@ namespace RPGEngine
 				ScanOctant(1, o, 1.0, 0.0);
 
 			VisiblePoints.emplace_back(player.x, player.y);     // This spot is always considered visible
+			LightWalls();
 		}
 
 
@@ -129,8 +130,10 @@ namespace RPGEngine
 						if (!map->cell[y][x].isTransparent) //current cell blocked
 						{
 							if (x - 1 >= 0 && map->cell[y][x - 1].isTransparent) //prior cell within range AND open...
+							{
 								//...incremenet the depth, adjust the endslope and recurse
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y + 0.5, player.x, player.y, false));
+							}
 						}
 						else
 						{
@@ -162,7 +165,9 @@ namespace RPGEngine
 						if (!map->cell[y][x].isTransparent)
 						{
 							if (x + 1 < MapSize.x && map->cell[y][x + 1].isTransparent)
+							{
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y + 0.5, player.x, player.y, false));
+							}
 						}
 						else
 						{
@@ -192,7 +197,9 @@ namespace RPGEngine
 						if (!map->cell[y][x].isTransparent)
 						{
 							if (y - 1 >= 0 && map->cell[y - 1][x].isTransparent)
+							{
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y - 0.5, player.x, player.y, true));
+							}
 						}
 						else
 						{
@@ -222,7 +229,9 @@ namespace RPGEngine
 						if (!map->cell[y][x].isTransparent)
 						{
 							if (y + 1 < MapSize.y && map->cell[y + 1][x].isTransparent)
+							{
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y + 0.5, player.x, player.y, true));
+							}
 						}
 						else
 						{
@@ -252,7 +261,9 @@ namespace RPGEngine
 						if (!map->cell[y][x].isTransparent)
 						{
 							if (x + 1 < MapSize.y && map->cell[y][x + 1].isTransparent)
+							{
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y - 0.5, player.x, player.y, false));
+							}
 						}
 						else
 						{
@@ -281,7 +292,9 @@ namespace RPGEngine
 						if (!map->cell[y][x].isTransparent)
 						{
 							if (x - 1 >= 0 && map->cell[y][x - 1].isTransparent)
+							{
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x - 0.5, y - 0.5, player.x, player.y, false));
+							}
 						}
 						else
 						{
@@ -311,7 +324,9 @@ namespace RPGEngine
 						if (!map->cell[y][x].isTransparent)
 						{
 							if (y + 1 < MapSize.y && map->cell[y + 1][x].isTransparent)
+							{
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y + 0.5, player.x, player.y, true));
+							}
 						}
 						else
 						{
@@ -342,7 +357,9 @@ namespace RPGEngine
 						if (!map->cell[y][x].isTransparent)
 						{
 							if (y - 1 >= 0 && map->cell[y - 1][x].isTransparent)
+							{
 								ScanOctant(pDepth + 1, pOctant, pStartSlope, GetSlope(x + 0.5, y - 0.5, player.x, player.y, true));
+							}
 						}
 						else
 						{
@@ -380,5 +397,110 @@ namespace RPGEngine
 		{
 			return (pX1 - pX2) * (pX1 - pX2) + (pY1 - pY2) * (pY1 - pY2);
 		}
+
+
+		enum class Quadrant
+		{
+			NE = 1,
+			SE = 2,
+			SW = 3,
+			NW = 4
+		};
+
+		void ClearFov()
+		{
+			VisiblePoints.clear();
+		}
+
+		bool IsInFov(int x, int y)
+		{
+			if (std::find(VisiblePoints.begin(), VisiblePoints.end(), Vector2Di(x, y)) == std::end(VisiblePoints))
+				return false;
+
+			return true;
+		}
+
+		void PostProcessFovQuadrant(const int x, const int y, const Quadrant quadrant)
+		{
+			auto x1 = x;
+			auto y1 = y;
+			auto x2 = x;
+			auto y2 = y;
+			
+			switch (quadrant)
+			{
+				case Quadrant::NE:
+				{
+					y1 = y + 1;
+					x2 = x - 1;
+					break;
+				}
+				case Quadrant::SE:
+				{
+					y1 = y - 1;
+					x2 = x - 1;
+					break;
+				}
+				case Quadrant::SW:
+				{
+					y1 = y - 1;
+					x2 = x + 1;
+					break;
+				}
+				case Quadrant::NW:
+				{
+					y1 = y + 1;
+					x2 = x + 1;
+					break;
+				}
+			}
+			
+			if (!IsInFov(x, y) && !map->cell[y][x].isTransparent)
+			{
+				if ((map->cell[y1][x1].isTransparent && IsInFov(x1, y1)) || (map->cell[y2][x2].isTransparent && IsInFov(x2, y2))
+					|| (map->cell[y1][x2].isTransparent && IsInFov(x2, y1)))
+				{
+					VisiblePoints.emplace_back(Vector2Di(x, y));
+				}
+			}
+		}
+
+		void LightWalls()
+		{
+			const auto xMin = std::max(0, player.x - VisualRange);
+			const auto xMax = std::min(map->mapWidth - 1, player.x + VisualRange);
+			const auto yMin = std::max(0, player.y - VisualRange);
+			const auto yMax = std::min(map->mapHeight - 1, player.y + VisualRange);
+
+			for (auto y = yMin; y <= yMax; y++)
+			{
+				for (auto x = xMin; x <= xMax; x++)
+				{
+					if (x > player.x)
+					{
+						if (y > player.y)
+						{
+							PostProcessFovQuadrant(x, y, Quadrant::SE);
+						}
+						else if (y <= player.y)
+						{
+							PostProcessFovQuadrant(x, y, Quadrant::NE);
+						}
+					}
+					else if (x <= player.x)
+					{
+						if (y > player.y)
+						{
+							PostProcessFovQuadrant(x, y, Quadrant::SW);
+						}
+						else if (y <= player.y)
+						{
+							PostProcessFovQuadrant(x, y, Quadrant::NW);
+						}
+					}
+				}
+			}
+		}
+
 	};
 };

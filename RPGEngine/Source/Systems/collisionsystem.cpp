@@ -166,7 +166,6 @@ void CollisionMapDetection(const float dt)
 
 void OnHit(const CollisionData &lhs, const CollisionData &rhs)
 {
-
     if (registry.has<Hierarchy>(lhs.id))
     {
         auto &hierarchy = registry.get<Hierarchy>(lhs.id);

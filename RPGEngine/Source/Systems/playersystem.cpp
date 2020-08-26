@@ -21,12 +21,24 @@ void UpdatePlayerFOV()
         auto& map = mapView.get<Map>(currentMap);
 		if (map.mapLayer == Layer::Floor)
 		{
-	        auto fovRecurse = std::make_shared<RPGEngine::FOVRecurse>(static_cast<int>(pos.position.x), static_cast<int>(pos.position.y), 7, &map);
+			auto fovRecurse = std::make_shared<RPGEngine::FOVRecurse>(static_cast<int>(pos.position.x), static_cast<int>(pos.position.y), 7, &map);
 			
 			fovRecurse->CalculateFOV();
-			map.fovCells.clear();
+			for (auto& row: map.cell)
+				for (auto& col : row)
+				{
+					if (col.isInFOV)
+					{
+						col.isInFOV = false;
+						col.isDirty = true;
+					}
+				}
 
-			std::copy(fovRecurse->VisiblePoints.begin(), fovRecurse->VisiblePoints.end(), std::back_inserter(map.fovCells));
+			for (auto& pt_fov: fovRecurse->VisiblePoints)
+			{
+				map.cell[pt_fov.y][pt_fov.x].isInFOV = true;
+				map.cell[pt_fov.y][pt_fov.x].isDirty = true;
+			}
 		}
     }
 }

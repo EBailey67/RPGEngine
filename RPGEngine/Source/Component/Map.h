@@ -29,6 +29,7 @@ public:
             	col.isTransparent = false;
             	col.isWalkable = false;
             	col.isExplored = false;
+            	col.isInFOV = false;
             	col.isDirty = true;
             	
             	++x;
@@ -41,6 +42,5 @@ public:
     int mapWidth;
 	int mapHeight;
     std::vector<std::vector<Cell>> cell;
-	std::vector<Vector2Di> fovCells;
     inline static bool hasDebugDraw = false;
 };

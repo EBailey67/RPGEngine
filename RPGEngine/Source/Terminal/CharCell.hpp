@@ -28,6 +28,8 @@ namespace Term
 			return c == rhs.c && bg_color == rhs.bg_color && fg_color == rhs.fg_color;
 		}
 
+		bool isDirty{true};
+
 private:
 		char_t  c{};
 		Color bg_color = Color::Black;
@@ -42,13 +44,13 @@ private:
 		// ch * (fg + bg)
 	    size_t operator()(const CharCell& cell) const
 	    {
-	    	Color bg = cell.BgColor();
-	    	Color fg = cell.FgColor();
-	    	int ch = cell.Ascii();
-	    	int a = ((fg.a + bg.a) % 255) << 24;
-	    	int r = ((fg.r + bg.r) % 255) << 16;
-	    	int g = ((fg.g + bg.g) % 255) << 8;
-	    	int b = ((fg.b + bg.b) % 255);
+		    const auto bg = cell.BgColor();
+		    const auto fg = cell.FgColor();
+		    const int ch = cell.Ascii();
+		    const auto a = ((fg.a + bg.a) % 255) << 24;
+		    const auto r = ((fg.r + bg.r) % 255) << 16;
+		    const auto g = ((fg.g + bg.g) % 255) << 8;
+		    const auto b = ((fg.b + bg.b) % 255);
 	        return ch * (a + r + g + b);
 	    } 
 	}; 
