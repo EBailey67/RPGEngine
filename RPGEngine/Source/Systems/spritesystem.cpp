@@ -43,6 +43,7 @@ void PlayerCreate(Vector2Di playerPos)
     registry.emplace<Velocity>(id);
     auto &animation = registry.emplace<AnimationPool>(id);
     auto& player = registry.emplace<Player>(id);
+	auto& actor = registry.emplace<Actor>(id);
     registry.emplace<Health>(id, 3);
     registry.emplace<Active>(id);
     auto &speed = registry.emplace<MovementSpeed>(id);
@@ -61,7 +62,7 @@ void PlayerCreate(Vector2Di playerPos)
     animation.current = "idle";
     animation.isPlaying = true;
 
-	player.Awareness = 7;
+	actor.Awareness = 7;
 	
     pos.position = {playerPos.x, playerPos.y};
 
@@ -75,7 +76,7 @@ void PlayerCreate(Vector2Di playerPos)
     rect.rect.w = static_cast<float>(sprite.rect.w) * sprite.scale.x;
     rect.rect.h = static_cast<float>(sprite.rect.h) * sprite.scale.y;
 
-    speed.speed = 10.f;
+    speed.speed = 10.0f;
 
     const auto attack = registry.create();
     [[maybe_unused]] auto &attack_pos = registry.emplace<Position>(attack);

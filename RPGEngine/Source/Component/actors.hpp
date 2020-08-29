@@ -1,6 +1,19 @@
 #pragma once
+#include "../Utility/Color.h"
 #include "../Utility/Vector2D.h"
 
+struct Actor
+{
+	int Attack = 2;
+	int AttackChance = 50;
+	int Awareness = 15;
+	int Defense = 2;
+	int DefenseChance = 40;
+	int Gold = 0;
+	int Health = 100;
+	int MaxHealth = 100;
+	int Speed = 10;
+};
 
 struct Player
 {
@@ -10,18 +23,17 @@ struct Player
     float attack_rate = 0.5;
     float dt = 0;
     int score = 0;
-
-	int Attack = 2;
-	int AttackChance = 50;
-	int Awareness = 15;
-	int Defense = 2;
-	int DefenseChance = 40;
-	int Gold = 0;
-	int Health = 100;
-	int MaxHealth = 100;
 	std::string Name = "Luven Lightfinger";
-	int Speed = 10;
 };
+
+
+struct Monster
+{
+	char c = '!';
+	Color color = Color::Red;
+	std::string name = "FIXME";
+};
+
 
 struct Dash
 {
@@ -31,6 +43,8 @@ struct Dash
     float cd = 2.f;
     float dt = 0;
 };
+
+
 
 struct Enemy
 {

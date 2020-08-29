@@ -105,8 +105,10 @@ public:
 		{
 		auto& console = stat_console.GetConsole();
 		clearChar.FgColor(Color::White);
-		clearChar.BgColor(Swatch::DbOldStone);
-		console.FgColor(Color::White).BgColor(Swatch::DbOldStone);
+		clearChar.BgColor(Color::Black);
+//		clearChar.BgColor(Swatch::DbOldStone);
+//		console.FgColor(Color::White).BgColor(Swatch::DbOldStone);
+		console.FgColor(Color::White).BgColor(Color::Black);
 		console.ClearChar(clearChar);
 		console.Clear();
 		console.Place(0, 0).Put("[= Stats =]");
@@ -127,11 +129,13 @@ public:
 	void FixedUpdate() override
 	{
 		PROFILE_SCOPE("FixedUpdate");
+		
 		// UpdateView();
 		// CameraFollow();
-		// CollisionDetection();
+		CollisionDetection();
 		UpdatePlayerFOV();
 		UpdatePlayerStats(stat_console.GetConsole());
+		UpdateMonsterStats(stat_console.GetConsole());
 		// HealthUpdate();
 
 		// (FIXME: EBailey) - This should be in a better location

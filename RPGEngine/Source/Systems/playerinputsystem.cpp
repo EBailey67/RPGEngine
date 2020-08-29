@@ -136,21 +136,21 @@ void PlayerAttack(const float dt)
 
             if (player.attack_direction.x < 0)
             {
-                attack_pos.position.Set(pos.position.x - attack_rect.rect.w, pos.position.y);
+                attack_pos.position.Set(pos.position.x - static_cast<int>(attack_rect.rect.w), pos.position.y);
             }
             else if (player.attack_direction.x > 0)
             {
-                attack_pos.position.Set(pos.position.x + collider.rect.w, pos.position.y);
+                attack_pos.position.Set(pos.position.x + static_cast<int>(collider.rect.w), pos.position.y);
             }
             else if (player.attack_direction.y == 0)
             {
                 if (attack_sprite.isFliped)
                 {
-                    attack_pos.position.Set(pos.position.x - attack_rect.rect.w, pos.position.y);
+                    attack_pos.position.Set(pos.position.x - static_cast<int>(attack_rect.rect.w), pos.position.y);
                 }
                 else
                 {
-                    attack_pos.position.Set(pos.position.x + collider.rect.w, pos.position.y);
+                    attack_pos.position.Set(pos.position.x + static_cast<int>(collider.rect.w), pos.position.y);
                 }
             }
             else
@@ -160,11 +160,11 @@ void PlayerAttack(const float dt)
 
             if (player.attack_direction.y < 0)
             {
-                attack_pos.position.Set(attack_pos.position.x, pos.position.y - attack_rect.rect.h);
+                attack_pos.position.Set(attack_pos.position.x, pos.position.y - static_cast<int>(attack_rect.rect.h));
             }
             else if (player.attack_direction.y > 0)
             {
-                attack_pos.position.Set(attack_pos.position.x, pos.position.y + collider.rect.h);
+                attack_pos.position.Set(attack_pos.position.x, pos.position.y + static_cast<int>(collider.rect.h));
             }
 
             if (player.dt > player.attack_rate)

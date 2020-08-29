@@ -2,6 +2,8 @@
 
 #include <vector>
 
+
+#include "actors.hpp"
 #include "Cell.h"
 #include "../SDL/graphics.hpp"
 #include "../Utility/Rectangle.h"
@@ -44,6 +46,5 @@ public:
 	int mapHeight;
     std::vector<std::vector<Cell>> cell;
 	std::vector<RPGEngine::Rect> rooms;
-
 	inline static bool hasDebugDraw = false;
 };

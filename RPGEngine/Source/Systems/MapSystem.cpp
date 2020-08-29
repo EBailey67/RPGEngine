@@ -3,9 +3,13 @@
 #include <random>
 
 
+
+#include "actorsystem.h"
 #include "../core.hpp"
 #include "../Utility/MTRandom.h"
 #include "../Utility/Rectangle.h"
+
+void PlaceMonsters(Map& map);
 
 void MapCreate(int w, int h)
 {
@@ -63,6 +67,7 @@ void MapRender(Term::SDL::Context& context)
     auto mapView = registry.view<Map, Position>();
 	const auto playerView = registry.view<Player, Position>();
 	auto &&[player, pos] = registry.get<Player, Position>(*playerView.begin());
+	const auto enemyView = registry.view<Monster, Actor, Position>();
 
 	auto& console = context.GetConsole();
 	
@@ -88,7 +93,21 @@ void MapRender(Term::SDL::Context& context)
 					if (id.isWalkable)
 	                {
 						if (id.isInFOV)
-							console.FgColor(Color::White).BgColor(Color(48, 48, 0)).Put('.');
+						{
+							auto foundEnemy = false;
+							for (const auto& k : enemyView)
+							{
+								auto&& [monster, kpos] = registry.get<Monster, Position>(k);
+								if (static_cast<int>(kpos.position.x) == i && static_cast<int>(kpos.position.y) == j)
+								{
+									console.FgColor(monster.color).Put(monster.c);
+									foundEnemy = true;
+									break;
+								}
+							}
+							if(!foundEnemy)
+								console.FgColor(Color::White).BgColor(Color(48, 48, 0)).Put('.');
+						}
 						else if (id.isExplored)
 							console.FgColor(Color::DarkGray).BgColor(Color::Black).Put('.');
 	                }
@@ -232,8 +251,75 @@ Vector2Di CreateMap(int w, int h)
 		if (!grid.rooms.empty())
 		{
 			posOut = RPGEngine::GetCenter(grid.rooms[0]);
+			PlaceMonsters(grid);
 		}
 	}
 	return posOut;
+}
+
+bool DoesRoomHaveWalkableSpace(Map& map, RPGEngine::Rect& room)
+{
+	for (auto x = 1; x <= room.w - 2; x++)
+	{
+		for (auto y = 1; y <= room.h - 2; y++)
+		{
+			if (map.cell[y + room.y][x + room.x].isWalkable)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+Vector2Di GetRandomWalkableLocationInRoom(Map& map, RPGEngine::Rect& room)
+{
+	if (DoesRoomHaveWalkableSpace(map, room))
+	{
+		for (auto i = 0; i < 100; i++)
+		{
+			const auto x = RandomRange(1, room.w - 2) + room.x;
+			const auto y = RandomRange(1, room.h - 2) + room.y;
+			if (map.cell[y][x].isWalkable)
+			{
+				return Vector2Di(x, y);
+			}
+		}
+	}
+
+	// If we didn't find a walkable location in the room return null
+	return Vector2Di();
+}
+
+void PlaceMonsters(Map& map)
+{
+	auto& dice = Game::GetInstance()->Dice();
+
+	for (auto room : map.rooms)
+	{
+		// Each room has a 60% chance of having monsters
+		if (dice.Parse("1D10").ToInt() < 7)
+		{
+			// Generate between 1 and 4 monsters
+			const auto numberOfMonsters = dice.Parse("1D4").ToInt();
+			for (auto i = 0; i < numberOfMonsters; i++)
+			{
+				// Find a random walkable location in the room to place the monster
+				Vector2Di randomRoomLocation = GetRandomWalkableLocationInRoom(map, room);
+				// It's possible that the room doesn't have space to place a monster
+				// In that case skip creating the monster
+				if (randomRoomLocation != Vector2Di::Zero())
+				{
+					// Temporarily hard code this monster to be created at level 1
+					CreateKobold(1, randomRoomLocation);
+				}
+			}
+		}
+	}
+}
+
+void RemoveMonster()
+{
+	
 }
 

@@ -15,6 +15,7 @@
 #include "events.hpp"
 #include "graphics.hpp"
 
+#include "../Dice/diceparser.h"
 #include "../Utility/FramerateCounter.h"
 #include "../Utility/Timer.h"
 
@@ -164,7 +165,10 @@ public:
         return m_scene.get();
     }
 
-    
+    [[nodiscard]] DungeonZ::DiceParser& Dice() noexcept
+    {
+	    return m_diceParser;
+    }
     template <typename TScene, typename... Args>
     auto CreateScene(Args... args)
     {
@@ -175,6 +179,7 @@ private:
     bool m_hadInitialization = false;
     bool m_isRunning = false;
     std::unique_ptr<BasicScene> m_scene = std::make_unique<BasicScene>();
+    DungeonZ::DiceParser m_diceParser;
 };
 
 

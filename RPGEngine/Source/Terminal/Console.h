@@ -39,12 +39,13 @@ namespace Term
 		Console& ClearLine();
 		Console& Put(CharCell);
 		Console& Put(const String&);
+		Console& PutFg(const std::string&);
 		Console& Put(char);
 		Console& Put(const std::string&);
 		Console& BgColor(Color);
 		Console& FgColor(Color);
 
-		void Clear() const;
+		void Clear();
 		void ClearChar(CharCell);
 		void PutCh(const int x, const int y, const CharCell);
 		void CleanCh(const int x, const int y);

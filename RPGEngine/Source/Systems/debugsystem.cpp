@@ -14,10 +14,8 @@ void PositionDebug()
             const auto& pos = view.get<Position>(entity);
             Graphics::SetDrawColor(255, 0, 0, SDL_ALPHA_OPAQUE);
 
-            auto position = activeCamera.FromWorldToScreenView(pos.position);
-            Graphics::DrawLineToLayer(Layer::Debug, 
-                static_cast<int>(position.x), static_cast<int>(position.y), 
-                static_cast<int>(position.x) + 20, static_cast<int>(position.y));
+            auto position = activeCamera.FromWorldToScreenView(pos.position.ToFloat());
+            Graphics::DrawLineToLayer(Layer::Debug, position.x, position.y, position.x + 20, position.y);
 
             Graphics::SetDrawColor(0, 255, 0, SDL_ALPHA_OPAQUE);
             Graphics::DrawLineToLayer(Layer::Debug, 
@@ -69,11 +67,11 @@ void RectDebug()
 {
     if (RectCollider::hasDebugDraw)
     {
-        auto cameraView = registry.view<Camera>();
+	    const auto cameraView = registry.view<Camera>();
         auto &activeCamera = cameraView.get(*cameraView.begin());
         auto view = registry.view<Position, RectCollider, Active>();
 
-        for (auto& entity : view)
+        for (const auto& entity : view)
         {
             const auto& pos = view.get<Position>(entity);
             const auto& rect = view.get<RectCollider>(entity);

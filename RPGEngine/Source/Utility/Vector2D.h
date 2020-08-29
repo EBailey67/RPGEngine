@@ -81,8 +81,8 @@ public:
     ~Vector2D() = default;
 
     /*! @brief Compute vector length and returns it. */
-    [[nodiscard]] float Magnitude() const noexcept
-    {
+    [[nodiscard]] double Magnitude() const noexcept
+    { 
         return std::sqrt(x * x + y * y);
     }
 

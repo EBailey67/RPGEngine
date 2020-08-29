@@ -61,7 +61,13 @@ namespace Term
 			const auto th = TileHeight();
 
 			if (ch.Ascii() == 0)
+			{
+				auto chc = console.GetClearChar();
+				SDL_SetRenderDrawColor(Graphics::Renderer(), chc.BgColor().r, chc.BgColor().g, chc.BgColor().b, SDL_ALPHA_OPAQUE);
+				SDL_Rect dstOut = {x * tw, y * th, tw, th};
+				SDL_RenderFillRect(Graphics::Renderer(), &dstOut);
 				return;
+			}
 
 			SDL_Texture* labelTex;
 			

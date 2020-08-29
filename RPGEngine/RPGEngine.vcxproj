@@ -159,6 +159,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Dice\diceparser.cpp" />
+    <ClCompile Include="Source\Dice\diceroll.cpp" />
+    <ClCompile Include="Source\Dice\expression.cpp" />
+    <ClCompile Include="Source\Dice\utility.cpp" />
+    <ClCompile Include="Source\Dice\value.cpp" />
+    <ClCompile Include="Source\Systems\actorsystem.cpp" />
+    <ClCompile Include="Source\Systems\combatsystem.cpp" />
     <ClCompile Include="Source\Systems\MapSystem.cpp" />
     <ClCompile Include="Source\Systems\playersystem.cpp" />
     <ClCompile Include="Source\Terminal\CharCell.cpp" />
@@ -220,6 +227,20 @@
     <ClInclude Include="Source\Component\Cell.h" />
     <ClInclude Include="Source\Component\Map.h" />
     <ClInclude Include="Source\Component\actors.hpp" />
+    <ClInclude Include="Source\Dice\conditional.h" />
+    <ClInclude Include="Source\Dice\diceparser.h" />
+    <ClInclude Include="Source\Dice\diceroll.h" />
+    <ClInclude Include="Source\Dice\error.h" />
+    <ClInclude Include="Source\Dice\expression.h" />
+    <ClInclude Include="Source\Dice\expressiontype.h" />
+    <ClInclude Include="Source\Dice\operand.h" />
+    <ClInclude Include="Source\Dice\token.h" />
+    <ClInclude Include="Source\Dice\utility.h" />
+    <ClInclude Include="Source\Dice\value.h" />
+    <ClInclude Include="Source\Dice\valuetype.h" />
+    <ClInclude Include="Source\Dice\version.h" />
+    <ClInclude Include="Source\Systems\actorsystem.h" />
+    <ClInclude Include="Source\Systems\combatsystem.h" />
     <ClInclude Include="Source\Systems\MapSystem.h" />
     <ClInclude Include="Source\Systems\playersystem.h" />
     <ClInclude Include="Source\Terminal\CharCell.hpp" />

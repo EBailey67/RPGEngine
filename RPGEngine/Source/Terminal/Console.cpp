@@ -63,7 +63,7 @@ namespace Term
 	Console& Console::ClearLine()
 	{
 		for (auto x = 0; x < width; ++x)
-			PutCh(x, curs_y, CharCell());
+			PutCh(x, curs_y, clear_char);
 
 		Place(0, curs_y);
 		return *this;
@@ -111,6 +111,18 @@ namespace Term
 		return *this;
 	}
 
+	Console& Console::PutFg(const std::string& str)
+	{
+		for (auto ch : str)
+		{
+			auto c = Peek();
+			CharCell cNew(ch, c.BgColor(), fg_color);
+			Put(cNew);
+		}
+
+		return *this;
+	}
+
 	Console& Console::Put(const char c)
 	{
 		Put(CharCell(c, bg_color, fg_color));
@@ -147,11 +159,13 @@ namespace Term
 		return height;
 	}
 
-	void Console::Clear() const
+	void Console::Clear()
 	{
 		const auto size = width * height;
 		for (auto i = 0; i < size; ++i)
 			buffer[i] = clear_char;
+
+		is_dirty = true;
 	}
 
 	void Console::ClearChar(const CharCell ch)
@@ -167,8 +181,6 @@ namespace Term
 		const auto offset = x + y * width;
 		buffer[offset] = c;
 		buffer[offset].isDirty = true;
-
-		// Dirty();
 	}
 
 	CharCell Console::GetCh(const int x, const int y) const

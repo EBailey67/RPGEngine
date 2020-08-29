@@ -132,15 +132,16 @@ void CollisionDetection()
 
 void CollisionMapDetection(const float dt)
 {
-	auto viewPlayer = registry.view<Player, Position, Velocity>();
+	const auto viewPlayer = registry.view<Player, Position, Velocity>();
     auto mapView = registry.view<Map, Position>();
 
 	auto&& [pos, vel] = registry.get<Position, Velocity>(*viewPlayer.begin());
 	auto&& map = registry.get<Map>(*mapView.begin());
+	
 	for (const auto& currentMap : mapView)
     {
         auto& map = mapView.get<Map>(currentMap);
-		Vector2Di p(pos.position.x, pos.position.y);
+        const Vector2Di p(pos.position.x, pos.position.y);
 		
 		if (map.mapLayer == Layer::Floor)
 		{
